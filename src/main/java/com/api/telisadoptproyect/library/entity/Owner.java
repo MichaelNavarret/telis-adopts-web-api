@@ -8,17 +8,14 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-public class Specie {
+public class Owner {
     @Id
     private String id;
-    private String code;
     private String name;
     @OneToMany
     private List<Adopt> adopts;
-    @OneToMany
-    private List<Trait> traits;
 
-    public Specie() {
+    public Owner() {
         this.id = UUID.randomUUID().toString();
     }
 
@@ -28,14 +25,6 @@ public class Specie {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
     }
 
     public String getName() {
@@ -52,13 +41,5 @@ public class Specie {
 
     public void setAdopts(List<Adopt> adopts) {
         this.adopts = adopts;
-    }
-
-    public List<Trait> getTraits() {
-        return traits;
-    }
-
-    public void setTraits(List<Trait> traits) {
-        this.traits = traits;
     }
 }
