@@ -12,8 +12,6 @@ public class Owner {
     @Id
     private String id;
     private String name;
-    @OneToMany
-    private List<Adopt> adopts;
 
     public Owner() {
         this.id = UUID.randomUUID().toString();
@@ -33,13 +31,5 @@ public class Owner {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public List<Adopt> getAdopts() {
-        return adopts;
-    }
-
-    public void setAdopts(List<Adopt> adopts) {
-        this.adopts = adopts;
     }
 }

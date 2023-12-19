@@ -14,15 +14,10 @@ public class Specie {
     private String id;
     private String code;
     private String name;
-    @OneToMany
-    private List<Adopt> adopts;
-    @OneToMany
-    private List<Trait> traits;
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "mainSpecie_Id")
     private Specie mainSpecie;
-    @OneToMany
+    @OneToMany(mappedBy = "mainSpecie", cascade = CascadeType.ALL)
     private Set<Specie> subSpecies;
 
     public Specie() {
@@ -51,21 +46,5 @@ public class Specie {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public List<Adopt> getAdopts() {
-        return adopts;
-    }
-
-    public void setAdopts(List<Adopt> adopts) {
-        this.adopts = adopts;
-    }
-
-    public List<Trait> getTraits() {
-        return traits;
-    }
-
-    public void setTraits(List<Trait> traits) {
-        this.traits = traits;
     }
 }
