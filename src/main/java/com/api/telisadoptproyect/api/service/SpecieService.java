@@ -3,10 +3,17 @@ package com.api.telisadoptproyect.api.service;
 import com.api.telisadoptproyect.api.request.SpecieRequests.SpecieCreateRequest;
 import com.api.telisadoptproyect.api.response.BaseResponse;
 import com.api.telisadoptproyect.api.response.SpecieResponses.SpecieSingletonResponse;
+import com.api.telisadoptproyect.library.entity.QSpecie;
 import com.api.telisadoptproyect.library.entity.Specie;
 import com.api.telisadoptproyect.library.exception.BadRequestException;
 import com.api.telisadoptproyect.library.repository.SpecieRepository;
+import com.api.telisadoptproyect.library.util.PaginationUtils;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +21,12 @@ import org.springframework.stereotype.Service;
 public class SpecieService {
     @Autowired
     private SpecieRepository specieRepository;
+
+    public Page<Specie> getSpecieCollection(Integer pageNumber, Integer pageLimit){
+        Sort sort = PaginationUtils.createSortCriteria("name:ASC");
+        Pageable pageable = PageRequest.of(pageNumber, pageLimit, sort);
+        return specieRepository.findAll(pageable);
+    }
 
     public SpecieSingletonResponse createSpecie(SpecieCreateRequest request){
         if(request == null) throw new BadRequestException("The request cannot be null");
