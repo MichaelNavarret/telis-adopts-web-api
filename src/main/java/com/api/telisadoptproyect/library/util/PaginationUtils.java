@@ -1,6 +1,7 @@
 package com.api.telisadoptproyect.library.util;
 
 import com.api.telisadoptproyect.library.exception.BadRequestException;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
@@ -52,7 +53,7 @@ public class PaginationUtils {
     }
 
     public static <T> HttpHeaders createHttpSortingHeaderForPagination(String sort) {
-        if (sort == null || sort.isEmpty()) return null;
+        if (StringUtils.isBlank(sort)) return null;
         final HttpHeaders headerInfo = new HttpHeaders();
 
         String[] sortValues = sort.split(":");
@@ -68,12 +69,12 @@ public class PaginationUtils {
     }
 
     public static Sort createSortCriteria(String sortFields, String defaultSort) throws BadRequestException {
-        String sortDescriptor = sortFields == null || sortFields.isEmpty() ? defaultSort : sortFields ;
+        String sortDescriptor = StringUtils.isBlank(sortFields) ? defaultSort : sortFields ;
 
         String sortColumnName = "id";
         Sort.Direction sortDirection = Sort.Direction.DESC;
 
-        if (sortDescriptor != null && sortDescriptor.isEmpty() == false) {
+        if (StringUtils.isNotBlank(sortDescriptor)) {
             if (sortDescriptor.contains(":")) {
                 String[] sortSpecs = sortDescriptor.split(":");
                 if (sortSpecs.length != 2) {
