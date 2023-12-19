@@ -1,5 +1,6 @@
 package com.api.telisadoptproyect.library.entity;
 
+import com.querydsl.core.annotations.QueryEntity;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -7,6 +8,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity
+@QueryEntity
 public class Adopt {
     public enum CreationType{
         PREMADE,

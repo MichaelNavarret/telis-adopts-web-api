@@ -1,20 +1,40 @@
 package com.api.telisadoptproyect.api.controller;
 
 import com.api.telisadoptproyect.api.request.SpecieRequests.SpecieCreateRequest;
+import com.api.telisadoptproyect.api.response.SpecieResponses.SpecieCollectionResponse;
 import com.api.telisadoptproyect.api.response.SpecieResponses.SpecieSingletonResponse;
 import com.api.telisadoptproyect.api.service.SpecieService;
+import com.api.telisadoptproyect.library.entity.Specie;
+import com.api.telisadoptproyect.library.util.PaginationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/species")
 public class SpecieController {
     @Autowired
     private SpecieService specieService;
+
+    @GetMapping("")
+    public ResponseEntity<SpecieCollectionResponse> getSpecies(
+            @RequestHeader(name = PaginationUtils.X_PAGINATION_NUM, required = false, defaultValue = PaginationUtils.DEFAULT_PAGINATION_NUM) String pageNumber,
+            @RequestHeader(name = PaginationUtils.X_PAGINATION_LIMIT, required = false, defaultValue = PaginationUtils.DEFAULT_PAGINATION_LIMIT) String pageLimit){
+
+        final Integer pageNumberValue = Integer.parseInt(pageNumber);
+        final Integer pageLimitValue = Integer.parseInt(pageLimit);
+        final Page<Specie> response = specieService.getSpecieCollection(pageNumberValue, pageLimitValue);
+
+        HttpHeaders headers = PaginationUtils.createHttpHeaderForPagination(response, pageLimitValue);
+        SpecieCollectionResponse specieCollectionResponse = new SpecieCollectionResponse(response);
+        return ResponseEntity
+                .ok()
+                .body(specieCollectionResponse);
+    }
 
     @PostMapping("")
     public ResponseEntity<SpecieSingletonResponse> createSpecie(

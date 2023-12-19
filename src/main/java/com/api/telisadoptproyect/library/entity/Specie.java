@@ -1,5 +1,6 @@
 package com.api.telisadoptproyect.library.entity;
 
+import com.querydsl.core.annotations.QueryEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
@@ -8,6 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
+@QueryEntity
 public class Specie {
     @Id
     private String id;
