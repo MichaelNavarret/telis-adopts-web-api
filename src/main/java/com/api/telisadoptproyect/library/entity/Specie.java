@@ -1,11 +1,10 @@
 package com.api.telisadoptproyect.library.entity;
 
 import com.querydsl.core.annotations.QueryEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -19,6 +18,12 @@ public class Specie {
     private List<Adopt> adopts;
     @OneToMany
     private List<Trait> traits;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "mainSpecie_Id")
+    private Specie mainSpecie;
+    @OneToMany
+    private Set<Specie> subSpecies;
 
     public Specie() {
         this.id = UUID.randomUUID().toString();

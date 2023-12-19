@@ -33,6 +33,7 @@ public class SpecieController {
         SpecieCollectionResponse specieCollectionResponse = new SpecieCollectionResponse(response);
         return ResponseEntity
                 .ok()
+                .headers(headers)
                 .body(specieCollectionResponse);
     }
 

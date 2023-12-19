@@ -23,9 +23,13 @@ public class Trait {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "specie_Id")
     private Specie specie;
-
     @ManyToMany(mappedBy = "traits")
     private Set<Adopt> adopts;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "mainTrait_Id")
+    private Trait mainTrait;
+    @OneToMany
+    private Set<Trait> subTraits;
 
     public Trait() {
         this.id = UUID.randomUUID().toString();
