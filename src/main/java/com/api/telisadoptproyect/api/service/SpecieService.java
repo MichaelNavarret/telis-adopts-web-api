@@ -8,6 +8,7 @@ import com.api.telisadoptproyect.library.entity.Specie;
 import com.api.telisadoptproyect.library.exception.BadRequestException;
 import com.api.telisadoptproyect.library.repository.SpecieRepository;
 import com.api.telisadoptproyect.library.util.PaginationUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,7 +30,7 @@ public class SpecieService {
 
     public SpecieSingletonResponse createSpecie(SpecieCreateRequest request){
         if(request == null) throw new BadRequestException("The request cannot be null");
-        if(request.getName() == null) throw new BadRequestException("The name of specie cannot be null");
+        if(StringUtils.isBlank(request.getName())) throw new BadRequestException("The name of specie cannot be null");
 
         Specie foundedSpecie = specieRepository.findByName(request.getName()).orElse(null);
         if (foundedSpecie != null) throw new BadRequestException("The name of specie cannot be repeated");

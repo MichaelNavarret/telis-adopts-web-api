@@ -25,10 +25,10 @@ public class Trait {
     private Specie specie;
     @ManyToMany(mappedBy = "traits")
     private Set<Adopt> adopts;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "mainTrait_Id")
     private Trait mainTrait;
-    @OneToMany
+    @OneToMany(mappedBy = "mainTrait", cascade = CascadeType.ALL)
     private Set<Trait> subTraits;
 
     public Trait() {
