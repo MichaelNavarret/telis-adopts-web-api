@@ -1,6 +1,7 @@
 package com.api.telisadoptproyect.api.controller;
 
 import com.api.telisadoptproyect.api.request.SpecieRequests.SpecieCreateRequest;
+import com.api.telisadoptproyect.api.request.SpecieRequests.SpecieUpdateRequest;
 import com.api.telisadoptproyect.api.response.SpecieResponses.SpecieCollectionResponse;
 import com.api.telisadoptproyect.api.response.SpecieResponses.SpecieSingletonResponse;
 import com.api.telisadoptproyect.api.service.SpecieService;
@@ -43,5 +44,14 @@ public class SpecieController {
         return ResponseEntity
                 .ok()
                 .body(specieService.createSpecie(request));
+    }
+
+    @PutMapping("/{specieId}")
+    public ResponseEntity<SpecieSingletonResponse> updateSpecie(
+            @PathVariable(name = "specieId") String specieId,
+            @RequestBody SpecieUpdateRequest request){
+        return ResponseEntity
+                .ok()
+                .body(specieService.updateSpecie(specieId, request));
     }
 }

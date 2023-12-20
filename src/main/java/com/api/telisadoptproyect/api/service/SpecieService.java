@@ -1,6 +1,7 @@
 package com.api.telisadoptproyect.api.service;
 
 import com.api.telisadoptproyect.api.request.SpecieRequests.SpecieCreateRequest;
+import com.api.telisadoptproyect.api.request.SpecieRequests.SpecieUpdateRequest;
 import com.api.telisadoptproyect.api.response.BaseResponse;
 import com.api.telisadoptproyect.api.response.SpecieResponses.SpecieSingletonResponse;
 import com.api.telisadoptproyect.library.entity.Specie;
@@ -44,7 +45,28 @@ public class SpecieService {
 
     }
 
+    public SpecieSingletonResponse updateSpecie(String specieId, SpecieUpdateRequest request){
+        if(request == null) throw new BadRequestException("The request cannot be null");
+
+        Specie currentSpecie = specieRepository.findById(specieId).orElseThrow(
+                () -> new BadRequestException("The Specie with the corresponding id not exist"));
+
+        if(StringUtils.isNotBlank(request.getName()) && currentSpecie.getName().equals(request.getName()) == false){
+            Specie specieWithSameName = specieRepository.findByName(request.getName()).orElse(null);
+            if(specieWithSameName == null){
+                currentSpecie.setName(request.getName().trim());
+            }
+            currentSpecie.setCode(specieCodeGenerator(request.getName()));
+        }
+
+        return new SpecieSingletonResponse(BaseResponse.Status.SUCCESS,
+                HttpStatus.CREATED.value(),
+                specieRepository.save(currentSpecie));
+    }
+
+
+    // ----------- Private methods --------------
     private String specieCodeGenerator(String name){
-        return name.toLowerCase().replace(' ', '_');
+        return name.trim().toLowerCase().replaceAll("\\s+", "_");
     }
 }
