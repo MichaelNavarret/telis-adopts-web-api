@@ -1,14 +1,15 @@
 package com.api.telisadoptproyect.api.service;
 
 import com.api.telisadoptproyect.api.request.SpecieRequests.SpecieCreateRequest;
+import com.api.telisadoptproyect.api.request.SpecieRequests.SpecieUpdateRequest;
 import com.api.telisadoptproyect.api.response.BaseResponse;
 import com.api.telisadoptproyect.api.response.SpecieResponses.SpecieSingletonResponse;
-import com.api.telisadoptproyect.library.entity.QSpecie;
 import com.api.telisadoptproyect.library.entity.Specie;
+
 import com.api.telisadoptproyect.library.exception.BadRequestException;
 import com.api.telisadoptproyect.library.repository.SpecieRepository;
 import com.api.telisadoptproyect.library.util.PaginationUtils;
-import com.querydsl.core.types.dsl.BooleanExpression;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,7 +31,10 @@ public class SpecieService {
 
     public SpecieSingletonResponse createSpecie(SpecieCreateRequest request){
         if(request == null) throw new BadRequestException("The request cannot be null");
-        if(request.getName() == null) throw new BadRequestException("The name of specie cannot be null");
+        if(StringUtils.isBlank(request.getName())) throw new BadRequestException("The name of specie cannot be null");
+
+        Specie foundedSpecie = specieRepository.findByName(request.getName()).orElse(null);
+        if (foundedSpecie != null) throw new BadRequestException("The name of specie cannot be repeated");
 
         Specie specie = new Specie();
         specie.setCode(specieCodeGenerator(request.getName()));
@@ -41,7 +45,28 @@ public class SpecieService {
 
     }
 
+    public SpecieSingletonResponse updateSpecie(String specieId, SpecieUpdateRequest request){
+        if(request == null) throw new BadRequestException("The request cannot be null");
+
+        Specie currentSpecie = specieRepository.findById(specieId).orElseThrow(
+                () -> new BadRequestException("The Specie with the corresponding id not exist"));
+
+        if(StringUtils.isNotBlank(request.getName()) && currentSpecie.getName().equals(request.getName()) == false){
+            Specie specieWithSameName = specieRepository.findByName(request.getName()).orElse(null);
+            if(specieWithSameName == null){
+                currentSpecie.setName(request.getName().trim());
+            }
+            currentSpecie.setCode(specieCodeGenerator(request.getName()));
+        }
+
+        return new SpecieSingletonResponse(BaseResponse.Status.SUCCESS,
+                HttpStatus.CREATED.value(),
+                specieRepository.save(currentSpecie));
+    }
+
+
+    // ----------- Private methods --------------
     private String specieCodeGenerator(String name){
-        return name.toLowerCase().replace(' ', '_');
+        return name.trim().toLowerCase().replaceAll("\\s+", "_");
     }
 }

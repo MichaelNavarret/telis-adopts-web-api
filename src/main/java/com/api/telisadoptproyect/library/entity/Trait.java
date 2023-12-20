@@ -25,10 +25,10 @@ public class Trait {
     private Specie specie;
     @ManyToMany(mappedBy = "traits")
     private Set<Adopt> adopts;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "mainTrait_Id")
     private Trait mainTrait;
-    @OneToMany
+    @OneToMany(mappedBy = "mainTrait", cascade = CascadeType.ALL)
     private Set<Trait> subTraits;
 
     public Trait() {
@@ -89,5 +89,21 @@ public class Trait {
 
     public void setSpecie(Specie specie) {
         this.specie = specie;
+    }
+
+    public Trait getMainTrait() {
+        return mainTrait;
+    }
+
+    public void setMainTrait(Trait mainTrait) {
+        this.mainTrait = mainTrait;
+    }
+
+    public Set<Trait> getSubTraits() {
+        return subTraits;
+    }
+
+    public void setSubTraits(Set<Trait> subTraits) {
+        this.subTraits = subTraits;
     }
 }
