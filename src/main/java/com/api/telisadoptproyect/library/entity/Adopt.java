@@ -31,9 +31,9 @@ public class Adopt {
     private Set<Designer> designers;
 
     @ManyToMany
-    @JoinTable(name="rel_adopt_trait", joinColumns = @JoinColumn(name="adoptId"),
-                inverseJoinColumns = @JoinColumn(name = "traitId"))
-    private Set<Trait> traits;
+    @JoinTable(name="rel_adopt_subTrait", joinColumns = @JoinColumn(name="adoptId"),
+                inverseJoinColumns = @JoinColumn(name = "subTraitId"))
+    private Set<SubTrait> subTraits;
 
     private Date createdOn;
     private Date boughtOn;
@@ -128,11 +128,11 @@ public class Adopt {
         this.creationType = creationType;
     }
 
-    public Set<Trait> getTraits() {
-        return traits;
+    public Set<SubTrait> getSubTraits() {
+        return subTraits;
     }
 
-    public void setTraits(Set<Trait> traits) {
-        this.traits = traits;
+    public void setSubTraits(Set<SubTrait> subTraits) {
+        this.subTraits = subTraits;
     }
 }
