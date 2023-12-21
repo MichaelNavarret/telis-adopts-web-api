@@ -2,7 +2,6 @@ package com.api.telisadoptproyect.library.entity;
 
 import jakarta.persistence.*;
 
-import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -12,8 +11,9 @@ public class SubTrait {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mainTait_Id")
     private Trait mainTrait;
-    @ManyToMany(mappedBy = "subTraits")
-    private Set<Adopt> adopts;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "adopt_Id")
+    private Adopt adopt;
 
     public SubTrait(){
         this.id = UUID.randomUUID().toString();
@@ -43,11 +43,11 @@ public class SubTrait {
         this.mainTrait = mainTrait;
     }
 
-    public Set<Adopt> getAdopts() {
-        return adopts;
+    public Adopt getAdopt() {
+        return adopt;
     }
 
-    public void setAdopts(Set<Adopt> adopts) {
-        this.adopts = adopts;
+    public void setAdopt(Adopt adopt) {
+        this.adopt = adopt;
     }
 }
