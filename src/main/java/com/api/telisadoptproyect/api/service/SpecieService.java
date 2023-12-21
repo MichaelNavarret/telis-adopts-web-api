@@ -45,6 +45,12 @@ public class SpecieService {
 
     }
 
+    public Specie findById(String specieId){
+        return specieRepository.findById(specieId).orElseThrow(
+                () -> new BadRequestException("Not founded Specie with that Id")
+        );
+    }
+
     public SpecieSingletonResponse updateSpecie(String specieId, SpecieUpdateRequest request){
         if(request == null) throw new BadRequestException("The request cannot be null");
 

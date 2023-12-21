@@ -15,7 +15,6 @@ public class TraitInfo {
         this.rarity = trait.getRarity();
         this.code = trait.getCode();
         this.characteristic = trait.getCharacteristic();
-        this.additionalInfo = trait.getAdditionalInfo();
         this.specie = trait.getSpecie().getName();
     }
 
