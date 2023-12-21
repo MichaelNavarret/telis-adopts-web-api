@@ -6,6 +6,7 @@ import java.util.UUID;
 
 @Entity
 public class SubTrait {
+    @Id
     private String id;
     private String subTraitCharacteristic;
     @ManyToOne(fetch = FetchType.LAZY)
