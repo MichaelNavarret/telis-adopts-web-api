@@ -9,6 +9,7 @@ import java.util.UUID;
 
 @Entity
 @QueryEntity
+@Table(indexes = @Index(columnList = "creationType"))
 public class Adopt {
     public enum CreationType{
         PREMADE,
@@ -19,26 +20,21 @@ public class Adopt {
     @Id
     private String id;
     private String code;
+    @Enumerated(EnumType.STRING)
     private CreationType creationType;
     private String name;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_Id")
     private Owner owner;
-
     @ManyToMany
     @JoinTable(name="rel_adopt_designer", joinColumns = @JoinColumn(name = "adoptId"),
                 inverseJoinColumns = @JoinColumn(name = "designerId"))
     private Set<Designer> designers;
-
-    @ManyToMany
-    @JoinTable(name="rel_adopt_trait", joinColumns = @JoinColumn(name="adoptId"),
-                inverseJoinColumns = @JoinColumn(name = "traitId"))
-    private Set<Trait> traits;
-
+    @OneToMany(mappedBy = "adopt", cascade = CascadeType.ALL)
+    private Set<SubTrait> subTraits;
     private Date createdOn;
     private Date boughtOn;
     private Date registeredOn;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "specie_Id")
     private Specie specie;
@@ -128,11 +124,11 @@ public class Adopt {
         this.creationType = creationType;
     }
 
-    public Set<Trait> getTraits() {
-        return traits;
+    public Set<SubTrait> getSubTraits() {
+        return subTraits;
     }
 
-    public void setTraits(Set<Trait> traits) {
-        this.traits = traits;
+    public void setSubTraits(Set<SubTrait> subTraits) {
+        this.subTraits = subTraits;
     }
 }

@@ -18,18 +18,9 @@ public class Trait {
     private Rarity rarity;
     private String code;
     private String characteristic;
-
-    private String additionalInfo;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "specie_Id")
     private Specie specie;
-    @ManyToMany(mappedBy = "traits")
-    private Set<Adopt> adopts;
-    @ManyToOne
-    @JoinColumn(name = "mainTrait_Id")
-    private Trait mainTrait;
-    @OneToMany(mappedBy = "mainTrait", cascade = CascadeType.ALL)
-    private Set<Trait> subTraits;
 
     public Trait() {
         this.id = UUID.randomUUID().toString();
@@ -59,28 +50,12 @@ public class Trait {
         this.characteristic = characteristic;
     }
 
-    public Set<Adopt> getAdopts() {
-        return adopts;
-    }
-
-    public void setAdopts(Set<Adopt> adopts) {
-        this.adopts = adopts;
-    }
-
     public Rarity getRarity() {
         return rarity;
     }
 
     public void setRarity(Rarity rarity) {
         this.rarity = rarity;
-    }
-
-    public String getAdditionalInfo() {
-        return additionalInfo;
-    }
-
-    public void setAdditionalInfo(String additionalInfo) {
-        this.additionalInfo = additionalInfo;
     }
 
     public Specie getSpecie() {
