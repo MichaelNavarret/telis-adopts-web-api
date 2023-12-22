@@ -4,12 +4,16 @@ import com.api.telisadoptproyect.api.request.OwnerRequests.OwnerCreateRequest;
 import com.api.telisadoptproyect.api.response.BaseResponse;
 import com.api.telisadoptproyect.api.response.OwnerResponses.OwnerSingletonResponse;
 import com.api.telisadoptproyect.library.entity.Owner;
+import com.api.telisadoptproyect.library.entity.PasswordResetToken;
 import com.api.telisadoptproyect.library.exception.BadRequestException;
 import com.api.telisadoptproyect.library.repository.OwnerRepository;
+import com.api.telisadoptproyect.library.repository.PasswordResetTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 public class OwnerService {
@@ -17,6 +21,8 @@ public class OwnerService {
     private OwnerRepository ownerRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private PasswordResetTokenRepository passwordResetTokenRepository;
 
     public OwnerSingletonResponse createOwner(OwnerCreateRequest createRequest) {
         Owner owner = new Owner();
@@ -46,4 +52,9 @@ public class OwnerService {
     }
 
 
+    public void createPasswordResetTokenForOwner(Owner ownerFound, String token) {
+        final PasswordResetToken myToken = new PasswordResetToken(ownerFound, token);
+        myToken.setId(UUID.randomUUID().toString());
+        passwordResetTokenRepository.save(myToken);
+    }
 }

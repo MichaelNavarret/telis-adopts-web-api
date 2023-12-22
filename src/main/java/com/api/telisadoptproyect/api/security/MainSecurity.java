@@ -73,7 +73,9 @@ public class MainSecurity {
     }
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("/auth/**");
+        return (web) -> web.ignoring().requestMatchers(
+                "/auth/generate-login-token",
+                "/auth/reset-password-link");
     }
 
 }

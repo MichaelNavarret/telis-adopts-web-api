@@ -2,6 +2,7 @@ package com.api.telisadoptproyect.api.controller;
 
 import com.api.telisadoptproyect.api.request.LoginRequest;
 import com.api.telisadoptproyect.api.request.OwnerRequests.OwnerLoginRequest;
+import com.api.telisadoptproyect.api.request.OwnerRequests.OwnerRequest;
 import com.api.telisadoptproyect.api.response.AuthenticationResponses.AuthenticationResponse;
 import com.api.telisadoptproyect.api.response.AuthenticationResponses.JwtResponse;
 import com.api.telisadoptproyect.api.service.AuthenticationService;
@@ -31,5 +32,12 @@ public class AuthenticationController {
             @RequestBody LoginRequest loginRequest) {
         LOGGER.info("Login....");
         return ResponseEntity.ok(authenticationService.login(loginRequest));
+    }
+
+    @PostMapping(value = "/reset-password-link", produces = "application/json")
+    public ResponseEntity<AuthenticationResponse> resetPasswordLink(
+            @RequestBody OwnerRequest ownerRequest) {
+        LOGGER.info("Reset password link....");
+        return ResponseEntity.ok(authenticationService.resetPasswordLink(ownerRequest));
     }
 }

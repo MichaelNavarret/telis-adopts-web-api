@@ -4,10 +4,12 @@ import com.api.telisadoptproyect.api.configuration.PropertiesConfig;
 import com.api.telisadoptproyect.api.configuration.SendgridEmailSender;
 import com.api.telisadoptproyect.api.request.LoginRequest;
 import com.api.telisadoptproyect.api.request.OwnerRequests.OwnerLoginRequest;
+import com.api.telisadoptproyect.api.request.OwnerRequests.OwnerRequest;
 import com.api.telisadoptproyect.api.response.AuthenticationResponses.AuthenticationResponse;
 import com.api.telisadoptproyect.api.response.AuthenticationResponses.JwtResponse;
 import com.api.telisadoptproyect.api.response.BaseResponse;
 import com.api.telisadoptproyect.api.security.JwtProvider;
+import com.api.telisadoptproyect.api.validation.InputValidation;
 import com.api.telisadoptproyect.api.validation.OwnerValidation;
 import com.api.telisadoptproyect.library.entity.Owner;
 import com.api.telisadoptproyect.library.entity.OwnerOtp;
@@ -16,6 +18,7 @@ import com.api.telisadoptproyect.library.repository.OwnerOtpRepository;
 import com.api.telisadoptproyect.library.util.EmailStructure;
 import com.api.telisadoptproyect.library.util.EmailStructureUtils;
 import com.api.telisadoptproyect.library.util.MessageUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +33,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class AuthenticationService {
@@ -51,6 +55,8 @@ public class AuthenticationService {
     private SendgridEmailSender sendgridEmailSender;
     @Autowired
     private PropertiesConfig propertiesConfig;
+    @Autowired
+    private InputValidation inputValidation;
 
     //-----------------Generate Token Login-----------------
     public AuthenticationResponse generateTokenLogin(OwnerLoginRequest ownerLoginRequest) {
@@ -141,4 +147,41 @@ public class AuthenticationService {
                 ownerDetails.getAuthorities()
         );
     }
+
+    //-----------------Reset Password Link-----------------
+    public AuthenticationResponse resetPasswordLink(OwnerRequest ownerRequest){
+        String defaultUtl = propertiesConfig.getApplicationBaseUrl();
+        String redirectUrl = buildRedirectionUtl(defaultUtl);
+        return createResetPasswordLink(ownerRequest.getUsername(), redirectUrl);
+    }
+
+    private AuthenticationResponse createResetPasswordLink(String email, String redirectUrl){
+        inputValidation.checkEmail(email);
+
+        Owner ownerFound = ownerService.getOwnerByEmail(email);
+
+        String token = UUID.randomUUID().toString();
+
+        final Map<String, String> params = new HashMap<>();
+        params.put("sender", propertiesConfig.getSendgridSenderEmail());
+        params.put("baseUrl", redirectUrl);
+        params.put("token", token);
+        params.put("addressee", ownerFound.getEmail());
+
+        EmailStructure emailStructure = EmailStructureUtils.buildEmailStructure(EmailStructureUtils.Type.RESET, params);
+
+        ownerService.createPasswordResetTokenForOwner(ownerFound, token);
+        sendgridEmailSender.sendHtmlEmail(emailStructure);
+
+        return new AuthenticationResponse(BaseResponse.Status.SUCCESS, HttpStatus.CREATED.value(),
+                "We send a link to reset ur password to ur email: " + ownerFound.getEmail(), token);
+    }
+
+    private String buildRedirectionUtl(String defaultUrl){
+        if(StringUtils.equals(defaultUrl, "localhost")){
+            return "http://localhost:4000";
+        }
+        return "https://" + defaultUrl;
+    }
+
 }

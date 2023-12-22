@@ -18,6 +18,8 @@ public class PasswordResetToken {
     @Column(nullable = false)
     private Boolean wasUsed;
 
+    public PasswordResetToken() {
+    }
     public PasswordResetToken(String token) {
         this.token = token;
         this.wasUsed = false;

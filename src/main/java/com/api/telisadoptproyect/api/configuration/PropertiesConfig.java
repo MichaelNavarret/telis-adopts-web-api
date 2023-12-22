@@ -13,6 +13,8 @@ public class PropertiesConfig {
     private boolean sendgridTestModeActive;
     @Value("${app.sendgrid.sender-email}")
     private String sendgridSenderEmail;
+    @Value("${app.base-url}")
+    private String applicationBaseUrl;
 
     public String getSendgridKey() {
         return sendgridKey;
@@ -28,5 +30,9 @@ public class PropertiesConfig {
 
     public String getSendgridSenderEmail() {
         return sendgridSenderEmail;
+    }
+
+    public String getApplicationBaseUrl() {
+        return applicationBaseUrl;
     }
 }
