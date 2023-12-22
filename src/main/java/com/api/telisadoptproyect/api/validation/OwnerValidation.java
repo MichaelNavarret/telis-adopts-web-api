@@ -1,6 +1,7 @@
 package com.api.telisadoptproyect.api.validation;
 
 import com.api.telisadoptproyect.api.request.OwnerRequests.OwnerLoginRequest;
+import com.api.telisadoptproyect.library.exception.BadRequestException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,11 +13,11 @@ public class OwnerValidation {
 
     public void checkOwnerLoginRequestFields(OwnerLoginRequest ownerLoginRequest){
         LOGGER.info("Checking owner information....");
-        if(StringUtils.isBlank(ownerLoginRequest.getEmail())){
-            throw new RuntimeException("Email is required");
+        if(StringUtils.isBlank(ownerLoginRequest.getUsername())){
+            throw new BadRequestException("Email is required");
         }
         if(StringUtils.isBlank(ownerLoginRequest.getPassword())){
-            throw new RuntimeException("Password is required");
+            throw new BadRequestException("Password is required");
         }
     }
 }

@@ -50,11 +50,11 @@ public class AuthenticationService {
     public AuthenticationResponse generateTokenLogin(OwnerLoginRequest ownerLoginRequest) {
         ownerValidation.checkOwnerLoginRequestFields(ownerLoginRequest);
 
-        Owner ownerFound = ownerService.getOwnerByEmail(ownerLoginRequest.getEmail());
+        Owner ownerFound = ownerService.getOwnerByEmail(ownerLoginRequest.getUsername());
 
         if(!ownerFound.isActive()) throw new BadRequestException("Owner " + ownerFound.getEmail() +" is not active");
 
-        //isAuthenticatedOwner(ownerFound, ownerLoginRequest);
+        isAuthenticatedOwner(ownerFound, ownerLoginRequest);
 
         final String token = jwtProvider.generate2FABearerToken(ownerFound.getEmail());
         final Map<String, String> params = new HashMap<>();
@@ -68,7 +68,7 @@ public class AuthenticationService {
         ownerOtpRepository.save(ownerOtp);
 
         return new AuthenticationResponse(BaseResponse.Status.SUCCESS, HttpStatus.CREATED.value(),
-                "We send ur authentication code to ur email", token);
+                "We send ur authentication code to ur email" + ownerFound.getEmail(), token);
     }
 
     // Private Methods
@@ -76,10 +76,11 @@ public class AuthenticationService {
         try{
             authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        owner.getNickName(),
+                        owner.getEmail(),
                         ownerLoginRequest.getPassword()
                 )
             );
+            LOGGER.info("Owner {} authenticated", owner.getEmail());
         }catch(Exception e){
             throw new BadRequestException("Incorrect email or password");
         }

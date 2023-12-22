@@ -36,7 +36,6 @@ public class JwtProvider {
 
     public String generate2FABearerToken(String email){
         final Map<String, Object> extraClaims = new HashMap<>();
-        extraClaims.put("email", email);
         return Jwts.builder()
                 .setClaims(extraClaims)
                 .setSubject(email)
