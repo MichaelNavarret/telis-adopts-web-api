@@ -26,7 +26,7 @@ import java.util.List;
 
 @Component
 public class SendgridEmailSender {
-    private static final String COM_LOGO_PNG_URL = "https://i.ibb.co/0jZQYQg/com-logo.png";
+    private static final String COM_LOGO_PNG_URL = "https://file.toyhou.se/users/Teliwis?8";
     private final List<String> ALLOWED_FILE_EXTENSIONS = List.of("pdf", "png", "jpg");
     @Autowired
     private PropertiesConfig propertiesConfig;

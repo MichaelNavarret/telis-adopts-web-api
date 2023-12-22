@@ -68,7 +68,7 @@ public class AuthenticationService {
         ownerOtpRepository.save(ownerOtp);
 
         return new AuthenticationResponse(BaseResponse.Status.SUCCESS, HttpStatus.CREATED.value(),
-                "We send ur authentication code to ur email" + ownerFound.getEmail(), token);
+                "We send ur authentication code to ur email: " + ownerFound.getEmail(), token);
     }
 
     // Private Methods
