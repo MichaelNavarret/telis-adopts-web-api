@@ -5,6 +5,7 @@ import com.api.telisadoptproyect.api.configuration.SendgridEmailSender;
 import com.api.telisadoptproyect.api.request.LoginRequest;
 import com.api.telisadoptproyect.api.request.OwnerRequests.OwnerLoginRequest;
 import com.api.telisadoptproyect.api.request.OwnerRequests.OwnerRequest;
+import com.api.telisadoptproyect.api.request.ResetPasswordRequest;
 import com.api.telisadoptproyect.api.response.AuthenticationResponses.AuthenticationResponse;
 import com.api.telisadoptproyect.api.response.AuthenticationResponses.JwtResponse;
 import com.api.telisadoptproyect.api.response.BaseResponse;
@@ -13,6 +14,7 @@ import com.api.telisadoptproyect.api.validation.InputValidation;
 import com.api.telisadoptproyect.api.validation.OwnerValidation;
 import com.api.telisadoptproyect.library.entity.Owner;
 import com.api.telisadoptproyect.library.entity.OwnerOtp;
+import com.api.telisadoptproyect.library.entity.PasswordResetToken;
 import com.api.telisadoptproyect.library.exception.BadRequestException;
 import com.api.telisadoptproyect.library.repository.OwnerOtpRepository;
 import com.api.telisadoptproyect.library.util.EmailStructure;
@@ -28,6 +30,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -41,6 +44,8 @@ public class AuthenticationService {
     private final OwnerOtp ownerOtp = new OwnerOtp();
     @Autowired
     private OwnerValidation ownerValidation;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     @Autowired
     private OwnerService ownerService;
     @Autowired
@@ -57,6 +62,8 @@ public class AuthenticationService {
     private PropertiesConfig propertiesConfig;
     @Autowired
     private InputValidation inputValidation;
+    @Autowired
+    private PasswordResetTokenService passwordResetTokenService;
 
     //-----------------Generate Token Login-----------------
     public AuthenticationResponse generateTokenLogin(OwnerLoginRequest ownerLoginRequest) {
@@ -184,4 +191,33 @@ public class AuthenticationService {
         return "https://" + defaultUrl;
     }
 
+    public BaseResponse resendOtpCode(OwnerRequest ownerRequest) {
+        inputValidation.checkEmail(ownerRequest.getUsername());
+
+        Owner ownerFound = ownerService.getOwnerByEmail(ownerRequest.getUsername());
+
+        final Map<String, String> params = new HashMap<>();
+        params.put("sender", propertiesConfig.getSendgridSenderEmail());
+        params.put("receiver", ownerFound.getEmail());
+
+        EmailStructure emailStructure = EmailStructureUtils.buildEmailStructure(EmailStructureUtils.Type.TOKEN, params);
+
+        messageUtils.buildOwnerOtp(ownerFound, ownerOtp, emailStructure);
+        sendgridEmailSender.sendHtmlEmail(emailStructure);
+        ownerOtpRepository.save(ownerOtp);
+
+        return new BaseResponse(BaseResponse.Status.SUCCESS, HttpStatus.CREATED.value(),
+                "We re send ur authentication code to ur email: " + ownerFound.getEmail());
+    }
+
+    public BaseResponse updatePassword(ResetPasswordRequest resetPasswordRequest) {
+        inputValidation.checkTokenData(resetPasswordRequest.getToken());
+        inputValidation.checkUpdatePasswordData(resetPasswordRequest.getNewPassword());
+
+        PasswordResetToken tokenFound = passwordResetTokenService.findByToken(resetPasswordRequest.getToken());
+
+        inputValidation.checkPasswordResetToken(tokenFound);
+
+        return messageUtils.resetOwnerPassword(passwordResetTokenService, passwordEncoder, resetPasswordRequest, tokenFound, ownerService);
+    }
 }

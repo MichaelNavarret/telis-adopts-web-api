@@ -3,8 +3,10 @@ package com.api.telisadoptproyect.api.controller;
 import com.api.telisadoptproyect.api.request.LoginRequest;
 import com.api.telisadoptproyect.api.request.OwnerRequests.OwnerLoginRequest;
 import com.api.telisadoptproyect.api.request.OwnerRequests.OwnerRequest;
+import com.api.telisadoptproyect.api.request.ResetPasswordRequest;
 import com.api.telisadoptproyect.api.response.AuthenticationResponses.AuthenticationResponse;
 import com.api.telisadoptproyect.api.response.AuthenticationResponses.JwtResponse;
+import com.api.telisadoptproyect.api.response.BaseResponse;
 import com.api.telisadoptproyect.api.service.AuthenticationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,5 +41,19 @@ public class AuthenticationController {
             @RequestBody OwnerRequest ownerRequest) {
         LOGGER.info("Reset password link....");
         return ResponseEntity.ok(authenticationService.resetPasswordLink(ownerRequest));
+    }
+
+    @PostMapping(value = "/resend-otp-code", produces = "application/json")
+    public ResponseEntity<BaseResponse> resendOtpCode(
+            @RequestBody OwnerRequest ownerRequest) {
+        LOGGER.info("Resend OTP code....");
+        return ResponseEntity.ok(authenticationService.resendOtpCode(ownerRequest));
+    }
+
+    @PostMapping(value = "/update-password", produces = "application/json")
+    public ResponseEntity<BaseResponse> updatePassword(
+            @RequestBody ResetPasswordRequest resetPasswordRequest) {
+        LOGGER.info("Update password....");
+        return ResponseEntity.ok(authenticationService.updatePassword(resetPasswordRequest));
     }
 }

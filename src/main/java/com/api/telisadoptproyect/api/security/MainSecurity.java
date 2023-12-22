@@ -75,7 +75,9 @@ public class MainSecurity {
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring().requestMatchers(
                 "/auth/generate-login-token",
-                "/auth/reset-password-link");
+                "/auth/reset-password-link",
+                "/auth/resend-otp-code",
+                "/auth/update-password");
     }
 
 }
