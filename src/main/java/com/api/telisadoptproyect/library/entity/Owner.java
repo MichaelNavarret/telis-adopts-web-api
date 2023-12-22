@@ -23,6 +23,9 @@ public class Owner {
                 inverseJoinColumns = @JoinColumn(name = "roleId"))
     private Set<Role> roles;
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "owner")
+    private List<OwnerOtp> otpList;
+
     public Owner() {
         this.id = UUID.randomUUID().toString();
         this.active = true;
