@@ -25,11 +25,6 @@ public class MessageUtils {
     private OwnerService ownerService;
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageUtils.class);
 
-    private final GeneratorTool generatorTool;
-
-    public MessageUtils(GeneratorTool generatorTool) {
-        this.generatorTool = generatorTool;
-    }
     public BaseResponse resetOwnerPassword(PasswordResetTokenService passwordResetTokenService, PasswordEncoder passwordEncoder,
                                            ResetPasswordRequest resetPasswordRequest, PasswordResetToken tokenFound,
                                            OwnerService ownerService){

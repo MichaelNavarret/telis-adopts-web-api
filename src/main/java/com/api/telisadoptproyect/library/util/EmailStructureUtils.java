@@ -2,6 +2,7 @@ package com.api.telisadoptproyect.library.util;
 
 import com.api.telisadoptproyect.library.exception.BadRequestException;
 import com.api.telisadoptproyect.library.validation.EnumValidation;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -15,7 +16,7 @@ public class EmailStructureUtils {
 
     public static EmailStructure buildEmailStructure(Type emailType, Map<String, String> params) {
         if (params.isEmpty()) throw new BadRequestException("Email Params can not be empty");
-        if (EnumValidation.validateEnum(Type.class, emailType.name())) throw new BadRequestException("Email Type is not valid");
+        if (!EnumValidation.validateEnum(Type.class, emailType.name())) throw new BadRequestException("Email Type is not valid");
 
         return switch (emailType) {
             case TOKEN -> buildTokenEmail(params);
@@ -33,8 +34,9 @@ public class EmailStructureUtils {
 
         tokenEmail.setEmailSubjectTitle(email2FASubjectTitle);
         tokenEmail.setTittleMessage(title2FAMessage);
+        tokenEmail.setOwnerName(Strings.EMPTY);
         tokenEmail.setSender(params.get("sender"));
-        tokenEmail.setAddressee(params.get("addressee"));
+        tokenEmail.setAddressee(params.get("receiver"));
         tokenEmail.setMessageType(Type.TOKEN.name());
         tokenEmail.setBodyParam(String.valueOf(otpCode));
 

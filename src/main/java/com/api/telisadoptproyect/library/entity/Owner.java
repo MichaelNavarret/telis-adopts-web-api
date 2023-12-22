@@ -2,16 +2,12 @@ package com.api.telisadoptproyect.library.entity;
 
 import jakarta.persistence.*;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 public class Owner {
     @Id
     private String id;
-    private String name;
     private String nickName;
     private String email;
     private String password;
@@ -26,11 +22,15 @@ public class Owner {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "owner")
     private List<OwnerOtp> otpList;
 
+    private boolean superAdmin;
     public Owner() {
         this.id = UUID.randomUUID().toString();
         this.active = true;
         this.createdOn = new Date();
+        this.superAdmin = false;
+        this.roles = new HashSet<>();
     }
+
 
     public String getId() {
         return id;
@@ -38,14 +38,6 @@ public class Owner {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getNickName() {
@@ -94,5 +86,21 @@ public class Owner {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public List<OwnerOtp> getOtpList() {
+        return otpList;
+    }
+
+    public void setOtpList(List<OwnerOtp> otpList) {
+        this.otpList = otpList;
+    }
+
+    public boolean isSuperAdmin() {
+        return superAdmin;
+    }
+
+    public void setSuperAdmin(boolean superAdmin) {
+        this.superAdmin = superAdmin;
     }
 }

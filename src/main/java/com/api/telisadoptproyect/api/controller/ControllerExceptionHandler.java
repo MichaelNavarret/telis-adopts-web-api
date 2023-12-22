@@ -1,9 +1,7 @@
 package com.api.telisadoptproyect.api.controller;
 
 import com.api.telisadoptproyect.api.response.ErrorResponse;
-import com.api.telisadoptproyect.library.configuration.PropertiesConfig;
 import com.api.telisadoptproyect.library.exception.RequestException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConversionException;

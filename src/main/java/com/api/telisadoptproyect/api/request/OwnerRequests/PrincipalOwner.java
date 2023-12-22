@@ -10,13 +10,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class PrincipalOwner implements UserDetails {
-    private String name;
-    private final String email;
+    private String nickName;
+    private  String email;
     private String password;
     private final Collection<? extends GrantedAuthority> authorities;
 
-    public PrincipalOwner(String name, String email, String password, Collection<? extends GrantedAuthority> authorities) {
-        this.name = name;
+    public PrincipalOwner(String nickName, String email, String password, Collection<? extends GrantedAuthority> authorities) {
+        this.nickName = nickName;
         this.email = email;
         this.password = password;
         this.authorities = authorities;
@@ -25,7 +25,7 @@ public class PrincipalOwner implements UserDetails {
     public static PrincipalOwner build(Owner owner){
         List<GrantedAuthority> authorities =
                 owner.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getId())).collect(Collectors.toList());
-        return new PrincipalOwner(owner.getName(), owner.getEmail(), owner.getPassword(), authorities);
+        return new PrincipalOwner(owner.getNickName(), owner.getEmail(), owner.getPassword(), authorities);
     }
 
     @Override
@@ -63,16 +63,20 @@ public class PrincipalOwner implements UserDetails {
         return true;
     }
 
-    public String getName() {
-        return name;
+    public String getNickName() {
+        return nickName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
     }
 
     public String getEmail() {
         return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public void setPassword(String password) {

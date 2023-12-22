@@ -25,4 +25,8 @@ public class PropertiesConfig {
     public boolean isSendgridTestModeActive() {
         return sendgridTestModeActive;
     }
+
+    public String getSendgridSenderEmail() {
+        return sendgridSenderEmail;
+    }
 }
