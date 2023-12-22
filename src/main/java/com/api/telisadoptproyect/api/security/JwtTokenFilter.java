@@ -1,4 +1,5 @@
 package com.api.telisadoptproyect.api.security;
+import com.api.telisadoptproyect.api.service.UserDetailsServiceImpl;
 import com.api.telisadoptproyect.library.exception.BadRequestException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -26,7 +27,7 @@ public class JwtTokenFilter extends GenericFilterBean {
     JwtProvider jwtProvider;
 
     @Autowired
-    UserDetailsService userDetailService;
+    UserDetailsServiceImpl userDetailService;
 
     @Override
     public final void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -41,7 +42,7 @@ public class JwtTokenFilter extends GenericFilterBean {
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
         } catch (Exception e) {
-            throw new BadRequestException(e.getMessage());
+            throw new BadRequestException("Invalid JWT token");
         }
         ContentCachingRequestWrapper wrappedRequest = new ContentCachingRequestWrapper(httpRequest);
         ContentCachingResponseWrapper wrappedResponse = new ContentCachingResponseWrapper(httpResponse);

@@ -14,12 +14,12 @@ public class Owner {
     private boolean active;
     private Date createdOn;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "rel_owner_role", joinColumns = @JoinColumn(name = "ownerId"),
                 inverseJoinColumns = @JoinColumn(name = "roleId"))
     private Set<Role> roles;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "owner")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "owner")
     private List<OwnerOtp> otpList;
 
     private boolean superAdmin;
@@ -28,9 +28,7 @@ public class Owner {
         this.active = true;
         this.createdOn = new Date();
         this.superAdmin = false;
-        this.roles = new HashSet<>();
     }
-
 
     public String getId() {
         return id;

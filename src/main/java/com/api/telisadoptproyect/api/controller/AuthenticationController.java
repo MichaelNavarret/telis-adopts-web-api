@@ -1,7 +1,9 @@
 package com.api.telisadoptproyect.api.controller;
 
+import com.api.telisadoptproyect.api.request.LoginRequest;
 import com.api.telisadoptproyect.api.request.OwnerRequests.OwnerLoginRequest;
 import com.api.telisadoptproyect.api.response.AuthenticationResponses.AuthenticationResponse;
+import com.api.telisadoptproyect.api.response.AuthenticationResponses.JwtResponse;
 import com.api.telisadoptproyect.api.service.AuthenticationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,5 +24,12 @@ public class AuthenticationController {
             @RequestBody OwnerLoginRequest ownerLoginRequest) {
         LOGGER.info("Generating token for login....");
         return ResponseEntity.ok(authenticationService.generateTokenLogin(ownerLoginRequest));
+    }
+
+    @PostMapping(value = "/login", produces = "application/json")
+    public ResponseEntity<JwtResponse> login(
+            @RequestBody LoginRequest loginRequest) {
+        LOGGER.info("Login....");
+        return ResponseEntity.ok(authenticationService.login(loginRequest));
     }
 }

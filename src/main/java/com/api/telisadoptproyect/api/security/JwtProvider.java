@@ -28,8 +28,9 @@ public class JwtProvider {
 
         return Jwts.builder()
                 .setClaims(extraClaims)
+                .setSubject(principalOwner.getUsername())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(new Date().getTime() + (long) 7 * 24 * 60 & 60 + 1000))
+                .setExpiration(new Date(new Date().getTime() + (long) 840000000 + 1000))
                 .signWith(SignatureAlgorithm.HS256, propertiesConfig.getJwtSecret())
                 .compact();
     }

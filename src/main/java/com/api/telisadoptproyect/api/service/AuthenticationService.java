@@ -2,8 +2,10 @@ package com.api.telisadoptproyect.api.service;
 
 import com.api.telisadoptproyect.api.configuration.PropertiesConfig;
 import com.api.telisadoptproyect.api.configuration.SendgridEmailSender;
+import com.api.telisadoptproyect.api.request.LoginRequest;
 import com.api.telisadoptproyect.api.request.OwnerRequests.OwnerLoginRequest;
 import com.api.telisadoptproyect.api.response.AuthenticationResponses.AuthenticationResponse;
+import com.api.telisadoptproyect.api.response.AuthenticationResponses.JwtResponse;
 import com.api.telisadoptproyect.api.response.BaseResponse;
 import com.api.telisadoptproyect.api.security.JwtProvider;
 import com.api.telisadoptproyect.api.validation.OwnerValidation;
@@ -22,8 +24,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,6 +51,8 @@ public class AuthenticationService {
     private SendgridEmailSender sendgridEmailSender;
     @Autowired
     private PropertiesConfig propertiesConfig;
+
+    //-----------------Generate Token Login-----------------
     public AuthenticationResponse generateTokenLogin(OwnerLoginRequest ownerLoginRequest) {
         ownerValidation.checkOwnerLoginRequestFields(ownerLoginRequest);
 
@@ -71,7 +77,6 @@ public class AuthenticationService {
                 "We send ur authentication code to ur email: " + ownerFound.getEmail(), token);
     }
 
-    // Private Methods
     private void isAuthenticatedOwner(Owner owner, OwnerLoginRequest ownerLoginRequest){
         try{
             authenticationManager.authenticate(
@@ -84,5 +89,56 @@ public class AuthenticationService {
         }catch(Exception e){
             throw new BadRequestException("Incorrect email or password");
         }
+    }
+
+    //-----------------Login-----------------
+    public JwtResponse login(LoginRequest loginRequest) {
+        ownerValidation.checkLoginRequestFields(loginRequest);
+
+        LOGGER.info("Searching information for username: " + loginRequest.getUsername());
+
+        Owner ownerFound = ownerService.getOwnerByEmail(loginRequest.getUsername());
+        OwnerOtp lastOtpCodeRequest = searchLastOtpCodeRequest(ownerFound);
+
+        ownerValidation.checkOptCode(loginRequest.getOtpCode(), lastOtpCodeRequest);
+
+        return createPermission(ownerFound, loginRequest, lastOtpCodeRequest);
+    }
+
+    private OwnerOtp searchLastOtpCodeRequest(Owner owner){
+        return ownerOtpRepository.findFirstByOwnerIdOrderByOtpCreationTimeDesc(owner.getId())
+                .orElseThrow(() -> new BadRequestException("Otp code not found"));
+    }
+
+    private JwtResponse createPermission(Owner owner, LoginRequest loginRequest, OwnerOtp ownerOtp){
+        Authentication authentication = null;
+        try{
+            ownerOtp.setWasUsed(true);
+            ownerOtpRepository.save(ownerOtp);
+
+            authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        owner.getEmail(),
+                        loginRequest.getPassword()
+                )
+            );
+        }catch (Exception e){
+            LOGGER.info("Bad Credentials!!!");
+            LOGGER.info("Error: " + e.getMessage());
+            throw new BadRequestException("Bad Credentials!!!");
+        }
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String jwt = jwtProvider.generateToken(authentication, owner);
+        UserDetails ownerDetails = (UserDetails) authentication.getPrincipal();
+
+        return new JwtResponse(
+                BaseResponse.Status.SUCCESS,
+                HttpStatus.OK.value(),
+                jwt,
+                "Bearer",
+                ownerDetails.getUsername(),
+                ownerDetails.getAuthorities()
+        );
     }
 }
