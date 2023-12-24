@@ -10,6 +10,8 @@ import com.api.telisadoptproyect.library.repository.OwnerRepository;
 import com.api.telisadoptproyect.library.repository.PasswordResetTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -56,5 +58,10 @@ public class OwnerService {
         final PasswordResetToken myToken = new PasswordResetToken(ownerFound, token);
         myToken.setId(UUID.randomUUID().toString());
         passwordResetTokenRepository.save(myToken);
+    }
+
+    public Owner getMyProfile() {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return getOwnerByEmail(userDetails.getUsername());
     }
 }

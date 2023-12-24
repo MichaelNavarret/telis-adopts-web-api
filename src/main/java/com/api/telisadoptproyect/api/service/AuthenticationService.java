@@ -186,7 +186,7 @@ public class AuthenticationService {
 
     private String buildRedirectionUtl(String defaultUrl){
         if(StringUtils.equals(defaultUrl, "localhost")){
-            return "http://localhost:4000";
+            return "http://localhost:5173";
         }
         return "https://" + defaultUrl;
     }
