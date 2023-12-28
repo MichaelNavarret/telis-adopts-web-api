@@ -65,20 +65,4 @@ public class Trait {
     public void setSpecie(Specie specie) {
         this.specie = specie;
     }
-
-    public Trait getMainTrait() {
-        return mainTrait;
-    }
-
-    public void setMainTrait(Trait mainTrait) {
-        this.mainTrait = mainTrait;
-    }
-
-    public Set<Trait> getSubTraits() {
-        return subTraits;
-    }
-
-    public void setSubTraits(Set<Trait> subTraits) {
-        this.subTraits = subTraits;
-    }
 }
