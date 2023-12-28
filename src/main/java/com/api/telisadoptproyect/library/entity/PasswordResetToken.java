@@ -10,8 +10,8 @@ public class PasswordResetToken {
     private String id;
     @Column(nullable = false)
     private String token;
-    @OneToOne(targetEntity = Owner.class, fetch = FetchType.EAGER)
-    @JoinColumn(nullable = false, name = "owner_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id")
     private Owner owner;
     @Column(nullable = false, columnDefinition = "timestamp")
     private LocalDateTime expiryDate;
