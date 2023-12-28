@@ -8,7 +8,7 @@ public class OwnerInfo {
 
     public OwnerInfo(Owner owner){
         this.id = owner.getId();
-        this.name = owner.getName();
+        this.name = owner.getNickName();
     }
 
     public String getId() {

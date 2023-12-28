@@ -21,7 +21,7 @@ public class AdoptInfo {
         this.id = adopt.getId();
         this.code = adopt.getCode();
         this.name = adopt.getName();
-        this.ownerName = adopt.getOwner().getName();
+        this.ownerName = adopt.getOwner().getNickName();
         this.designers = adopt.getDesigners().stream().map(Designer::getName).collect(Collectors.toList());
         this.createdOn = adopt.getCreatedOn();
         this.boughtOn = adopt.getBoughtOn();
