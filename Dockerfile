@@ -1,10 +1,5 @@
-
-Aquí tienes la adaptación del Dockerfile para un proyecto Spring con Maven:
-
-Dockerfile
-Copy code
-# Usar una imagen base con JDK 8 y Maven
-FROM maven:3.8.4-openjdk-8-slim AS build
+# Usar una imagen base con JDK 21 y Maven
+FROM maven:3.9.6-amazoncorretto-21 AS build
 
 # Establecer un directorio de trabajo
 WORKDIR /app
@@ -13,16 +8,16 @@ WORKDIR /app
 COPY . /app
 
 # Ejecutar Maven para construir el proyecto
-RUN mvn clean install
+RUN mvn clean package
 
-# Crear una nueva imagen basada en OpenJDK 8
-FROM openjdk:21-jre-slim
+# Crear una nueva imagen basada en OpenJDK 21
+FROM openjdk:21-slim-buster
 
 # Exponer el puerto que utilizará la aplicación
-EXPOSE 8080
+EXPOSE 4000
 
 # Copiar el archivo JAR construido desde la etapa anterior
-COPY --from=build /app/target/demo-0.0.1-SNAPSHOT.jar /app/demo-0.0.1-SNAPSHOT.jar
+COPY --from=build /app/target/telis-adopt-proyect-0.0.1-SNAPSHOT.jar /app/telis-adopt-proyect-0.0.1-SNAPSHOT.jar
 
 # Establecer el punto de entrada para ejecutar la aplicación
-ENTRYPOINT ["java", "-jar", "/app/demo-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "/app/telis-adopt-proyect-0.0.1-SNAPSHOT.jar"]
