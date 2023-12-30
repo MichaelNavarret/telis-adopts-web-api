@@ -23,6 +23,7 @@ public class SpecieService {
     @Autowired
     private SpecieRepository specieRepository;
 
+    // ----------- Main Endpoints Methods --------------
     public Page<Specie> getSpecieCollection(Integer pageNumber, Integer pageLimit){
         Sort sort = PaginationUtils.createSortCriteria("name:ASC");
         Pageable pageable = PageRequest.of(pageNumber, pageLimit, sort);
@@ -50,11 +51,6 @@ public class SpecieService {
         return new SpecieSingletonResponse(BaseResponse.Status.SUCCESS, HttpStatus.OK.value(), specie);
     }
 
-    public Specie findById(String specieId){
-        return specieRepository.findById(specieId).orElseThrow(
-                () -> new BadRequestException("Not founded Specie with that Id")
-        );
-    }
 
     public SpecieSingletonResponse updateSpecie(String specieId, SpecieUpdateRequest request){
         if(request == null) throw new BadRequestException("The request cannot be null");
@@ -75,6 +71,12 @@ public class SpecieService {
                 specieRepository.save(currentSpecie));
     }
 
+    // ----------- Public Utils methods --------------
+    public Specie findById(String specieId){
+        return specieRepository.findById(specieId).orElseThrow(
+                () -> new BadRequestException("Not founded Specie with that Id")
+        );
+    }
 
     // ----------- Private methods --------------
     private String specieCodeGenerator(String name){
