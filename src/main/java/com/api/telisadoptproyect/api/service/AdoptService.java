@@ -36,7 +36,6 @@ public class AdoptService {
         }
 
         Specie specie = specieService.findById(createRequest.getSpecieId());
-        subTraitService.validateIfSubTraitsBelongSpecie(createRequest.getSubTraits(), specie);
 
         Adopt adopt = new Adopt();
         adopt.setName(createRequest.getName() != null? createRequest.getName() : "TBN");

@@ -49,7 +49,7 @@ public class TraitController {
                 .body(traitService.getTrait(specieId, traitId));
     }
 
-    @GetMapping("")
+    @PostMapping("")
     public ResponseEntity<TraitSingletonResponse> createTrait(
             @RequestHeader(name = "specieId") String specieId,
             @RequestBody TraitCreateRequest request){
