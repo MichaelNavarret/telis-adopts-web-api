@@ -38,6 +38,14 @@ public class SpecieController {
                 .body(specieCollectionResponse);
     }
 
+    @GetMapping("/{specieId}")
+    public ResponseEntity<SpecieSingletonResponse> getSpecie(
+            @PathVariable(name = "specieId") String specieId){
+        return ResponseEntity
+                .ok()
+                .body(specieService.getSpecie(specieId));
+    }
+
     @PostMapping("")
     public ResponseEntity<SpecieSingletonResponse> createSpecie(
             @RequestBody SpecieCreateRequest request){

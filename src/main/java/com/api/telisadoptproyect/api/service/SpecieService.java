@@ -45,6 +45,11 @@ public class SpecieService {
 
     }
 
+    public SpecieSingletonResponse getSpecie(String specieId) {
+        Specie specie = findById(specieId);
+        return new SpecieSingletonResponse(BaseResponse.Status.SUCCESS, HttpStatus.OK.value(), specie);
+    }
+
     public Specie findById(String specieId){
         return specieRepository.findById(specieId).orElseThrow(
                 () -> new BadRequestException("Not founded Specie with that Id")
