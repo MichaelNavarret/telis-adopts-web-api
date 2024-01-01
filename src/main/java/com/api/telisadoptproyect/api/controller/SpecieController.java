@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/species")
+@CrossOrigin
 public class SpecieController {
     @Autowired
     private SpecieService specieService;
