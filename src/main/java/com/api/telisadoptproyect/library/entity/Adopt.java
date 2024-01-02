@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @Entity
 @QueryEntity
-@Table(indexes = @Index(columnList = "creationType"))
+@Table(indexes = {@Index(columnList = "creationType"), @Index(columnList = "rarity")})
 public class Adopt {
     public enum CreationType{
         PREMADE,
@@ -38,6 +38,8 @@ public class Adopt {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "specie_Id")
     private Specie specie;
+    @Enumerated(EnumType.STRING)
+    private Trait.Rarity rarity;
 
     public Adopt() {
         this.id = UUID.randomUUID().toString();
@@ -130,5 +132,13 @@ public class Adopt {
 
     public void setSubTraits(Set<SubTrait> subTraits) {
         this.subTraits = subTraits;
+    }
+
+    public Trait.Rarity getRarity() {
+        return rarity;
+    }
+
+    public void setRarity(Trait.Rarity rarity) {
+        this.rarity = rarity;
     }
 }

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/traits")
+@CrossOrigin
 public class TraitController {
     @Autowired
     private TraitService traitService;
@@ -24,8 +25,8 @@ public class TraitController {
     public ResponseEntity<TraitCollectionResponse> getTraits(
             @RequestHeader(name = PaginationUtils.X_PAGINATION_NUM, required = false, defaultValue = PaginationUtils.DEFAULT_PAGINATION_NUM) String pageNumber,
             @RequestHeader(name = PaginationUtils.X_PAGINATION_LIMIT, required = false, defaultValue = PaginationUtils.DEFAULT_PAGINATION_LIMIT) String pageLimit,
-            @RequestHeader(name = "specieId") String specieId,
-            @RequestParam(name = "rarity") String rarity){
+            @RequestParam(name = "specieId", required = false) String specieId,
+            @RequestParam(name = "rarity", required = false) String rarity){
 
         final Integer pageNumberValue = Integer.parseInt(pageNumber);
         final Integer pageLimitValue = Integer.parseInt(pageLimit);
@@ -51,11 +52,10 @@ public class TraitController {
 
     @PostMapping("")
     public ResponseEntity<TraitSingletonResponse> createTrait(
-            @RequestHeader(name = "specieId") String specieId,
             @RequestBody TraitCreateRequest request){
         return ResponseEntity
                 .ok()
-                .body(traitService.createTrait(specieId, request));
+                .body(traitService.createTrait(request));
     }
 
     @PutMapping("/{traitId}")

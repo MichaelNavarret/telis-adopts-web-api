@@ -22,6 +22,13 @@ public class SpecieController {
     @Autowired
     private SpecieService specieService;
 
+    @GetMapping("/autocomplete")
+    public ResponseEntity<SpecieCollectionResponse> getSpeciesAutocomplete(){
+        return ResponseEntity
+                .ok()
+                .body(specieService.getSpecieCollectionAutocomplete());
+    }
+
     @GetMapping("")
     public ResponseEntity<SpecieCollectionResponse> getSpecies(
             @RequestHeader(name = PaginationUtils.X_PAGINATION_NUM, required = false, defaultValue = PaginationUtils.DEFAULT_PAGINATION_NUM) String pageNumber,

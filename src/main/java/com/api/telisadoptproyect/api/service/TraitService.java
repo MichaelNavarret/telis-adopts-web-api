@@ -33,12 +33,14 @@ public class TraitService {
 
     // ----------- [Public Endpoints Methods] --------------
     public Page<Trait> getTraitCollection(Integer pageNumber, Integer pageLimit, String specieId, String rarity){
-        if (StringUtils.isBlank(specieId)) throw new BadRequestException("Specie id is required");
-        if (StringUtils.isBlank(rarity)) throw new BadRequestException("Rarity is required");
         if (EnumValidation.validateEnum(Trait.Rarity.class, rarity)) throw new BadRequestException("Rarity is not valid");
 
         QTrait qTrait = QTrait.trait;
-        BooleanExpression query = qTrait.specie.id.eq(specieId);
+        BooleanExpression query = qTrait.id.isNotNull();
+
+        if(StringUtils.isNotBlank(specieId)){
+            query = query.and(qTrait.specie.id.eq(specieId));
+        }
 
         if (StringUtils.isNotBlank(rarity)){
             query = query.and(qTrait.rarity.eq(EnumValidation.toEnum(Trait.Rarity.class, rarity)));
@@ -47,6 +49,9 @@ public class TraitService {
         Sort sort = PaginationUtils.createSortCriteria("rarity:ASC");
         Pageable pageable = PageRequest.of(pageNumber, pageLimit, sort);
 
+        if(specieId == null && rarity == null){
+            return traitRepository.findAll(pageable);
+        }
         return traitRepository.findAll(query, pageable);
     }
 
@@ -63,12 +68,11 @@ public class TraitService {
                 trait);
     }
 
-    public TraitSingletonResponse createTrait (String specieId, TraitCreateRequest createRequest){
-        if (StringUtils.isBlank(specieId)) throw new BadRequestException("Specie id is required");
+    public TraitSingletonResponse createTrait (TraitCreateRequest createRequest){
         if (createRequest == null) throw new BadRequestException("Request is required");
-        if (EnumValidation.validateEnum(Trait.Rarity.class, createRequest.getRarity())) throw new BadRequestException("Rarity is not valid");
+        if (!EnumValidation.validateEnum(Trait.Rarity.class, createRequest.getRarity())) throw new BadRequestException("Rarity is not valid");
 
-        Specie specie = specieService.findById(specieId);
+        Specie specie = specieService.findById(createRequest.getSpecieId());
 
         return new TraitSingletonResponse(
                 BaseResponse.Status.SUCCESS,

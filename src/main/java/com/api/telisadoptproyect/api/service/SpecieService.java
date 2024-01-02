@@ -3,6 +3,7 @@ package com.api.telisadoptproyect.api.service;
 import com.api.telisadoptproyect.api.request.SpecieRequests.SpecieCreateRequest;
 import com.api.telisadoptproyect.api.request.SpecieRequests.SpecieUpdateRequest;
 import com.api.telisadoptproyect.api.response.BaseResponse;
+import com.api.telisadoptproyect.api.response.SpecieResponses.SpecieCollectionResponse;
 import com.api.telisadoptproyect.api.response.SpecieResponses.SpecieSingletonResponse;
 import com.api.telisadoptproyect.library.entity.Specie;
 
@@ -28,6 +29,11 @@ public class SpecieService {
         Sort sort = PaginationUtils.createSortCriteria("name:ASC");
         Pageable pageable = PageRequest.of(pageNumber, pageLimit, sort);
         return specieRepository.findAll(pageable);
+    }
+
+
+    public SpecieCollectionResponse getSpecieCollectionAutocomplete() {
+        return new SpecieCollectionResponse(BaseResponse.Status.SUCCESS, HttpStatus.OK.value(), specieRepository.findAll());
     }
 
     public SpecieSingletonResponse createSpecie(SpecieCreateRequest request){

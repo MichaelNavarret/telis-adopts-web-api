@@ -12,10 +12,12 @@ public class AdoptInfo {
     private String code;
     private String name;
     private String ownerName;
+    private String specieName;
     private List<String> designers;
     private Date createdOn;
     private Date boughtOn;
     private Date registeredOn;
+    private String rarity;
 
     public AdoptInfo (Adopt adopt){
         this.id = adopt.getId();
@@ -25,7 +27,9 @@ public class AdoptInfo {
         this.designers = adopt.getDesigners().stream().map(Designer::getName).collect(Collectors.toList());
         this.createdOn = adopt.getCreatedOn();
         this.boughtOn = adopt.getBoughtOn();
+        this.specieName = adopt.getSpecie().getName();
         this.registeredOn = adopt.getRegisteredOn();
+        this.rarity = adopt.getRarity().toString();
     }
 
     public String getId() {
@@ -90,5 +94,21 @@ public class AdoptInfo {
 
     public void setRegisteredOn(Date registeredOn) {
         this.registeredOn = registeredOn;
+    }
+
+    public String getSpecieName() {
+        return specieName;
+    }
+
+    public void setSpecieName(String specieName) {
+        this.specieName = specieName;
+    }
+
+    public String getRarity() {
+        return rarity;
+    }
+
+    public void setRarity(String rarity) {
+        this.rarity = rarity;
     }
 }

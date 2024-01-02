@@ -1,5 +1,7 @@
 package com.api.telisadoptproyect.api.request.TraitRequests;
 
+import java.util.List;
+
 public class TraitCreateRequest {
     private String specieId;
     private String characteristic;
