@@ -3,6 +3,7 @@ package com.api.telisadoptproyect.api.controller;
 import com.api.telisadoptproyect.api.request.OwnerRequests.OwnerCreateRequest;
 import com.api.telisadoptproyect.api.request.OwnerRequests.OwnerRequest;
 import com.api.telisadoptproyect.api.response.BaseResponse;
+import com.api.telisadoptproyect.api.response.OwnerResponses.OwnerCollectionResponse;
 import com.api.telisadoptproyect.api.response.OwnerResponses.OwnerSingletonResponse;
 import com.api.telisadoptproyect.api.service.OwnerService;
 import com.api.telisadoptproyect.library.entity.Owner;
@@ -19,6 +20,12 @@ public class OwnerController {
     @Autowired
     private OwnerService ownerService;
 
+    @GetMapping(value = "/autocomplete", produces = "application/json")
+    public ResponseEntity<OwnerCollectionResponse> getOwnersAutocomplete(){
+        return ResponseEntity
+                .ok()
+                .body(ownerService.getOwnerCollectionAutocomplete());
+    }
     @PostMapping(value = "", produces = "application/json")
     public ResponseEntity<OwnerSingletonResponse> createOwner(
             @RequestBody OwnerCreateRequest request){

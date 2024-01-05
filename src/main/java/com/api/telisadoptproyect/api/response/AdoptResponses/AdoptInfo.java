@@ -18,13 +18,12 @@ public class AdoptInfo {
     private Date boughtOn;
     private Date registeredOn;
     private String rarity;
-
     public AdoptInfo (Adopt adopt){
         this.id = adopt.getId();
         this.code = adopt.getCode();
         this.name = adopt.getName();
-        this.ownerName = adopt.getOwner().getNickName();
-        this.designers = adopt.getDesigners().stream().map(Designer::getName).collect(Collectors.toList());
+        this.ownerName = adopt.getOwner() != null? adopt.getOwner().getNickName() : null;
+        this.designers = adopt.getDesigners() != null? adopt.getDesigners().stream().map(Designer::getName).collect(Collectors.toList()) : null;
         this.createdOn = adopt.getCreatedOn();
         this.boughtOn = adopt.getBoughtOn();
         this.specieName = adopt.getSpecie().getName();
