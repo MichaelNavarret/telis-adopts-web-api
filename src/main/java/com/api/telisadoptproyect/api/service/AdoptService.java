@@ -87,7 +87,7 @@ public class AdoptService {
         return switch (type) {
             case PREMADE -> "PRE-" + String.format("%04d", numberCode);
             case CUSTOM -> "CUS-" + String.format("%04d", numberCode);
-            case MYO -> "-MYO" + String.format("%04d", numberCode);
+            case MYO -> "MYO-" + String.format("%04d", numberCode);
             case GUEST_ARTIST -> "GA-" + String.format("%04d", numberCode);
         };
     }
