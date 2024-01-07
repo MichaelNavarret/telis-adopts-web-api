@@ -4,6 +4,7 @@ public class SubTraitCreateRequest {
     private String subTraitCharacteristic;
     private String mainTraitId;
     private String adoptId;
+    private String rarity;
 
     public SubTraitCreateRequest() {
     }
@@ -30,5 +31,13 @@ public class SubTraitCreateRequest {
 
     public void setAdoptId(String adoptId) {
         this.adoptId = adoptId;
+    }
+
+    public String getRarity() {
+        return rarity;
+    }
+
+    public void setRarity(String rarity) {
+        this.rarity = rarity;
     }
 }

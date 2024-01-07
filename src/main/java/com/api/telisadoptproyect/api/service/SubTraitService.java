@@ -7,6 +7,7 @@ import com.api.telisadoptproyect.library.entity.SubTrait;
 import com.api.telisadoptproyect.library.entity.Trait;
 import com.api.telisadoptproyect.library.exception.BadRequestException;
 import com.api.telisadoptproyect.library.repository.SubTraitRepository;
+import com.api.telisadoptproyect.library.validation.EnumValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,10 +24,13 @@ public class SubTraitService {
 
     public Set<SubTrait> createSubTraitsByAdopt(List<SubTraitCreateRequest> createRequestList, Adopt adopt){
         List<SubTrait> subTraits = createRequestList.stream().map(request -> {
+            SubTrait.Rarity rarity = EnumValidation.toEnum(SubTrait.Rarity.class, request.getRarity());
+            if(rarity == null) throw new BadRequestException("The Rarity is invalid.");
             SubTrait subTrait = new SubTrait();
             subTrait.setAdopt(adopt);
             subTrait.setSubTraitCharacteristic(request.getSubTraitCharacteristic());
             subTrait.setMainTrait(traitService.findById(request.getMainTraitId()));
+            subTrait.setRarity(rarity);
             return subTrait;
         }).toList();
         return new HashSet<>(subTraitRepository.saveAll(subTraits));

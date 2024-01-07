@@ -13,14 +13,13 @@ public class Owner {
     private String password;
     private boolean active;
     private Date createdOn;
-
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "rel_owner_role", joinColumns = @JoinColumn(name = "ownerId"),
                 inverseJoinColumns = @JoinColumn(name = "roleId"))
     private Set<Role> roles;
-
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "owner")
     private List<OwnerOtp> otpList;
+    private List<String> favorites;
 
     private boolean superAdmin;
     public Owner() {
@@ -100,5 +99,13 @@ public class Owner {
 
     public void setSuperAdmin(boolean superAdmin) {
         this.superAdmin = superAdmin;
+    }
+
+    public List<String> getFavorites() {
+        return favorites;
+    }
+
+    public void setFavorites(List<String> favorites) {
+        this.favorites = favorites;
     }
 }

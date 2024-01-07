@@ -6,6 +6,12 @@ import java.util.UUID;
 
 @Entity
 public class SubTrait {
+    public enum Rarity{
+        COMMON,
+        UNCOMMON,
+        RARE,
+        EPIC
+    }
     @Id
     private String id;
     private String subTraitCharacteristic;
@@ -15,7 +21,7 @@ public class SubTrait {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "adopt_Id")
     private Adopt adopt;
-
+    private Rarity rarity;
     public SubTrait(){
         this.id = UUID.randomUUID().toString();
     }
@@ -50,5 +56,13 @@ public class SubTrait {
 
     public void setAdopt(Adopt adopt) {
         this.adopt = adopt;
+    }
+
+    public Rarity getRarity() {
+        return rarity;
+    }
+
+    public void setRarity(Rarity rarity) {
+        this.rarity = rarity;
     }
 }

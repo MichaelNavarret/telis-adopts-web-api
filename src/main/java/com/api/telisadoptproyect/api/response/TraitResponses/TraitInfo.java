@@ -2,12 +2,13 @@ package com.api.telisadoptproyect.api.response.TraitResponses;
 
 import com.api.telisadoptproyect.library.entity.Trait;
 
+import java.util.List;
+
 public class TraitInfo {
     private String id;
     private Trait.Rarity rarity;
     private String code;
     private String characteristic;
-    private String additionalInfo;
     private String specie;
 
     public TraitInfo(Trait trait){
@@ -48,14 +49,6 @@ public class TraitInfo {
 
     public void setCharacteristic(String characteristic) {
         this.characteristic = characteristic;
-    }
-
-    public String getAdditionalInfo() {
-        return additionalInfo;
-    }
-
-    public void setAdditionalInfo(String additionalInfo) {
-        this.additionalInfo = additionalInfo;
     }
 
     public String getSpecie() {

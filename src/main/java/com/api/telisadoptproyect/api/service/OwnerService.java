@@ -2,6 +2,7 @@ package com.api.telisadoptproyect.api.service;
 
 import com.api.telisadoptproyect.api.request.OwnerRequests.OwnerCreateRequest;
 import com.api.telisadoptproyect.api.response.BaseResponse;
+import com.api.telisadoptproyect.api.response.OwnerResponses.OwnerCollectionResponse;
 import com.api.telisadoptproyect.api.response.OwnerResponses.OwnerSingletonResponse;
 import com.api.telisadoptproyect.library.entity.Owner;
 import com.api.telisadoptproyect.library.entity.PasswordResetToken;
@@ -63,5 +64,9 @@ public class OwnerService {
     public Owner getMyProfile() {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return getOwnerByEmail(userDetails.getUsername());
+    }
+
+    public OwnerCollectionResponse getOwnerCollectionAutocomplete() {
+        return new OwnerCollectionResponse(BaseResponse.Status.SUCCESS, HttpStatus.OK.value(), ownerRepository.findAll());
     }
 }

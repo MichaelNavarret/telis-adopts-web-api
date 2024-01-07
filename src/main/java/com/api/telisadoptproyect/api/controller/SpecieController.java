@@ -17,9 +17,17 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/species")
+@CrossOrigin
 public class SpecieController {
     @Autowired
     private SpecieService specieService;
+
+    @GetMapping("/autocomplete")
+    public ResponseEntity<SpecieCollectionResponse> getSpeciesAutocomplete(){
+        return ResponseEntity
+                .ok()
+                .body(specieService.getSpecieCollectionAutocomplete());
+    }
 
     @GetMapping("")
     public ResponseEntity<SpecieCollectionResponse> getSpecies(
@@ -36,6 +44,14 @@ public class SpecieController {
                 .ok()
                 .headers(headers)
                 .body(specieCollectionResponse);
+    }
+
+    @GetMapping("/{specieId}")
+    public ResponseEntity<SpecieSingletonResponse> getSpecie(
+            @PathVariable(name = "specieId") String specieId){
+        return ResponseEntity
+                .ok()
+                .body(specieService.getSpecie(specieId));
     }
 
     @PostMapping("")
