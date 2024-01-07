@@ -53,8 +53,13 @@ public class AdoptService {
         adopt.setSubTraits(Collections.emptySet());
         adopt.setRarity(getAdoptRarity(createRequest));
 
+        Owner owner;
         if (StringUtils.isNotBlank(createRequest.getOwnerId())){
-            Owner owner = ownerService.getOwnerById(createRequest.getOwnerId());
+            if (createRequest.isNotRegisteredOwner()){
+                owner = ownerService.createNotRegisteredOwner(createRequest.getOwnerId());
+            }else{
+                owner = ownerService.getOwnerById(createRequest.getOwnerId());
+            }
             adopt.setOwner(owner);
         }
         adoptRepository.save(adopt);

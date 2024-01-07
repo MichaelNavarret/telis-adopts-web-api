@@ -8,6 +8,7 @@ import java.util.List;
 public class AdoptCreateRequest {
     private String name;
     private String ownerId;
+    private boolean notRegisteredOwner;
     private List<String> designerIds;
     private List<SubTraitCreateRequest> subTraits;
     private String specieId;
@@ -62,5 +63,13 @@ public class AdoptCreateRequest {
 
     public void setCreationType(String creationType) {
         this.creationType = creationType;
+    }
+
+    public boolean isNotRegisteredOwner() {
+        return notRegisteredOwner;
+    }
+
+    public void setNotRegisteredOwner(boolean notRegisteredOwner) {
+        this.notRegisteredOwner = notRegisteredOwner;
     }
 }

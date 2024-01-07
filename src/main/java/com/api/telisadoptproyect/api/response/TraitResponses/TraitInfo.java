@@ -6,16 +6,14 @@ import java.util.List;
 
 public class TraitInfo {
     private String id;
-    private Trait.Rarity rarity;
-    private String code;
-    private String characteristic;
+    private List<Trait.Rarity> rarities;
+    private String trait;
     private String specie;
 
     public TraitInfo(Trait trait){
         this.id = trait.getId();
-        this.rarity = trait.getRarity();
-        this.code = trait.getCode();
-        this.characteristic = trait.getCharacteristic();
+        this.rarities = trait.getRarities();
+        this.trait = trait.getTrait();
         this.specie = trait.getSpecie().getName();
     }
 
@@ -27,35 +25,27 @@ public class TraitInfo {
         this.id = id;
     }
 
-    public Trait.Rarity getRarity() {
-        return rarity;
-    }
-
-    public void setRarity(Trait.Rarity rarity) {
-        this.rarity = rarity;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getCharacteristic() {
-        return characteristic;
-    }
-
-    public void setCharacteristic(String characteristic) {
-        this.characteristic = characteristic;
-    }
-
     public String getSpecie() {
         return specie;
     }
 
     public void setSpecie(String specie) {
         this.specie = specie;
+    }
+
+    public List<Trait.Rarity> getRarities() {
+        return rarities;
+    }
+
+    public void setRarities(List<Trait.Rarity> rarities) {
+        this.rarities = rarities;
+    }
+
+    public String getTrait() {
+        return trait;
+    }
+
+    public void setTrait(String trait) {
+        this.trait = trait;
     }
 }

@@ -1,7 +1,7 @@
 package com.api.telisadoptproyect.api.request.SubTraitRequests;
 
 public class SubTraitCreateRequest {
-    private String subTraitCharacteristic;
+    private String additionalInfo;
     private String mainTraitId;
     private String adoptId;
     private String rarity;
@@ -9,12 +9,12 @@ public class SubTraitCreateRequest {
     public SubTraitCreateRequest() {
     }
 
-    public String getSubTraitCharacteristic() {
-        return subTraitCharacteristic;
+    public String getAdditionalInfo() {
+        return additionalInfo;
     }
 
-    public void setSubTraitCharacteristic(String subTraitCharacteristic) {
-        this.subTraitCharacteristic = subTraitCharacteristic;
+    public void setAdditionalInfo(String additionalInfo) {
+        this.additionalInfo = additionalInfo;
     }
 
     public String getMainTraitId() {

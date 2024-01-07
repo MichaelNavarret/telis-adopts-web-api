@@ -38,6 +38,12 @@ public class OwnerService {
                 ownerRepository.save(owner));
     }
 
+    public Owner createNotRegisteredOwner(String ownerNickname){
+        Owner owner = new Owner();
+        owner.setNickName(ownerNickname);
+        return ownerRepository.save(owner);
+    }
+
     public Owner getOwnerByEmail(String email){
         return ownerRepository.findByEmail(email).orElseThrow(
                 () -> new BadRequestException("Owner not found with email: " + email)

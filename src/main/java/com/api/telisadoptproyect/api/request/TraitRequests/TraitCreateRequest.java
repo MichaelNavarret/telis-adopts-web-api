@@ -4,9 +4,8 @@ import java.util.List;
 
 public class TraitCreateRequest {
     private String specieId;
-    private String characteristic;
-    private String code;
-    private String rarity;
+    private String trait;
+    private List<String> rarities;
 
     public TraitCreateRequest() {
     }
@@ -19,27 +18,19 @@ public class TraitCreateRequest {
         this.specieId = specieId;
     }
 
-    public String getCharacteristic() {
-        return characteristic;
+    public String getTrait() {
+        return trait;
     }
 
-    public void setCharacteristic(String characteristic) {
-        this.characteristic = characteristic;
+    public void setTrait(String trait) {
+        this.trait = trait;
     }
 
-    public String getCode() {
-        return code;
+    public List<String> getRarities() {
+        return rarities;
     }
 
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getRarity() {
-        return rarity;
-    }
-
-    public void setRarity(String rarity) {
-        this.rarity = rarity;
+    public void setRarities(List<String> rarities) {
+        this.rarities = rarities;
     }
 }

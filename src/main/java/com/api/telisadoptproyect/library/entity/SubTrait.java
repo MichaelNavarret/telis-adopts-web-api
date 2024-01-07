@@ -14,7 +14,7 @@ public class SubTrait {
     }
     @Id
     private String id;
-    private String subTraitCharacteristic;
+    private String additionalInfo;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mainTait_Id")
     private Trait mainTrait;
@@ -34,12 +34,12 @@ public class SubTrait {
         this.id = id;
     }
 
-    public String getSubTraitCharacteristic() {
-        return subTraitCharacteristic;
+    public String getAdditionalInfo() {
+        return additionalInfo;
     }
 
-    public void setSubTraitCharacteristic(String subTraitCharacteristic) {
-        this.subTraitCharacteristic = subTraitCharacteristic;
+    public void setAdditionalInfo(String additionalInfo) {
+        this.additionalInfo = additionalInfo;
     }
 
     public Trait getMainTrait() {

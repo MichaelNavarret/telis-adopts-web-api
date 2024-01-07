@@ -13,6 +13,7 @@ import com.api.telisadoptproyect.library.repository.TraitRepository;
 import com.api.telisadoptproyect.library.util.PaginationUtils;
 import com.api.telisadoptproyect.library.validation.EnumValidation;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -42,11 +43,7 @@ public class TraitService {
             query = query.and(qTrait.specie.id.eq(specieId));
         }
 
-        if (StringUtils.isNotBlank(rarity)){
-            query = query.and(qTrait.rarity.eq(EnumValidation.toEnum(Trait.Rarity.class, rarity)));
-        }
-
-        Sort sort = PaginationUtils.createSortCriteria("rarity:ASC");
+        Sort sort = PaginationUtils.createSortCriteria("trait:ASC");
         Pageable pageable = PageRequest.of(pageNumber, pageLimit, sort);
 
         if(specieId == null && rarity == null){
@@ -68,9 +65,14 @@ public class TraitService {
                 trait);
     }
 
+    @Transactional
     public TraitSingletonResponse createTrait (TraitCreateRequest createRequest){
         if (createRequest == null) throw new BadRequestException("Request is required");
-        if (!EnumValidation.validateEnum(Trait.Rarity.class, createRequest.getRarity())) throw new BadRequestException("Rarity is not valid");
+
+        createRequest.getRarities().forEach(rarity -> {
+            if (!EnumValidation.validateEnum(Trait.Rarity.class, rarity))
+                throw new BadRequestException("Rarity is not valid");
+        });
 
         Specie specie = specieService.findById(createRequest.getSpecieId());
 
@@ -83,21 +85,20 @@ public class TraitService {
     public TraitSingletonResponse updateTrait(String specieId, String traitId, TraitUpdateRequest updateRequest) {
         if (StringUtils.isBlank(traitId)) throw new BadRequestException("Trait id is required");
         if (updateRequest == null) throw new BadRequestException("Request is required");
-        if (EnumValidation.validateEnum(Trait.Rarity.class, updateRequest.getRarity()))
-            throw new BadRequestException("Rarity is not valid");
+
+        updateRequest.getRarities().forEach(rarity -> {
+            if (!EnumValidation.validateEnum(Trait.Rarity.class, rarity))
+                throw new BadRequestException("Rarity is not valid");
+        });
 
         Trait trait = findByIdAndSpecieId(traitId, specieId);
 
-        if (StringUtils.isNotBlank(updateRequest.getCode())){
-            trait.setCode(updateRequest.getCode());
+        if (StringUtils.isNotBlank(updateRequest.getTrait())){
+            trait.setTrait(updateRequest.getTrait());
         }
 
-        if (StringUtils.isNotBlank(updateRequest.getCharacteristic())){
-            trait.setCharacteristic(updateRequest.getCharacteristic());
-        }
-
-        if (StringUtils.isNotBlank(updateRequest.getRarity())){
-            trait.setRarity(EnumValidation.toEnum(Trait.Rarity.class, updateRequest.getRarity()));
+        if (updateRequest.getRarities() != null){
+            trait.setRarities(updateRequest.getRarities().stream().map(rarity -> EnumValidation.toEnum(Trait.Rarity.class, rarity)).toList());
         }
 
         return new TraitSingletonResponse(
@@ -129,9 +130,8 @@ public class TraitService {
 
     private Trait buildTrait(TraitCreateRequest createRequest, Specie specie){
         Trait trait = new Trait();
-        trait.setCode(createRequest.getCode());
-        trait.setCharacteristic(createRequest.getCharacteristic());
-        trait.setRarity(EnumValidation.toEnum(Trait.Rarity.class, createRequest.getRarity()));
+        trait.setTrait(createRequest.getTrait());
+        trait.setRarities(createRequest.getRarities().stream().map(rarity -> EnumValidation.toEnum(Trait.Rarity.class, rarity)).toList());
         trait.setSpecie(specie);
         return traitRepository.save(trait);
     }

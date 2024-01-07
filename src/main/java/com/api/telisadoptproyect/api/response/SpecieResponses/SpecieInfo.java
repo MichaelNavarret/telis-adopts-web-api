@@ -6,7 +6,6 @@ public class SpecieInfo {
     private String id;
     private String code;
     private String name;
-
     public SpecieInfo(Specie specie) {
         this.id = specie.getId();
         this.code = specie.getCode();
