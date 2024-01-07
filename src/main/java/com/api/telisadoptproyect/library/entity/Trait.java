@@ -18,9 +18,8 @@ public class Trait {
     }
     @Id
     private String id;
-    private Rarity rarity;
-    private String code;
-    private String characteristic;
+    private List<Rarity> rarities;
+    private String trait;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "specie_Id")
     private Specie specie;
@@ -37,28 +36,20 @@ public class Trait {
         this.id = id;
     }
 
-    public String getCode() {
-        return code;
+    public List<Rarity> getRarities() {
+        return rarities;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setRarities(List<Rarity> rarities) {
+        this.rarities = rarities;
     }
 
-    public String getCharacteristic() {
-        return characteristic;
+    public String getTrait() {
+        return trait;
     }
 
-    public void setCharacteristic(String characteristic) {
-        this.characteristic = characteristic;
-    }
-
-    public Rarity getRarity() {
-        return rarity;
-    }
-
-    public void setRarity(Rarity rarity) {
-        this.rarity = rarity;
+    public void setTrait(String trait) {
+        this.trait = trait;
     }
 
     public Specie getSpecie() {

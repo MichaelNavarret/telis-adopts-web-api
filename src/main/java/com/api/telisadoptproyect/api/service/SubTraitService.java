@@ -28,11 +28,12 @@ public class SubTraitService {
             if(rarity == null) throw new BadRequestException("The Rarity is invalid.");
             SubTrait subTrait = new SubTrait();
             subTrait.setAdopt(adopt);
-            subTrait.setSubTraitCharacteristic(request.getSubTraitCharacteristic());
+            subTrait.setAdditionalInfo(request.getAdditionalInfo());
             subTrait.setMainTrait(traitService.findById(request.getMainTraitId()));
             subTrait.setRarity(rarity);
             return subTrait;
         }).toList();
+        validateIfSubTraitsBelongSpecie(createRequestList, adopt.getSpecie());
         return new HashSet<>(subTraitRepository.saveAll(subTraits));
     }
     public void validateIfSubTraitsBelongSpecie(List<SubTraitCreateRequest> createRequestList, Specie specie){
