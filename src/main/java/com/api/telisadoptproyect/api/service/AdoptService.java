@@ -20,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -62,6 +63,20 @@ public class AdoptService {
             }
             adopt.setOwner(owner);
         }
+
+        List<Owner> designers;
+        if (createRequest.getDesignerIds() != null && !createRequest.getDesignerIds().isEmpty()){
+            designers = createRequest.getDesignerIds().stream().map(designer -> {
+                if (designer.isNotRegisteredDesigner()){
+                    return ownerService.createNotRegisteredOwner(designer.getId());
+                }else{
+                    return ownerService.getOwnerById(designer.getId());
+                }
+            }).toList();
+
+            adopt.setDesigners(new HashSet<>(designers));
+        }
+        
         adoptRepository.save(adopt);
 
         if(createRequest.getSubTraits() != null && !createRequest.getSubTraits().isEmpty()){

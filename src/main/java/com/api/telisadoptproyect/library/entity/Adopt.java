@@ -27,9 +27,9 @@ public class Adopt {
     @JoinColumn(name = "owner_Id")
     private Owner owner;
     @ManyToMany
-    @JoinTable(name="rel_adopt_designer", joinColumns = @JoinColumn(name = "adoptId"),
-                inverseJoinColumns = @JoinColumn(name = "designerId"))
-    private Set<Designer> designers;
+    @JoinTable(name="rel_owner_adopt", joinColumns = @JoinColumn(name = "adoptId"),
+                inverseJoinColumns = @JoinColumn(name = "ownerId"))
+    private Set<Owner> designers;
     @OneToMany(mappedBy = "adopt", cascade = CascadeType.ALL)
     private Set<SubTrait> subTraits;
     private Date createdOn;
@@ -76,14 +76,6 @@ public class Adopt {
 
     public void setOwner(Owner owner) {
         this.owner = owner;
-    }
-
-    public Set<Designer> getDesigners() {
-        return designers;
-    }
-
-    public void setDesigners(Set<Designer> designers) {
-        this.designers = designers;
     }
 
     public Date getCreatedOn() {
@@ -140,5 +132,13 @@ public class Adopt {
 
     public void setRarity(Trait.Rarity rarity) {
         this.rarity = rarity;
+    }
+
+    public Set<Owner> getDesigners() {
+        return designers;
+    }
+
+    public void setDesigners(Set<Owner> designers) {
+        this.designers = designers;
     }
 }

@@ -20,7 +20,6 @@ public class Owner {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "owner")
     private List<OwnerOtp> otpList;
     private List<String> favorites;
-
     private boolean superAdmin;
     public Owner() {
         this.id = UUID.randomUUID().toString();
