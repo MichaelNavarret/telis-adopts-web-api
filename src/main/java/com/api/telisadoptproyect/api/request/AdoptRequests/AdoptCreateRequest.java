@@ -10,7 +10,7 @@ public class AdoptCreateRequest {
     private String name;
     private String ownerId;
     private boolean notRegisteredOwner;
-    private List<OwnerDesignerCreateRequest> designerIds;
+    private List<OwnerDesignerCreateRequest> designers;
     private List<SubTraitCreateRequest> subTraits;
     private String specieId;
     private String creationType;
@@ -34,12 +34,12 @@ public class AdoptCreateRequest {
         this.ownerId = ownerId;
     }
 
-    public List<OwnerDesignerCreateRequest> getDesignerIds() {
-        return designerIds;
+    public List<OwnerDesignerCreateRequest> getDesigners() {
+        return designers;
     }
 
-    public void setDesignerIds(List<OwnerDesignerCreateRequest> designerIds) {
-        this.designerIds = designerIds;
+    public void setDesigners(List<OwnerDesignerCreateRequest> designers) {
+        this.designers = designers;
     }
 
     public List<SubTraitCreateRequest> getSubTraits() {

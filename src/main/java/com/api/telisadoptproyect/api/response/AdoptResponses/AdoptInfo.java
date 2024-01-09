@@ -1,6 +1,7 @@
 package com.api.telisadoptproyect.api.response.AdoptResponses;
 
 import com.api.telisadoptproyect.library.entity.Adopt;
+import com.api.telisadoptproyect.library.entity.Owner;
 
 import java.util.Date;
 import java.util.List;
@@ -26,6 +27,7 @@ public class AdoptInfo {
         this.boughtOn = adopt.getBoughtOn();
         this.specieName = adopt.getSpecie().getName();
         this.registeredOn = adopt.getRegisteredOn();
+        this.designers = adopt.getDesigners() != null ? adopt.getDesigners().stream().map(Owner::getNickName).collect(Collectors.toList()) : null;
         this.rarity = adopt.getRarity().toString();
     }
 

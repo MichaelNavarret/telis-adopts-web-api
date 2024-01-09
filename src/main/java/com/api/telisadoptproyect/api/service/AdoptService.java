@@ -65,8 +65,8 @@ public class AdoptService {
         }
 
         List<Owner> designers;
-        if (createRequest.getDesignerIds() != null && !createRequest.getDesignerIds().isEmpty()){
-            designers = createRequest.getDesignerIds().stream().map(designer -> {
+        if (createRequest.getDesigners() != null && !createRequest.getDesigners().isEmpty()){
+            designers = createRequest.getDesigners().stream().map(designer -> {
                 if (designer.isNotRegisteredDesigner()){
                     return ownerService.createNotRegisteredOwner(designer.getId());
                 }else{
@@ -87,7 +87,7 @@ public class AdoptService {
     }
 
     public Page<Adopt> getAdoptCollection(Integer pageNumber, Integer pageLimit) {
-        Sort sort = PaginationUtils.createSortCriteria("code:ASC");
+        Sort sort = PaginationUtils.createSortCriteria("createdOn:DESC");
         Pageable pageable = PageRequest.of(pageNumber, pageLimit, sort);
         return adoptRepository.findAll(pageable);
     }
