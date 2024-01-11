@@ -4,6 +4,7 @@ import com.api.telisadoptproyect.api.request.OwnerRequests.OwnerCreateRequest;
 import com.api.telisadoptproyect.api.response.BaseResponse;
 import com.api.telisadoptproyect.api.response.OwnerResponses.OwnerCollectionResponse;
 import com.api.telisadoptproyect.api.response.OwnerResponses.OwnerSingletonResponse;
+import com.api.telisadoptproyect.api.validation.OwnerValidation;
 import com.api.telisadoptproyect.library.entity.Owner;
 import com.api.telisadoptproyect.library.entity.PasswordResetToken;
 import com.api.telisadoptproyect.library.exception.BadRequestException;
@@ -26,8 +27,12 @@ public class OwnerService {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private PasswordResetTokenRepository passwordResetTokenRepository;
+    @Autowired
+    private OwnerValidation ownerValidation;
 
     public OwnerSingletonResponse createOwner(OwnerCreateRequest createRequest) {
+        ownerValidation.checkIfNicknameOwnerExist(createRequest.getNickName());
+        ownerValidation.checkIfEmailOwnerExist(createRequest.getEmail());   
         Owner owner = new Owner();
         owner.setNickName(createRequest.getNickName());
         owner.setEmail(createRequest.getEmail());
@@ -39,6 +44,7 @@ public class OwnerService {
     }
 
     public Owner createNotRegisteredOwner(String ownerNickname){
+        ownerValidation.checkIfNicknameOwnerExist(ownerNickname);
         Owner owner = new Owner();
         owner.setNickName(ownerNickname);
         return ownerRepository.save(owner);

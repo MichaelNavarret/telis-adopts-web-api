@@ -68,6 +68,7 @@ public class TraitService {
     @Transactional
     public TraitSingletonResponse createTrait (TraitCreateRequest createRequest){
         if (createRequest == null) throw new BadRequestException("Request is required");
+        if (StringUtils.isBlank(createRequest.getSpecieId())) throw new BadRequestException("Specie id is required");
 
         createRequest.getRarities().forEach(rarity -> {
             if (!EnumValidation.validateEnum(Trait.Rarity.class, rarity))
