@@ -1,5 +1,6 @@
 package com.api.telisadoptproyect.api.request.AdoptRequests;
 
+import com.api.telisadoptproyect.api.request.OwnerRequests.OwnerDesignerCreateRequest;
 import com.api.telisadoptproyect.api.request.SubTraitRequests.SubTraitCreateRequest;
 import com.api.telisadoptproyect.library.entity.Adopt;
 
@@ -9,7 +10,7 @@ public class AdoptCreateRequest {
     private String name;
     private String ownerId;
     private boolean notRegisteredOwner;
-    private List<String> designerIds;
+    private List<OwnerDesignerCreateRequest> designers;
     private List<SubTraitCreateRequest> subTraits;
     private String specieId;
     private String creationType;
@@ -33,12 +34,12 @@ public class AdoptCreateRequest {
         this.ownerId = ownerId;
     }
 
-    public List<String> getDesignerIds() {
-        return designerIds;
+    public List<OwnerDesignerCreateRequest> getDesigners() {
+        return designers;
     }
 
-    public void setDesignerIds(List<String> designerIds) {
-        this.designerIds = designerIds;
+    public void setDesigners(List<OwnerDesignerCreateRequest> designers) {
+        this.designers = designers;
     }
 
     public List<SubTraitCreateRequest> getSubTraits() {

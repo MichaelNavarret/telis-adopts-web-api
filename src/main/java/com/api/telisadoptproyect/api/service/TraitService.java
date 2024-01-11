@@ -36,7 +36,7 @@ public class TraitService {
     public Page<Trait> getTraitCollection(Integer pageNumber, Integer pageLimit, String specieId, String rarity){
         if (EnumValidation.validateEnum(Trait.Rarity.class, rarity)) throw new BadRequestException("Rarity is not valid");
 
-        QTrait qTrait = QTrait.trait;
+        QTrait qTrait = QTrait.trait1;
         BooleanExpression query = qTrait.id.isNotNull();
 
         if(StringUtils.isNotBlank(specieId)){
@@ -68,6 +68,7 @@ public class TraitService {
     @Transactional
     public TraitSingletonResponse createTrait (TraitCreateRequest createRequest){
         if (createRequest == null) throw new BadRequestException("Request is required");
+        if (StringUtils.isBlank(createRequest.getSpecieId())) throw new BadRequestException("Specie id is required");
 
         createRequest.getRarities().forEach(rarity -> {
             if (!EnumValidation.validateEnum(Trait.Rarity.class, rarity))

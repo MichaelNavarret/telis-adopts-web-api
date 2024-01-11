@@ -2,17 +2,23 @@ package com.api.telisadoptproyect.api.validation;
 
 import com.api.telisadoptproyect.api.request.LoginRequest;
 import com.api.telisadoptproyect.api.request.OwnerRequests.OwnerLoginRequest;
+import com.api.telisadoptproyect.library.entity.Owner;
 import com.api.telisadoptproyect.library.entity.OwnerOtp;
 import com.api.telisadoptproyect.library.exception.BadRequestException;
+import com.api.telisadoptproyect.library.repository.OwnerRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Component
 public class OwnerValidation {
+    @Autowired
+    private OwnerRepository ownerRepository;
     private static final Logger LOGGER = LoggerFactory.getLogger(OwnerValidation.class);
 
     public void checkOwnerLoginRequestFields(OwnerLoginRequest ownerLoginRequest){
@@ -50,5 +56,15 @@ public class OwnerValidation {
         if(!otpCode.equalsIgnoreCase(lastOwnerOtp.getOtpCode())){
             throw new BadRequestException("Otp code is not valid");
         }
+    }
+
+    public void checkIfNicknameOwnerExist (String nickname){
+        Optional<Owner> foundOwner = ownerRepository.findByNickName(nickname);
+        if (foundOwner.isPresent()) throw new BadRequestException("Nickname already exist");
+    }
+
+    public void checkIfEmailOwnerExist (String email){
+        Optional<Owner> foundOwner = ownerRepository.findByEmail(email);
+        if (foundOwner.isPresent()) throw new BadRequestException("Email already exist");
     }
 }

@@ -19,9 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class AdoptService {
@@ -53,15 +51,9 @@ public class AdoptService {
         adopt.setSubTraits(Collections.emptySet());
         adopt.setRarity(getAdoptRarity(createRequest));
 
-        Owner owner;
-        if (StringUtils.isNotBlank(createRequest.getOwnerId())){
-            if (createRequest.isNotRegisteredOwner()){
-                owner = ownerService.createNotRegisteredOwner(createRequest.getOwnerId());
-            }else{
-                owner = ownerService.getOwnerById(createRequest.getOwnerId());
-            }
-            adopt.setOwner(owner);
-        }
+        safeSetOwnerToAdopt(adopt, createRequest);
+        safeSetDesignersToAdopt(adopt, createRequest);
+        
         adoptRepository.save(adopt);
 
         if(createRequest.getSubTraits() != null && !createRequest.getSubTraits().isEmpty()){
@@ -72,12 +64,13 @@ public class AdoptService {
     }
 
     public Page<Adopt> getAdoptCollection(Integer pageNumber, Integer pageLimit) {
-        Sort sort = PaginationUtils.createSortCriteria("code:ASC");
+        Sort sort = PaginationUtils.createSortCriteria("createdOn:DESC");
         Pageable pageable = PageRequest.of(pageNumber, pageLimit, sort);
         return adoptRepository.findAll(pageable);
     }
 
     //------------------------------------------- [PRIVATE METHODS]
+    //---------------------------------------------------------------------------------------
     private void createAndLinkSubTraitsToAdopt(List<SubTraitCreateRequest> requests, Adopt adopt){
         Set<SubTrait> subTraits = subTraitService.createSubTraitsByAdopt(requests, adopt);
         subTraitService.saveAll(subTraits);
@@ -109,26 +102,56 @@ public class AdoptService {
     }
 
     private Trait.Rarity getAdoptRarity(AdoptCreateRequest createRequest){
+        Trait.Rarity rarity = Trait.Rarity.COMMON;
         if (createRequest.getSubTraits() == null || createRequest.getSubTraits().isEmpty()){
             return Trait.Rarity.COMMON;
         }else{
             for (SubTraitCreateRequest subTrait : createRequest.getSubTraits()){
                 switch (subTrait.getRarity()){
-                    case "COMMON" -> {
-                        return Trait.Rarity.COMMON;
-                    }
                     case "UNCOMMON" -> {
-                        return Trait.Rarity.UNCOMMON;
+                        rarity = Trait.Rarity.UNCOMMON;
                     }
                     case "RARE" -> {
-                        return Trait.Rarity.RARE;
+                        rarity = Trait.Rarity.RARE;
                     }
                     case "EPIC" -> {
-                        return Trait.Rarity.EPIC;
+                        rarity = Trait.Rarity.EPIC;
                     }
                 }
             }
-            return Trait.Rarity.COMMON;
+            return rarity;
+        }
+    }
+
+    private void safeSetDesignersToAdopt(Adopt adopt, AdoptCreateRequest createRequest){
+        List<Owner> designers = new ArrayList<>();
+        Adopt.CreationType creationTypeRequest = EnumValidation.toEnum(Adopt.CreationType.class, createRequest.getCreationType());
+        if (EnumValidation.equals(Adopt.CreationType.PREMADE, creationTypeRequest) ||
+            EnumValidation.equals(Adopt.CreationType.CUSTOM, creationTypeRequest)){
+            designers = List.of(ownerService.getMyProfile());
+        }else{
+            if (createRequest.getDesigners() != null && !createRequest.getDesigners().isEmpty()){
+                designers = createRequest.getDesigners().stream().map(designer -> {
+                    if (designer.isNotRegisteredDesigner()){
+                        return ownerService.createNotRegisteredOwner(designer.getId());
+                    }else{
+                        return ownerService.getOwnerById(designer.getId());
+                    }
+                }).toList();
+            }
+        }
+        adopt.setDesigners(new HashSet<>(designers));
+    }
+
+    private void safeSetOwnerToAdopt(Adopt adopt, AdoptCreateRequest createRequest){
+        Owner owner;
+        if (StringUtils.isNotBlank(createRequest.getOwnerId())){
+            if (createRequest.isNotRegisteredOwner()){
+                owner = ownerService.createNotRegisteredOwner(createRequest.getOwnerId());
+            }else{
+                owner = ownerService.getOwnerById(createRequest.getOwnerId());
+            }
+            adopt.setOwner(owner);
         }
     }
 }
