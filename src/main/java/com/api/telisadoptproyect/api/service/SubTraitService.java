@@ -1,8 +1,8 @@
 package com.api.telisadoptproyect.api.service;
 
 import com.api.telisadoptproyect.api.request.SubTraitRequests.SubTraitCreateRequest;
+import com.api.telisadoptproyect.api.validation.SubTraitValidation;
 import com.api.telisadoptproyect.library.entity.Adopt;
-import com.api.telisadoptproyect.library.entity.Specie;
 import com.api.telisadoptproyect.library.entity.SubTrait;
 import com.api.telisadoptproyect.library.entity.Trait;
 import com.api.telisadoptproyect.library.exception.BadRequestException;
@@ -21,6 +21,8 @@ public class SubTraitService {
     private SubTraitRepository subTraitRepository;
     @Autowired
     private TraitService traitService;
+    @Autowired
+    private SubTraitValidation subTraitValidation;
 
     public Set<SubTrait> createSubTraitsByAdopt(List<SubTraitCreateRequest> createRequestList, Adopt adopt){
         List<SubTrait> subTraits = createRequestList.stream().map(request -> {
@@ -33,24 +35,19 @@ public class SubTraitService {
             subTrait.setRarity(rarity);
             return subTrait;
         }).toList();
-        validateIfSubTraitsBelongSpecie(createRequestList, adopt.getSpecie());
-        return new HashSet<>(subTraitRepository.saveAll(subTraits));
-    }
-    public void validateIfSubTraitsBelongSpecie(List<SubTraitCreateRequest> createRequestList, Specie specie){
+
         List<String> mainTraitsIds = createRequestList.stream().map(SubTraitCreateRequest::getMainTraitId).toList();
         List<Trait> mainTraits = traitService.findByIds(mainTraitsIds);
-        mainTraits.forEach(mainTrait -> {
-            if (mainTrait.getSpecie().getId().equals(specie.getId()) == false){
-                throw new BadRequestException("One of the main traits not belongs to the current Specie");
-            }
-        });
+
+        subTraitValidation.validateIfSubTraitsBelongSpecie(mainTraits, adopt.getSpecie());
+        return new HashSet<>(subTraitRepository.saveAll(subTraits));
     }
 
     public SubTrait save (SubTrait subTrait){
         return subTraitRepository.save(subTrait);
     }
 
-    public List<SubTrait> saveAll (Set<SubTrait> subTraits){
-        return subTraitRepository.saveAll(subTraits);
+    public void saveAll (Set<SubTrait> subTraits){
+        subTraitRepository.saveAll(subTraits);
     }
 }

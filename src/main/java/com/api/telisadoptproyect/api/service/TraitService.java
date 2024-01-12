@@ -127,6 +127,20 @@ public class TraitService {
         )).toList();
     }
 
+    public TraitCollectionResponse getTraitCollectionAutocomplete(String specieId) {
+        QTrait qTrait = QTrait.trait1;
+        BooleanExpression query = qTrait.isNotNull();
+
+        if(StringUtils.isNotBlank(specieId)){
+            query = query.and(qTrait.specie.id.eq(specieId));
+        }
+
+        return new TraitCollectionResponse(
+                BaseResponse.Status.SUCCESS,
+                HttpStatus.OK.value(),
+                (List<Trait>) traitRepository.findAll(query));
+    }
+
     // ------------- [Private Methods] -------------
 
     private Trait buildTrait(TraitCreateRequest createRequest, Specie specie){

@@ -21,10 +21,9 @@ public class TraitCollectionResponse extends BaseResponse {
         this();
         this.traitInfoList = traits.stream().map(TraitInfo::new).collect(Collectors.toList());
     }
-
-    public TraitCollectionResponse(Status status, Integer code, List<TraitInfo> traitInfoList){
+    public TraitCollectionResponse(Status status, Integer code, List<Trait> traits){
         super(status, code);
-        this.traitInfoList = traitInfoList;
+        this.traitInfoList = traits.stream().map(TraitInfo::new).collect(Collectors.toList());
     }
 
     public List<TraitInfo> getTraitInfoList() {

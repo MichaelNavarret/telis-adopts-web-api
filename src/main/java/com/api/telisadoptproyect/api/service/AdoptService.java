@@ -102,26 +102,40 @@ public class AdoptService {
     }
 
     private Trait.Rarity getAdoptRarity(AdoptCreateRequest createRequest){
-        Trait.Rarity rarity = Trait.Rarity.COMMON;
+        int traitLevel = 1;
+        int auxTraitLevel = 1;
         if (createRequest.getSubTraits() == null || createRequest.getSubTraits().isEmpty()){
             return Trait.Rarity.COMMON;
         }else{
             for (SubTraitCreateRequest subTrait : createRequest.getSubTraits()){
                 switch (subTrait.getRarity()){
                     case "UNCOMMON" -> {
-                        rarity = Trait.Rarity.UNCOMMON;
+                        auxTraitLevel = 2;
                     }
                     case "RARE" -> {
-                        rarity = Trait.Rarity.RARE;
+                        auxTraitLevel = 3;
                     }
                     case "EPIC" -> {
-                        rarity = Trait.Rarity.EPIC;
+                        auxTraitLevel = 4;
                     }
                 }
+                if (auxTraitLevel > traitLevel){
+                    traitLevel = auxTraitLevel;
+                }
             }
-            return rarity;
+            return getRarityByNumber(traitLevel);
         }
     }
+
+    private Trait.Rarity getRarityByNumber(int number){
+        return switch (number) {
+            case 2 -> Trait.Rarity.UNCOMMON;
+            case 3 -> Trait.Rarity.RARE;
+            case 4 -> Trait.Rarity.EPIC;
+            default -> Trait.Rarity.COMMON;
+        };
+    }
+
 
     private void safeSetDesignersToAdopt(Adopt adopt, AdoptCreateRequest createRequest){
         List<Owner> designers = new ArrayList<>();

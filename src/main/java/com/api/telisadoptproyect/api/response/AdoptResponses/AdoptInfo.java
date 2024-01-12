@@ -18,6 +18,7 @@ public class AdoptInfo {
     private Date boughtOn;
     private Date registeredOn;
     private String rarity;
+    private List<String> traits;
     public AdoptInfo (Adopt adopt){
         this.id = adopt.getId();
         this.code = adopt.getCode();
@@ -29,6 +30,7 @@ public class AdoptInfo {
         this.registeredOn = adopt.getRegisteredOn();
         this.designers = adopt.getDesigners() != null ? adopt.getDesigners().stream().map(Owner::getNickName).collect(Collectors.toList()) : null;
         this.rarity = adopt.getRarity().toString();
+        this.traits = adopt.getSubTraits() != null? adopt.getSubTraits().stream().map(subTrait -> subTrait.getMainTrait().getTrait()).collect(Collectors.toList()) : null;
     }
 
     public String getId() {
@@ -109,5 +111,13 @@ public class AdoptInfo {
 
     public void setRarity(String rarity) {
         this.rarity = rarity;
+    }
+
+    public List<String> getTraits() {
+        return traits;
+    }
+
+    public void setTraits(List<String> traits) {
+        this.traits = traits;
     }
 }

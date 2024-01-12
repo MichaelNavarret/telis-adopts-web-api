@@ -21,6 +21,15 @@ public class TraitController {
     @Autowired
     private TraitService traitService;
 
+
+    @GetMapping("/autocomplete")
+    public ResponseEntity<TraitCollectionResponse> getTraitsAutocomplete(
+            @RequestParam(name = "specieId", required = false) String specieId){
+        return ResponseEntity
+                .ok()
+                .body(traitService.getTraitCollectionAutocomplete(specieId));
+    }
+
     @GetMapping("")
     public ResponseEntity<TraitCollectionResponse> getTraits(
             @RequestHeader(name = PaginationUtils.X_PAGINATION_NUM, required = false, defaultValue = PaginationUtils.DEFAULT_PAGINATION_NUM) String pageNumber,
