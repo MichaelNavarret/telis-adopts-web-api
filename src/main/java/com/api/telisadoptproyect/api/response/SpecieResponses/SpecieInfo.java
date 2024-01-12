@@ -6,10 +6,12 @@ public class SpecieInfo {
     private String id;
     private String code;
     private String name;
+    private byte[] traitsInformation;
     public SpecieInfo(Specie specie) {
         this.id = specie.getId();
         this.code = specie.getCode();
         this.name = specie.getName();
+        this.traitsInformation = specie.getTraitsInformation() != null? specie.getTraitsInformation(): null;
     }
 
     public String getId() {
@@ -34,5 +36,13 @@ public class SpecieInfo {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public byte[] getTraitsInformation() {
+        return traitsInformation;
+    }
+
+    public void setTraitsInformation(byte[] traitsInformation) {
+        this.traitsInformation = traitsInformation;
     }
 }

@@ -18,6 +18,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Service
 public class SpecieService {
@@ -36,16 +39,24 @@ public class SpecieService {
         return new SpecieCollectionResponse(BaseResponse.Status.SUCCESS, HttpStatus.OK.value(), specieRepository.findAll());
     }
 
-    public SpecieSingletonResponse createSpecie(SpecieCreateRequest request){
-        if(request == null) throw new BadRequestException("The request cannot be null");
-        if(StringUtils.isBlank(request.getName())) throw new BadRequestException("The name of specie cannot be null");
+    public SpecieSingletonResponse createSpecie( MultipartFile traitsInformationFile, String specieName){
+        if(StringUtils.isBlank(specieName)) throw new BadRequestException("The name of specie cannot be null");
 
-        Specie foundedSpecie = specieRepository.findByName(request.getName()).orElse(null);
+        Specie foundedSpecie = specieRepository.findByName(specieName).orElse(null);
         if (foundedSpecie != null) throw new BadRequestException("The name of specie cannot be repeated");
 
         Specie specie = new Specie();
-        specie.setCode(specieCodeGenerator(request.getName()));
-        specie.setName(request.getName());
+        specie.setCode(specieCodeGenerator(specieName));
+        specie.setName(specieName);
+
+        if (traitsInformationFile != null && !traitsInformationFile.isEmpty()) {
+            try {
+                specie.setTraitsInformation(traitsInformationFile.getBytes());
+            } catch (IOException e) {
+                throw new BadRequestException("The Traits Information File cannot be saved");
+            }
+        }
+
         specieRepository.save(specie);
 
         return new SpecieSingletonResponse(BaseResponse.Status.SUCCESS, HttpStatus.CREATED.value(), specie);

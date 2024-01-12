@@ -20,6 +20,10 @@ public class Specie {
     @OneToMany(mappedBy = "mainSpecie", cascade = CascadeType.ALL)
     private Set<Specie> subSpecies;
 
+    @Lob()
+    @Column(name = "traitsInformation", columnDefinition = "LONGBLOB")
+    private byte[] traitsInformation;
+
     public Specie() {
         this.id = UUID.randomUUID().toString();
     }
@@ -46,5 +50,29 @@ public class Specie {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Specie getMainSpecie() {
+        return mainSpecie;
+    }
+
+    public void setMainSpecie(Specie mainSpecie) {
+        this.mainSpecie = mainSpecie;
+    }
+
+    public Set<Specie> getSubSpecies() {
+        return subSpecies;
+    }
+
+    public void setSubSpecies(Set<Specie> subSpecies) {
+        this.subSpecies = subSpecies;
+    }
+
+    public byte[] getTraitsInformation() {
+        return traitsInformation;
+    }
+
+    public void setTraitsInformation(byte[] traitsInformation) {
+        this.traitsInformation = traitsInformation;
     }
 }

@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @RequestMapping("/species")
@@ -56,10 +57,11 @@ public class SpecieController {
 
     @PostMapping("")
     public ResponseEntity<SpecieSingletonResponse> createSpecie(
-            @RequestBody SpecieCreateRequest request){
+            @RequestParam(name = "specieName", required = false)String specieName,
+            @RequestParam(name = "file", required = false)MultipartFile inputFile){
         return ResponseEntity
                 .ok()
-                .body(specieService.createSpecie(request));
+                .body(specieService.createSpecie(inputFile, specieName));
     }
 
     @PutMapping("/{specieId}")
