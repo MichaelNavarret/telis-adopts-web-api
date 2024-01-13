@@ -58,10 +58,11 @@ public class SpecieController {
     @PostMapping("")
     public ResponseEntity<SpecieSingletonResponse> createSpecie(
             @RequestParam(name = "specieName", required = false)String specieName,
-            @RequestParam(name = "file", required = false)MultipartFile inputFile){
+            @RequestParam(name = "file", required = false)MultipartFile inputFile,
+            @RequestParam(name = "file2", required = false)MultipartFile inputFile2){
         return ResponseEntity
                 .ok()
-                .body(specieService.createSpecie(inputFile, specieName));
+                .body(specieService.createSpecie(inputFile, inputFile2, specieName));
     }
 
     @PutMapping("/{specieId}")

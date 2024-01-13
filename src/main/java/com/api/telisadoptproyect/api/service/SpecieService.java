@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.api.telisadoptproyect.commons.Constants.CLOUDINARY_LOGO_FOLDER_PATH;
 import static com.api.telisadoptproyect.commons.Constants.CLOUDINARY_TRAITS_SHEET_FOLDER_PATH;
 
 @Service
@@ -50,7 +51,7 @@ public class SpecieService {
     }
 
     @Transactional
-    public SpecieSingletonResponse createSpecie( MultipartFile traitsSheet, String specieName){
+    public SpecieSingletonResponse createSpecie( MultipartFile traitsSheet, MultipartFile logo, String specieName){
         if(StringUtils.isBlank(specieName)) throw new BadRequestException("The name of specie cannot be null");
         Specie foundedSpecie = specieRepository.findByName(specieName).orElse(null);
         if (foundedSpecie != null) throw new BadRequestException("The name of specie cannot be repeated");
@@ -60,7 +61,12 @@ public class SpecieService {
 
         if(traitsSheet != null && !traitsSheet.isEmpty()){
            String publicId = cloudinaryService.uploadFile(traitsSheet, CLOUDINARY_TRAITS_SHEET_FOLDER_PATH);
-              specie.setTraitSheetUrl(cloudinaryService.getUrlFile(publicId, CLOUDINARY_TRAITS_SHEET_FOLDER_PATH));
+           specie.setTraitSheetUrl(cloudinaryService.getUrlFile(publicId, CLOUDINARY_TRAITS_SHEET_FOLDER_PATH));
+        }
+
+        if (logo != null && !logo.isEmpty()){
+            String publicId = cloudinaryService.uploadFile(logo, CLOUDINARY_LOGO_FOLDER_PATH);
+            specie.setLogoUrl(cloudinaryService.getUrlFile(publicId, CLOUDINARY_LOGO_FOLDER_PATH));
         }
 
         specieRepository.save(specie);

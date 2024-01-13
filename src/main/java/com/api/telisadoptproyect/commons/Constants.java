@@ -7,4 +7,5 @@ public class Constants {
     public static final String CLOUDINARY_MAIN_FOLDER_PATH = "teliwis_adopts";
     public static final String CLOUDINARY_SPECIES_FOLDER_PATH = CLOUDINARY_MAIN_FOLDER_PATH + "/species";
     public static final String CLOUDINARY_TRAITS_SHEET_FOLDER_PATH = CLOUDINARY_SPECIES_FOLDER_PATH + "/traits_sheet";
+    public static final String CLOUDINARY_LOGO_FOLDER_PATH = CLOUDINARY_SPECIES_FOLDER_PATH + "/logo";
 }
