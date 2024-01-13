@@ -6,12 +6,12 @@ public class SpecieInfo {
     private String id;
     private String code;
     private String name;
-    private byte[] traitsInformation;
+    private String traitSheetUrl;
     public SpecieInfo(Specie specie) {
         this.id = specie.getId();
         this.code = specie.getCode();
         this.name = specie.getName();
-        this.traitsInformation = specie.getTraitsInformation() != null? specie.getTraitsInformation(): null;
+        this.traitSheetUrl = specie.getTraitSheetUrl();
     }
 
     public String getId() {
@@ -38,11 +38,11 @@ public class SpecieInfo {
         this.name = name;
     }
 
-    public byte[] getTraitsInformation() {
-        return traitsInformation;
+    public String getTraitSheetUrl() {
+        return traitSheetUrl;
     }
 
-    public void setTraitsInformation(byte[] traitsInformation) {
-        this.traitsInformation = traitsInformation;
+    public void setTraitSheetUrl(String traitSheetUrl) {
+        this.traitSheetUrl = traitSheetUrl;
     }
 }

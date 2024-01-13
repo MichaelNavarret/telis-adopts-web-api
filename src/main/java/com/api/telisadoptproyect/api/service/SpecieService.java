@@ -1,15 +1,15 @@
 package com.api.telisadoptproyect.api.service;
 
-import com.api.telisadoptproyect.api.request.SpecieRequests.SpecieCreateRequest;
+import com.api.telisadoptproyect.api.configuration.PropertiesConfig;
 import com.api.telisadoptproyect.api.request.SpecieRequests.SpecieUpdateRequest;
 import com.api.telisadoptproyect.api.response.BaseResponse;
 import com.api.telisadoptproyect.api.response.SpecieResponses.SpecieCollectionResponse;
 import com.api.telisadoptproyect.api.response.SpecieResponses.SpecieSingletonResponse;
 import com.api.telisadoptproyect.library.entity.Specie;
-
 import com.api.telisadoptproyect.library.exception.BadRequestException;
 import com.api.telisadoptproyect.library.repository.SpecieRepository;
 import com.api.telisadoptproyect.library.util.PaginationUtils;
+import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,13 +19,23 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import com.cloudinary.*;
+import com.cloudinary.utils.ObjectUtils;
 
 import java.io.IOException;
+import java.util.Map;
+import java.util.UUID;
+
+import static com.api.telisadoptproyect.commons.Constants.CLOUDINARY_TRAITS_SHEET_FOLDER_PATH;
 
 @Service
 public class SpecieService {
     @Autowired
     private SpecieRepository specieRepository;
+    @Autowired
+    private PropertiesConfig propertiesConfig;
+    @Autowired
+    private CloudinaryService cloudinaryService;
 
     // ----------- Main Endpoints Methods --------------
     public Page<Specie> getSpecieCollection(Integer pageNumber, Integer pageLimit){
@@ -39,22 +49,18 @@ public class SpecieService {
         return new SpecieCollectionResponse(BaseResponse.Status.SUCCESS, HttpStatus.OK.value(), specieRepository.findAll());
     }
 
-    public SpecieSingletonResponse createSpecie( MultipartFile traitsInformationFile, String specieName){
+    @Transactional
+    public SpecieSingletonResponse createSpecie( MultipartFile traitsSheet, String specieName){
         if(StringUtils.isBlank(specieName)) throw new BadRequestException("The name of specie cannot be null");
-
         Specie foundedSpecie = specieRepository.findByName(specieName).orElse(null);
         if (foundedSpecie != null) throw new BadRequestException("The name of specie cannot be repeated");
-
         Specie specie = new Specie();
         specie.setCode(specieCodeGenerator(specieName));
         specie.setName(specieName);
 
-        if (traitsInformationFile != null && !traitsInformationFile.isEmpty()) {
-            try {
-                specie.setTraitsInformation(traitsInformationFile.getBytes());
-            } catch (IOException e) {
-                throw new BadRequestException("The Traits Information File cannot be saved");
-            }
+        if(traitsSheet != null && !traitsSheet.isEmpty()){
+           String publicId = cloudinaryService.uploadFile(traitsSheet, CLOUDINARY_TRAITS_SHEET_FOLDER_PATH);
+              specie.setTraitSheetUrl(cloudinaryService.getUrlFile(publicId, CLOUDINARY_TRAITS_SHEET_FOLDER_PATH));
         }
 
         specieRepository.save(specie);
@@ -62,7 +68,6 @@ public class SpecieService {
         return new SpecieSingletonResponse(BaseResponse.Status.SUCCESS, HttpStatus.CREATED.value(), specie);
 
     }
-
     public SpecieSingletonResponse getSpecie(String specieId) {
         Specie specie = findById(specieId);
         return new SpecieSingletonResponse(BaseResponse.Status.SUCCESS, HttpStatus.OK.value(), specie);

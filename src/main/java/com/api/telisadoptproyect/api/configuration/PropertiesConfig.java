@@ -15,6 +15,12 @@ public class PropertiesConfig {
     private String sendgridSenderEmail;
     @Value("${app.base-url}")
     private String applicationBaseUrl;
+    @Value("${app.cloudinary-cloud-name}")
+    private String cloudinaryCloudName;
+    @Value("${app.cloudinary-api-key}")
+    private String cloudinaryApiKey;
+    @Value("${app.cloudinary-api-secret}")
+    private String cloudinaryApiSecret;
 
     public String getSendgridKey() {
         return sendgridKey;
@@ -34,5 +40,17 @@ public class PropertiesConfig {
 
     public String getApplicationBaseUrl() {
         return applicationBaseUrl;
+    }
+
+    public String getCloudinaryCloudName() {
+        return cloudinaryCloudName;
+    }
+
+    public String getCloudinaryApiKey() {
+        return cloudinaryApiKey;
+    }
+
+    public String getCloudinaryApiSecret() {
+        return cloudinaryApiSecret;
     }
 }

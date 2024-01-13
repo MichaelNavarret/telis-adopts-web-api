@@ -3,7 +3,6 @@ package com.api.telisadoptproyect.library.entity;
 import com.querydsl.core.annotations.QueryEntity;
 import jakarta.persistence.*;
 
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -19,10 +18,7 @@ public class Specie {
     private Specie mainSpecie;
     @OneToMany(mappedBy = "mainSpecie", cascade = CascadeType.ALL)
     private Set<Specie> subSpecies;
-
-    @Lob()
-    @Column(name = "traitsInformation", columnDefinition = "LONGBLOB")
-    private byte[] traitsInformation;
+    private String traitSheetUrl;
 
     public Specie() {
         this.id = UUID.randomUUID().toString();
@@ -68,11 +64,11 @@ public class Specie {
         this.subSpecies = subSpecies;
     }
 
-    public byte[] getTraitsInformation() {
-        return traitsInformation;
+    public String getTraitSheetUrl() {
+        return traitSheetUrl;
     }
 
-    public void setTraitsInformation(byte[] traitsInformation) {
-        this.traitsInformation = traitsInformation;
+    public void setTraitSheetUrl(String traitSheetUrl) {
+        this.traitSheetUrl = traitSheetUrl;
     }
 }
