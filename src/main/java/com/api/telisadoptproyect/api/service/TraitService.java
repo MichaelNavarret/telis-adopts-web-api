@@ -5,6 +5,7 @@ import com.api.telisadoptproyect.api.request.TraitRequests.TraitUpdateRequest;
 import com.api.telisadoptproyect.api.response.BaseResponse;
 import com.api.telisadoptproyect.api.response.TraitResponses.TraitCollectionResponse;
 import com.api.telisadoptproyect.api.response.TraitResponses.TraitSingletonResponse;
+
 import com.api.telisadoptproyect.library.entity.QTrait;
 import com.api.telisadoptproyect.library.entity.Specie;
 import com.api.telisadoptproyect.library.entity.Trait;
@@ -36,7 +37,7 @@ public class TraitService {
     public Page<Trait> getTraitCollection(Integer pageNumber, Integer pageLimit, String specieId, String rarity){
         if (EnumValidation.validateEnum(Trait.Rarity.class, rarity)) throw new BadRequestException("Rarity is not valid");
 
-        QTrait qTrait = QTrait.trait1;
+       QTrait qTrait = QTrait.trait1;
         BooleanExpression query = qTrait.id.isNotNull();
 
         if(StringUtils.isNotBlank(specieId)){
@@ -128,7 +129,7 @@ public class TraitService {
     }
 
     public TraitCollectionResponse getTraitCollectionAutocomplete(String specieId) {
-        QTrait qTrait = QTrait.trait1;
+       QTrait qTrait = QTrait.trait1;
         BooleanExpression query = qTrait.isNotNull();
 
         if(StringUtils.isNotBlank(specieId)){
