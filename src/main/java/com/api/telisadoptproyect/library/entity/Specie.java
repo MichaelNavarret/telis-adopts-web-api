@@ -18,7 +18,7 @@ public class Specie {
     private Specie mainSpecie;
     @OneToMany(mappedBy = "mainSpecie", cascade = CascadeType.ALL)
     private Set<Specie> subSpecies;
-    private String traitsSheetId;
+    private String traitSheetUrl;
 
     public Specie() {
         this.id = UUID.randomUUID().toString();
@@ -64,11 +64,11 @@ public class Specie {
         this.subSpecies = subSpecies;
     }
 
-    public String getTraitsSheetId() {
-        return traitsSheetId;
+    public String getTraitSheetUrl() {
+        return traitSheetUrl;
     }
 
-    public void setTraitsSheetId(String traitsSheetId) {
-        this.traitsSheetId = traitsSheetId;
+    public void setTraitSheetUrl(String traitSheetUrl) {
+        this.traitSheetUrl = traitSheetUrl;
     }
 }

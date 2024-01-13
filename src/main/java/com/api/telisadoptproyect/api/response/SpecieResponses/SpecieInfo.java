@@ -6,10 +6,12 @@ public class SpecieInfo {
     private String id;
     private String code;
     private String name;
+    private String traitSheetUrl;
     public SpecieInfo(Specie specie) {
         this.id = specie.getId();
         this.code = specie.getCode();
         this.name = specie.getName();
+        this.traitSheetUrl = specie.getTraitSheetUrl();
     }
 
     public String getId() {
@@ -34,5 +36,13 @@ public class SpecieInfo {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getTraitSheetUrl() {
+        return traitSheetUrl;
+    }
+
+    public void setTraitSheetUrl(String traitSheetUrl) {
+        this.traitSheetUrl = traitSheetUrl;
     }
 }

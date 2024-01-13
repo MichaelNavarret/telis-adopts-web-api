@@ -34,6 +34,8 @@ public class SpecieService {
     private SpecieRepository specieRepository;
     @Autowired
     private PropertiesConfig propertiesConfig;
+    @Autowired
+    private CloudinaryService cloudinaryService;
 
     // ----------- Main Endpoints Methods --------------
     public Page<Specie> getSpecieCollection(Integer pageNumber, Integer pageLimit){
@@ -56,14 +58,11 @@ public class SpecieService {
         specie.setCode(specieCodeGenerator(specieName));
         specie.setName(specieName);
 
-        Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
-                "cloud_name", propertiesConfig.getCloudinaryCloudName(),
-                "api_key", propertiesConfig.getCloudinaryApiKey(),
-                "api_secret", propertiesConfig.getCloudinaryApiSecret()
-        ));
-        cloudinary.config.secure = true;
+        if(traitsSheet != null && !traitsSheet.isEmpty()){
+           String publicId = cloudinaryService.uploadFile(traitsSheet, CLOUDINARY_TRAITS_SHEET_FOLDER_PATH);
+              specie.setTraitSheetUrl(cloudinaryService.getUrlFile(publicId, CLOUDINARY_TRAITS_SHEET_FOLDER_PATH));
+        }
 
-        uploadTraitsSheet(traitsSheet, cloudinary, specie);
         specieRepository.save(specie);
 
         return new SpecieSingletonResponse(BaseResponse.Status.SUCCESS, HttpStatus.CREATED.value(), specie);
@@ -102,23 +101,6 @@ public class SpecieService {
     }
 
     // ----------- Private methods --------------
-    private static void uploadTraitsSheet(MultipartFile traitsSheet, Cloudinary cloudinary, Specie specie) {
-        try {
-            String traitsSheetId = UUID.randomUUID().toString();
-            Map params1 = ObjectUtils.asMap(
-                    "use_filename", true,
-                    "unique_filename", true,
-                    "overwrite", true,
-                    "public_id", traitsSheetId,
-                    "folder", CLOUDINARY_TRAITS_SHEET_FOLDER_PATH
-            );
-            cloudinary.uploader().upload(traitsSheet.getBytes(), params1);
-            specie.setTraitsSheetId(traitsSheetId);
-        } catch (IOException e) {
-            throw new BadRequestException("The Traits Information File cannot be saved");
-        }
-    }
-
     private String specieCodeGenerator(String name){
         return name.trim().toLowerCase().replaceAll("\\s+", "_");
     }
