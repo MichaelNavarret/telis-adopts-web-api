@@ -1,15 +1,15 @@
 package com.api.telisadoptproyect.api.service;
 
-import com.api.telisadoptproyect.api.request.SpecieRequests.SpecieCreateRequest;
+import com.api.telisadoptproyect.api.configuration.PropertiesConfig;
 import com.api.telisadoptproyect.api.request.SpecieRequests.SpecieUpdateRequest;
 import com.api.telisadoptproyect.api.response.BaseResponse;
 import com.api.telisadoptproyect.api.response.SpecieResponses.SpecieCollectionResponse;
 import com.api.telisadoptproyect.api.response.SpecieResponses.SpecieSingletonResponse;
 import com.api.telisadoptproyect.library.entity.Specie;
-
 import com.api.telisadoptproyect.library.exception.BadRequestException;
 import com.api.telisadoptproyect.library.repository.SpecieRepository;
 import com.api.telisadoptproyect.library.util.PaginationUtils;
+import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,13 +19,21 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import com.cloudinary.*;
+import com.cloudinary.utils.ObjectUtils;
 
 import java.io.IOException;
+import java.util.Map;
+import java.util.UUID;
+
+import static com.api.telisadoptproyect.commons.Constants.CLOUDINARY_TRAITS_SHEET_FOLDER_PATH;
 
 @Service
 public class SpecieService {
     @Autowired
     private SpecieRepository specieRepository;
+    @Autowired
+    private PropertiesConfig propertiesConfig;
 
     // ----------- Main Endpoints Methods --------------
     public Page<Specie> getSpecieCollection(Integer pageNumber, Integer pageLimit){
@@ -39,30 +47,28 @@ public class SpecieService {
         return new SpecieCollectionResponse(BaseResponse.Status.SUCCESS, HttpStatus.OK.value(), specieRepository.findAll());
     }
 
-    public SpecieSingletonResponse createSpecie( MultipartFile traitsInformationFile, String specieName){
+    @Transactional
+    public SpecieSingletonResponse createSpecie( MultipartFile traitsSheet, String specieName){
         if(StringUtils.isBlank(specieName)) throw new BadRequestException("The name of specie cannot be null");
-
         Specie foundedSpecie = specieRepository.findByName(specieName).orElse(null);
         if (foundedSpecie != null) throw new BadRequestException("The name of specie cannot be repeated");
-
         Specie specie = new Specie();
         specie.setCode(specieCodeGenerator(specieName));
         specie.setName(specieName);
 
-        if (traitsInformationFile != null && !traitsInformationFile.isEmpty()) {
-            try {
-                specie.setTraitsInformation(traitsInformationFile.getBytes());
-            } catch (IOException e) {
-                throw new BadRequestException("The Traits Information File cannot be saved");
-            }
-        }
+        Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
+                "cloud_name", propertiesConfig.getCloudinaryCloudName(),
+                "api_key", propertiesConfig.getCloudinaryApiKey(),
+                "api_secret", propertiesConfig.getCloudinaryApiSecret()
+        ));
+        cloudinary.config.secure = true;
 
+        uploadTraitsSheet(traitsSheet, cloudinary, specie);
         specieRepository.save(specie);
 
         return new SpecieSingletonResponse(BaseResponse.Status.SUCCESS, HttpStatus.CREATED.value(), specie);
 
     }
-
     public SpecieSingletonResponse getSpecie(String specieId) {
         Specie specie = findById(specieId);
         return new SpecieSingletonResponse(BaseResponse.Status.SUCCESS, HttpStatus.OK.value(), specie);
@@ -96,6 +102,23 @@ public class SpecieService {
     }
 
     // ----------- Private methods --------------
+    private static void uploadTraitsSheet(MultipartFile traitsSheet, Cloudinary cloudinary, Specie specie) {
+        try {
+            String traitsSheetId = UUID.randomUUID().toString();
+            Map params1 = ObjectUtils.asMap(
+                    "use_filename", true,
+                    "unique_filename", true,
+                    "overwrite", true,
+                    "public_id", traitsSheetId,
+                    "folder", CLOUDINARY_TRAITS_SHEET_FOLDER_PATH
+            );
+            cloudinary.uploader().upload(traitsSheet.getBytes(), params1);
+            specie.setTraitsSheetId(traitsSheetId);
+        } catch (IOException e) {
+            throw new BadRequestException("The Traits Information File cannot be saved");
+        }
+    }
+
     private String specieCodeGenerator(String name){
         return name.trim().toLowerCase().replaceAll("\\s+", "_");
     }
