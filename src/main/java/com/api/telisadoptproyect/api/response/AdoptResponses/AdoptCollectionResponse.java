@@ -21,6 +21,11 @@ public class AdoptCollectionResponse extends BaseResponse {
         this.adoptInfoList = adopts.stream().map(AdoptInfo::new).collect(Collectors.toList());
     }
 
+    public AdoptCollectionResponse( List<Adopt> adopts) {
+        this();
+        this.adoptInfoList = adopts.stream().map(AdoptInfo::new).collect(Collectors.toList());
+    }
+
     public List<AdoptInfo> getAdoptInfoList() {
         return adoptInfoList;
     }

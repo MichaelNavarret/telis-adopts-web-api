@@ -19,15 +19,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import com.cloudinary.*;
-import com.cloudinary.utils.ObjectUtils;
 
-import java.io.IOException;
-import java.util.Map;
-import java.util.UUID;
-
-import static com.api.telisadoptproyect.commons.Constants.CLOUDINARY_LOGO_FOLDER_PATH;
-import static com.api.telisadoptproyect.commons.Constants.CLOUDINARY_TRAITS_SHEET_FOLDER_PATH;
+import static com.api.telisadoptproyect.commons.Constants.*;
 
 @Service
 public class SpecieService {
@@ -51,7 +44,8 @@ public class SpecieService {
     }
 
     @Transactional
-    public SpecieSingletonResponse createSpecie( MultipartFile traitsSheet, MultipartFile logo, String specieName){
+    public SpecieSingletonResponse createSpecie( MultipartFile traitsSheet, MultipartFile logo,
+                                                 MultipartFile masterListBanner, String specieName){
         if(StringUtils.isBlank(specieName)) throw new BadRequestException("The name of specie cannot be null");
         Specie foundedSpecie = specieRepository.findByName(specieName).orElse(null);
         if (foundedSpecie != null) throw new BadRequestException("The name of specie cannot be repeated");
@@ -67,6 +61,11 @@ public class SpecieService {
         if (logo != null && !logo.isEmpty()){
             String publicId = cloudinaryService.uploadFile(logo, CLOUDINARY_LOGO_FOLDER_PATH);
             specie.setLogoUrl(cloudinaryService.getUrlFile(publicId, CLOUDINARY_LOGO_FOLDER_PATH));
+        }
+
+        if (masterListBanner != null && !masterListBanner.isEmpty()){
+            String publicId = cloudinaryService.uploadFile(masterListBanner, CLOUDINARY_MASTER_LIST_BANNER_FOLDER_PATH);
+            specie.setMasterListBannerUrl(cloudinaryService.getUrlFile(publicId, CLOUDINARY_MASTER_LIST_BANNER_FOLDER_PATH));
         }
 
         specieRepository.save(specie);

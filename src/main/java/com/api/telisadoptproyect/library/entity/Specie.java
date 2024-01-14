@@ -20,6 +20,7 @@ public class Specie {
     private Set<Specie> subSpecies;
     private String traitSheetUrl;
     private String logoUrl;
+    private String masterListBannerUrl;
 
     public Specie() {
         this.id = UUID.randomUUID().toString();
@@ -76,8 +77,15 @@ public class Specie {
     public String getLogoUrl() {
         return logoUrl;
     }
-
     public void setLogoUrl(String logoUrl) {
         this.logoUrl = logoUrl;
+    }
+
+    public String getMasterListBannerUrl() {
+        return masterListBannerUrl;
+    }
+
+    public void setMasterListBannerUrl(String masterListBannerUrl) {
+        this.masterListBannerUrl = masterListBannerUrl;
     }
 }

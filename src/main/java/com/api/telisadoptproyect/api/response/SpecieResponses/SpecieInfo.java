@@ -8,12 +8,14 @@ public class SpecieInfo {
     private String name;
     private String traitSheetUrl;
     private String logoUrl;
+    private String masterListBannerUrl;
     public SpecieInfo(Specie specie) {
         this.id = specie.getId();
         this.code = specie.getCode();
         this.name = specie.getName();
         this.traitSheetUrl = specie.getTraitSheetUrl();
         this.logoUrl = specie.getLogoUrl();
+        this.masterListBannerUrl = specie.getMasterListBannerUrl();
     }
 
     public String getId() {
@@ -53,5 +55,13 @@ public class SpecieInfo {
 
     public String getLogoUrl() {
         return logoUrl;
+    }
+
+    public String getMasterListBannerUrl() {
+        return masterListBannerUrl;
+    }
+
+    public void setMasterListBannerUrl(String masterListBannerUrl) {
+        this.masterListBannerUrl = masterListBannerUrl;
     }
 }

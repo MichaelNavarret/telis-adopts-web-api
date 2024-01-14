@@ -19,6 +19,7 @@ public class AdoptInfo {
     private Date registeredOn;
     private String rarity;
     private List<String> traits;
+    private String iconUrl;
     public AdoptInfo (Adopt adopt){
         this.id = adopt.getId();
         this.code = adopt.getCode();
@@ -31,6 +32,7 @@ public class AdoptInfo {
         this.designers = adopt.getDesigners() != null ? adopt.getDesigners().stream().map(Owner::getNickName).collect(Collectors.toList()) : null;
         this.rarity = adopt.getRarity().toString();
         this.traits = adopt.getSubTraits() != null? adopt.getSubTraits().stream().map(subTrait -> subTrait.getMainTrait().getTrait()).collect(Collectors.toList()) : null;
+        this.iconUrl = adopt.getIconUrl();
     }
 
     public String getId() {
@@ -119,5 +121,13 @@ public class AdoptInfo {
 
     public void setTraits(List<String> traits) {
         this.traits = traits;
+    }
+
+    public String getIconUrl() {
+        return iconUrl;
+    }
+
+    public void setIconUrl(String iconUrl) {
+        this.iconUrl = iconUrl;
     }
 }

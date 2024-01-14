@@ -40,6 +40,7 @@ public class Adopt {
     private Specie specie;
     @Enumerated(EnumType.STRING)
     private Trait.Rarity rarity;
+    private String iconUrl;
 
     public Adopt() {
         this.id = UUID.randomUUID().toString();
@@ -140,5 +141,13 @@ public class Adopt {
 
     public void setDesigners(Set<Owner> designers) {
         this.designers = designers;
+    }
+
+    public String getIconUrl() {
+        return iconUrl;
+    }
+
+    public void setIconUrl(String iconUrl) {
+        this.iconUrl = iconUrl;
     }
 }

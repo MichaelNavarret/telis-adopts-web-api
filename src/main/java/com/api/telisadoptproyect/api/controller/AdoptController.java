@@ -12,6 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @RequestMapping("/adopts")
@@ -26,6 +27,15 @@ public class AdoptController {
         return ResponseEntity
                 .ok()
                 .body(adoptService.createAdopt(request));
+    }
+
+    @PutMapping("/{adoptId}/icon")
+    public ResponseEntity<AdoptSingletonResponse> uploadIconToAdopt(
+            @PathVariable(name = "adoptId") String adoptId,
+            @RequestParam (name = "file") MultipartFile adoptIcon){
+        return ResponseEntity
+                .ok()
+                .body(adoptService.uploadIconToAdopt(adoptId, adoptIcon));
     }
 
     @GetMapping("")
@@ -43,5 +53,14 @@ public class AdoptController {
                 .ok()
                 .headers(headers)
                 .body(adoptCollectionResponse);
+    }
+
+    @GetMapping("/autocomplete")
+    public ResponseEntity<AdoptCollectionResponse> getAdoptsAutocomplete(
+            @RequestParam(name ="specieId", required = false) String specieId,
+            @RequestParam(name ="creationType", required = false) String creationType) {
+        return ResponseEntity
+                .ok()
+                .body(adoptService.getAdoptCollectionAutocomplete(specieId, creationType));
     }
 }
