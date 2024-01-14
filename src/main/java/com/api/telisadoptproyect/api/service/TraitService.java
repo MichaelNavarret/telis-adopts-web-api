@@ -149,6 +149,7 @@ public class TraitService {
         trait.setTrait(createRequest.getTrait());
         trait.setRarities(createRequest.getRarities().stream().map(rarity -> EnumValidation.toEnum(Trait.Rarity.class, rarity)).toList());
         trait.setSpecie(specie);
+        trait.setDisplayPriority(createRequest.getDisplayPriority());
         return traitRepository.save(trait);
     }
 }

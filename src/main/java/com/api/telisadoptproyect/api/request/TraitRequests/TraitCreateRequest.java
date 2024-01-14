@@ -6,7 +6,7 @@ public class TraitCreateRequest {
     private String specieId;
     private String trait;
     private List<String> rarities;
-
+    private int displayPriority;
     public TraitCreateRequest() {
     }
 
@@ -32,5 +32,8 @@ public class TraitCreateRequest {
 
     public void setRarities(List<String> rarities) {
         this.rarities = rarities;
+    }
+    public int getDisplayPriority() {
+        return displayPriority;
     }
 }

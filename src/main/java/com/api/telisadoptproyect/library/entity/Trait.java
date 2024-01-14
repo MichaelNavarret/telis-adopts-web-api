@@ -23,6 +23,7 @@ public class Trait {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "specie_Id")
     private Specie specie;
+    private int displayPriority;
 
     public Trait() {
         this.id = UUID.randomUUID().toString();
@@ -58,5 +59,13 @@ public class Trait {
 
     public void setSpecie(Specie specie) {
         this.specie = specie;
+    }
+
+    public int getDisplayPriority() {
+        return displayPriority;
+    }
+
+    public void setDisplayPriority(int displayPriority) {
+        this.displayPriority = displayPriority;
     }
 }

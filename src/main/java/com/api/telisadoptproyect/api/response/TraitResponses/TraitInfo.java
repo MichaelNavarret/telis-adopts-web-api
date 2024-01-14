@@ -9,12 +9,14 @@ public class TraitInfo {
     private List<Trait.Rarity> rarities;
     private String trait;
     private String specie;
+    private int displayPriority;
 
     public TraitInfo(Trait trait){
         this.id = trait.getId();
         this.rarities = trait.getRarities();
         this.trait = trait.getTrait();
         this.specie = trait.getSpecie().getName();
+        this.displayPriority = trait.getDisplayPriority();
     }
 
     public String getId() {
@@ -47,5 +49,13 @@ public class TraitInfo {
 
     public void setTrait(String trait) {
         this.trait = trait;
+    }
+
+    public int getDisplayPriority() {
+        return displayPriority;
+    }
+
+    public void setDisplayPriority(int displayPriority) {
+        this.displayPriority = displayPriority;
     }
 }
