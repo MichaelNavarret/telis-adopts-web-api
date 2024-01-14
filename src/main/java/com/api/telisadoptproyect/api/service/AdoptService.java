@@ -84,10 +84,29 @@ public class AdoptService {
         return new AdoptSingletonResponse(BaseResponse.Status.SUCCESS, HttpStatus.OK.value(), foundAdopt);
     }
 
-    public Page<Adopt> getAdoptCollection(Integer pageNumber, Integer pageLimit) {
-        Sort sort = PaginationUtils.createSortCriteria("createdOn:DESC");
-        Pageable pageable = PageRequest.of(pageNumber, pageLimit, sort);
-        return adoptRepository.findAll(pageable);
+    public Page<Adopt> getAdoptCollection(Integer pageNumber, Integer pageLimit, String specieId, String creationType, String sort) {
+        QAdopt qAdopt = QAdopt.adopt;
+        BooleanExpression expression = qAdopt.id.isNotNull();
+
+        if (StringUtils.isNotBlank(specieId)){
+            expression = expression.and(qAdopt.specie.id.eq(specieId));
+        }
+
+        if (StringUtils.isNotBlank(creationType)){
+            Adopt.CreationType creationTypeFound = EnumValidation.toEnum(Adopt.CreationType.class, creationType);
+            if (creationTypeFound == null) throw new BadRequestException("The Creation Type is invalid.");
+            expression = expression.and(qAdopt.creationType.eq(creationTypeFound));
+        }
+
+        Sort sortCriteria;
+        if(StringUtils.isNotBlank(sort)) {
+            sortCriteria = PaginationUtils.createSortCriteria(sort);
+        }else{
+            sortCriteria = PaginationUtils.createSortCriteria("createdOn:DESC");
+        }
+
+        Pageable pageable = PageRequest.of(pageNumber, pageLimit, sortCriteria);
+        return adoptRepository.findAll(expression, pageable);
     }
 
     public AdoptCollectionResponse getAdoptCollectionAutocomplete(String specieId, String creationType) {
