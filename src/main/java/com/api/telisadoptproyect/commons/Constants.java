@@ -9,6 +9,7 @@ public class Constants {
     public static final String CLOUDINARY_TRAITS_SHEET_FOLDER_PATH = CLOUDINARY_SPECIES_FOLDER_PATH + "/traits_sheet";
     public static final String CLOUDINARY_LOGO_FOLDER_PATH = CLOUDINARY_SPECIES_FOLDER_PATH + "/logo";
     public static final String CLOUDINARY_MASTER_LIST_BANNER_FOLDER_PATH = CLOUDINARY_SPECIES_FOLDER_PATH + "/master_list_banner";
+    public static final String CLOUDINARY_SPECIE_FORM_FOLDER_PATH = CLOUDINARY_SPECIES_FOLDER_PATH + "/forms";
     public static final String CLOUDINARY_ADOPTS_FOLDER_PATH = CLOUDINARY_MAIN_FOLDER_PATH + "/adopts";
     public static final String CLOUDINARY_ADOPTS_ICONS_FOLDER_PATH = CLOUDINARY_ADOPTS_FOLDER_PATH + "/icons";
 }

@@ -42,6 +42,10 @@ public class Adopt {
     private Trait.Rarity rarity;
     private String iconUrl;
 
+    @ManyToOne
+    @JoinColumn(name = "extra_info_Id")
+    private SpecieForm extraInfo;
+
     public Adopt() {
         this.id = UUID.randomUUID().toString();
         this.createdOn = new Date();
