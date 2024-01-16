@@ -154,4 +154,12 @@ public class Adopt {
     public void setIconUrl(String iconUrl) {
         this.iconUrl = iconUrl;
     }
+
+    public SpecieForm getExtraInfo() {
+        return extraInfo;
+    }
+
+    public void setExtraInfo(SpecieForm extraInfo) {
+        this.extraInfo = extraInfo;
+    }
 }

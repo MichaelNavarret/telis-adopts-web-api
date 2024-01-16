@@ -8,6 +8,7 @@ import com.api.telisadoptproyect.api.response.BaseResponse;
 import com.api.telisadoptproyect.library.entity.*;
 import com.api.telisadoptproyect.library.exception.BadRequestException;
 import com.api.telisadoptproyect.library.repository.AdoptRepository;
+import com.api.telisadoptproyect.library.repository.SpecieFormRepository;
 import com.api.telisadoptproyect.library.util.PaginationUtils;
 import com.api.telisadoptproyect.library.validation.EnumValidation;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -38,6 +39,8 @@ public class AdoptService {
     private OwnerService ownerService;
     @Autowired
     private CloudinaryService cloudinaryService;
+    @Autowired
+    private SpecieFormRepository specieFormRepository;
 
     @Transactional
     public AdoptSingletonResponse createAdopt(AdoptCreateRequest createRequest){
@@ -57,6 +60,11 @@ public class AdoptService {
         adopt.setSpecie(specie);
         adopt.setSubTraits(Collections.emptySet());
         adopt.setRarity(getAdoptRarity(createRequest));
+
+        if(StringUtils.isNotBlank(createRequest.getSpecieFormId())){
+            Optional<SpecieForm> specieForm = specieFormRepository.findById(createRequest.getSpecieFormId());
+            specieForm.ifPresent(adopt::setExtraInfo);
+        }
 
         safeSetOwnerToAdopt(adopt, createRequest);
         safeSetDesignersToAdopt(adopt, createRequest);

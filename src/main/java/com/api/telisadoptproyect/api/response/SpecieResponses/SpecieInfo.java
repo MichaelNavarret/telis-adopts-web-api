@@ -1,6 +1,9 @@
 package com.api.telisadoptproyect.api.response.SpecieResponses;
 
+import com.api.telisadoptproyect.api.response.SpecieForm.SpecieFormInfo;
 import com.api.telisadoptproyect.library.entity.Specie;
+
+import java.util.List;
 
 public class SpecieInfo {
     private String id;
@@ -9,6 +12,7 @@ public class SpecieInfo {
     private String traitSheetUrl;
     private String logoUrl;
     private String masterListBannerUrl;
+    private List<SpecieFormInfo> specieFormInfoList;
     public SpecieInfo(Specie specie) {
         this.id = specie.getId();
         this.code = specie.getCode();
@@ -16,6 +20,8 @@ public class SpecieInfo {
         this.traitSheetUrl = specie.getTraitSheetUrl();
         this.logoUrl = specie.getLogoUrl();
         this.masterListBannerUrl = specie.getMasterListBannerUrl();
+        this.specieFormInfoList = specie.getExtraInfoList().isEmpty() ?
+                null : specie.getExtraInfoList().stream().map(SpecieFormInfo::new).toList();
     }
 
     public String getId() {
@@ -63,5 +69,13 @@ public class SpecieInfo {
 
     public void setMasterListBannerUrl(String masterListBannerUrl) {
         this.masterListBannerUrl = masterListBannerUrl;
+    }
+
+    public List<SpecieFormInfo> getSpecieFormInfoList() {
+        return specieFormInfoList;
+    }
+
+    public void setSpecieFormInfoList(List<SpecieFormInfo> specieFormInfoList) {
+        this.specieFormInfoList = specieFormInfoList;
     }
 }

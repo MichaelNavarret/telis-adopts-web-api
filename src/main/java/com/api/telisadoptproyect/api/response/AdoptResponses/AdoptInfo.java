@@ -21,6 +21,7 @@ public class AdoptInfo {
     private String rarity;
     private List<SubTraitInfo> traits;
     private String iconUrl;
+    private String specieFormId;
     public AdoptInfo (Adopt adopt){
         this.id = adopt.getId();
         this.code = adopt.getCode();
@@ -34,6 +35,7 @@ public class AdoptInfo {
         this.rarity = adopt.getRarity().toString();
         this.traits = adopt.getSubTraits() != null? adopt.getSubTraits().stream().map(SubTraitInfo::new).collect(Collectors.toList()) : null;
         this.iconUrl = adopt.getIconUrl();
+        this.specieFormId = adopt.getExtraInfo() != null? adopt.getExtraInfo().getId() : null;
     }
 
     public String getId() {
@@ -130,5 +132,13 @@ public class AdoptInfo {
 
     public void setIconUrl(String iconUrl) {
         this.iconUrl = iconUrl;
+    }
+
+    public String getSpecieFormId() {
+        return specieFormId;
+    }
+
+    public void setSpecieFormId(String specieFormId) {
+        this.specieFormId = specieFormId;
     }
 }
