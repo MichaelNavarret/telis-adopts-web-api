@@ -20,7 +20,7 @@ public class SpecieInfo {
         this.traitSheetUrl = specie.getTraitSheetUrl();
         this.logoUrl = specie.getLogoUrl();
         this.masterListBannerUrl = specie.getMasterListBannerUrl();
-        this.specieFormInfoList = specie.getExtraInfoList().isEmpty() ?
+        this.specieFormInfoList = specie.getExtraInfoList() == null || specie.getExtraInfoList().isEmpty() ?
                 null : specie.getExtraInfoList().stream().map(SpecieFormInfo::new).toList();
     }
 
