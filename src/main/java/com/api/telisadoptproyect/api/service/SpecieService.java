@@ -82,14 +82,15 @@ public class SpecieService {
     @Transactional
     public SpecieSingletonResponse addSpecieForm(String specieId, MultipartFile imageSpecieForm, String code) {
         if(StringUtils.isBlank(specieId)) throw new BadRequestException("The specieId cannot be null");
-        if(StringUtils.isBlank(code)) throw new BadRequestException("The code cannot be null");
         if(imageSpecieForm == null || imageSpecieForm.isEmpty()) throw new BadRequestException("The image cannot be null");
 
         Specie specie = specieRepository.findById(specieId).orElseThrow(
                 () -> new BadRequestException("The Specie with the corresponding id not exist"));
 
         SpecieForm specieForm = new SpecieForm();
-        specieForm.setCode(code);
+        if(StringUtils.isNotBlank(code)){
+            specieForm.setCode(code);
+        }
 
         String publicId = cloudinaryService.uploadFile(imageSpecieForm, CLOUDINARY_SPECIE_FORM_FOLDER_PATH);
         specieForm.setFormUrlImage(cloudinaryService.getUrlFile(publicId, CLOUDINARY_SPECIE_FORM_FOLDER_PATH));
