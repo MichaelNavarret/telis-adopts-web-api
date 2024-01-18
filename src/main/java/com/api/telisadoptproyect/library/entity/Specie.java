@@ -3,6 +3,7 @@ package com.api.telisadoptproyect.library.entity;
 import com.querydsl.core.annotations.QueryEntity;
 import jakarta.persistence.*;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -19,6 +20,11 @@ public class Specie {
     @OneToMany(mappedBy = "mainSpecie", cascade = CascadeType.ALL)
     private Set<Specie> subSpecies;
     private String traitSheetUrl;
+    private String logoUrl;
+    private String masterListBannerUrl;
+    @OneToMany
+    @JoinColumn(name = "specie_Id")
+    private Set<SpecieForm> extraInfoList;
 
     public Specie() {
         this.id = UUID.randomUUID().toString();
@@ -70,5 +76,28 @@ public class Specie {
 
     public void setTraitSheetUrl(String traitSheetUrl) {
         this.traitSheetUrl = traitSheetUrl;
+    }
+
+    public String getLogoUrl() {
+        return logoUrl;
+    }
+    public void setLogoUrl(String logoUrl) {
+        this.logoUrl = logoUrl;
+    }
+
+    public String getMasterListBannerUrl() {
+        return masterListBannerUrl;
+    }
+
+    public void setMasterListBannerUrl(String masterListBannerUrl) {
+        this.masterListBannerUrl = masterListBannerUrl;
+    }
+
+    public Set<SpecieForm> getExtraInfoList() {
+        return extraInfoList;
+    }
+
+    public void setExtraInfoList(Set<SpecieForm> extraInfoList) {
+        this.extraInfoList = extraInfoList;
     }
 }

@@ -6,7 +6,9 @@ import com.api.telisadoptproyect.api.response.BaseResponse;
 import com.api.telisadoptproyect.api.response.SpecieResponses.SpecieCollectionResponse;
 import com.api.telisadoptproyect.api.response.SpecieResponses.SpecieSingletonResponse;
 import com.api.telisadoptproyect.library.entity.Specie;
+import com.api.telisadoptproyect.library.entity.SpecieForm;
 import com.api.telisadoptproyect.library.exception.BadRequestException;
+import com.api.telisadoptproyect.library.repository.SpecieFormRepository;
 import com.api.telisadoptproyect.library.repository.SpecieRepository;
 import com.api.telisadoptproyect.library.util.PaginationUtils;
 import jakarta.transaction.Transactional;
@@ -19,19 +21,17 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import com.cloudinary.*;
-import com.cloudinary.utils.ObjectUtils;
 
-import java.io.IOException;
-import java.util.Map;
-import java.util.UUID;
+import java.util.Set;
 
-import static com.api.telisadoptproyect.commons.Constants.CLOUDINARY_TRAITS_SHEET_FOLDER_PATH;
+import static com.api.telisadoptproyect.commons.Constants.*;
 
 @Service
 public class SpecieService {
     @Autowired
     private SpecieRepository specieRepository;
+    @Autowired
+    private SpecieFormRepository specieFormRepository;
     @Autowired
     private PropertiesConfig propertiesConfig;
     @Autowired
@@ -50,7 +50,8 @@ public class SpecieService {
     }
 
     @Transactional
-    public SpecieSingletonResponse createSpecie( MultipartFile traitsSheet, String specieName){
+    public SpecieSingletonResponse createSpecie( MultipartFile traitsSheet, MultipartFile logo,
+                                                 MultipartFile masterListBanner, String specieName){
         if(StringUtils.isBlank(specieName)) throw new BadRequestException("The name of specie cannot be null");
         Specie foundedSpecie = specieRepository.findByName(specieName).orElse(null);
         if (foundedSpecie != null) throw new BadRequestException("The name of specie cannot be repeated");
@@ -60,7 +61,17 @@ public class SpecieService {
 
         if(traitsSheet != null && !traitsSheet.isEmpty()){
            String publicId = cloudinaryService.uploadFile(traitsSheet, CLOUDINARY_TRAITS_SHEET_FOLDER_PATH);
-              specie.setTraitSheetUrl(cloudinaryService.getUrlFile(publicId, CLOUDINARY_TRAITS_SHEET_FOLDER_PATH));
+           specie.setTraitSheetUrl(cloudinaryService.getUrlFile(publicId, CLOUDINARY_TRAITS_SHEET_FOLDER_PATH));
+        }
+
+        if (logo != null && !logo.isEmpty()){
+            String publicId = cloudinaryService.uploadFile(logo, CLOUDINARY_LOGO_FOLDER_PATH);
+            specie.setLogoUrl(cloudinaryService.getUrlFile(publicId, CLOUDINARY_LOGO_FOLDER_PATH));
+        }
+
+        if (masterListBanner != null && !masterListBanner.isEmpty()){
+            String publicId = cloudinaryService.uploadFile(masterListBanner, CLOUDINARY_MASTER_LIST_BANNER_FOLDER_PATH);
+            specie.setMasterListBannerUrl(cloudinaryService.getUrlFile(publicId, CLOUDINARY_MASTER_LIST_BANNER_FOLDER_PATH));
         }
 
         specieRepository.save(specie);
@@ -68,6 +79,32 @@ public class SpecieService {
         return new SpecieSingletonResponse(BaseResponse.Status.SUCCESS, HttpStatus.CREATED.value(), specie);
 
     }
+    @Transactional
+    public SpecieSingletonResponse addSpecieForm(String specieId, MultipartFile imageSpecieForm, String code) {
+        if(StringUtils.isBlank(specieId)) throw new BadRequestException("The specieId cannot be null");
+        if(imageSpecieForm == null || imageSpecieForm.isEmpty()) throw new BadRequestException("The image cannot be null");
+
+        Specie specie = specieRepository.findById(specieId).orElseThrow(
+                () -> new BadRequestException("The Specie with the corresponding id not exist"));
+
+        SpecieForm specieForm = new SpecieForm();
+        if(StringUtils.isNotBlank(code)){
+            specieForm.setCode(code);
+        }
+
+        String publicId = cloudinaryService.uploadFile(imageSpecieForm, CLOUDINARY_SPECIE_FORM_FOLDER_PATH);
+        specieForm.setFormUrlImage(cloudinaryService.getUrlFile(publicId, CLOUDINARY_SPECIE_FORM_FOLDER_PATH));
+
+        specieForm = specieFormRepository.save(specieForm);
+
+        Set<SpecieForm> specieFormList = specie.getExtraInfoList();
+        specieFormList.add(specieForm);
+        specie.setExtraInfoList(specieFormList);
+
+        return new SpecieSingletonResponse(BaseResponse.Status.SUCCESS, HttpStatus.CREATED.value(),  specieRepository.save(specie));
+    }
+
+
     public SpecieSingletonResponse getSpecie(String specieId) {
         Specie specie = findById(specieId);
         return new SpecieSingletonResponse(BaseResponse.Status.SUCCESS, HttpStatus.OK.value(), specie);

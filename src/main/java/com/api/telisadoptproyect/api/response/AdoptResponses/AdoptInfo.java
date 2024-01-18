@@ -1,5 +1,6 @@
 package com.api.telisadoptproyect.api.response.AdoptResponses;
 
+import com.api.telisadoptproyect.api.response.SubTraitResponses.SubTraitInfo;
 import com.api.telisadoptproyect.library.entity.Adopt;
 import com.api.telisadoptproyect.library.entity.Owner;
 
@@ -18,7 +19,9 @@ public class AdoptInfo {
     private Date boughtOn;
     private Date registeredOn;
     private String rarity;
-    private List<String> traits;
+    private List<SubTraitInfo> traits;
+    private String iconUrl;
+    private String specieFormId;
     public AdoptInfo (Adopt adopt){
         this.id = adopt.getId();
         this.code = adopt.getCode();
@@ -30,7 +33,9 @@ public class AdoptInfo {
         this.registeredOn = adopt.getRegisteredOn();
         this.designers = adopt.getDesigners() != null ? adopt.getDesigners().stream().map(Owner::getNickName).collect(Collectors.toList()) : null;
         this.rarity = adopt.getRarity().toString();
-        this.traits = adopt.getSubTraits() != null? adopt.getSubTraits().stream().map(subTrait -> subTrait.getMainTrait().getTrait()).collect(Collectors.toList()) : null;
+        this.traits = adopt.getSubTraits() != null? adopt.getSubTraits().stream().map(SubTraitInfo::new).collect(Collectors.toList()) : null;
+        this.iconUrl = adopt.getIconUrl();
+        this.specieFormId = adopt.getExtraInfo() != null? adopt.getExtraInfo().getId() : null;
     }
 
     public String getId() {
@@ -113,11 +118,27 @@ public class AdoptInfo {
         this.rarity = rarity;
     }
 
-    public List<String> getTraits() {
+    public List<SubTraitInfo> getTraits() {
         return traits;
     }
 
-    public void setTraits(List<String> traits) {
+    public void setTraits(List<SubTraitInfo> traits) {
         this.traits = traits;
+    }
+
+    public String getIconUrl() {
+        return iconUrl;
+    }
+
+    public void setIconUrl(String iconUrl) {
+        this.iconUrl = iconUrl;
+    }
+
+    public String getSpecieFormId() {
+        return specieFormId;
+    }
+
+    public void setSpecieFormId(String specieFormId) {
+        this.specieFormId = specieFormId;
     }
 }

@@ -12,6 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @RequestMapping("/adopts")
@@ -28,14 +29,27 @@ public class AdoptController {
                 .body(adoptService.createAdopt(request));
     }
 
+    @PutMapping("/{adoptId}/icon")
+    public ResponseEntity<AdoptSingletonResponse> uploadIconToAdopt(
+            @PathVariable(name = "adoptId") String adoptId,
+            @RequestParam (name = "file") MultipartFile adoptIcon){
+        return ResponseEntity
+                .ok()
+                .body(adoptService.uploadIconToAdopt(adoptId, adoptIcon));
+    }
+
     @GetMapping("")
     public ResponseEntity<AdoptCollectionResponse> getAdopts(
             @RequestHeader(name = PaginationUtils.X_PAGINATION_NUM, required = false, defaultValue = PaginationUtils.DEFAULT_PAGINATION_NUM) String pageNumber,
-            @RequestHeader(name = PaginationUtils.X_PAGINATION_LIMIT, required = false, defaultValue = PaginationUtils.DEFAULT_PAGINATION_LIMIT) String pageLimit) {
+            @RequestHeader(name = PaginationUtils.X_PAGINATION_LIMIT, required = false, defaultValue = PaginationUtils.DEFAULT_PAGINATION_LIMIT) String pageLimit,
+            @RequestParam(name ="specieId", required = false) String specieId,
+            @RequestParam(name ="creationType", required = false) String creationType,
+            @RequestParam(name = "sort", required = false) String sort) {
+
 
         final Integer pageNumberValue = Integer.parseInt(pageNumber);
         final Integer pageLimitValue = Integer.parseInt(pageLimit);
-        final Page<Adopt> response = adoptService.getAdoptCollection(pageNumberValue, pageLimitValue);
+        final Page<Adopt> response = adoptService.getAdoptCollection(pageNumberValue, pageLimitValue, specieId, creationType, sort);
 
         HttpHeaders headers = PaginationUtils.createHttpHeaderForPagination(response, pageLimitValue);
         AdoptCollectionResponse adoptCollectionResponse = new AdoptCollectionResponse(response);
@@ -43,5 +57,14 @@ public class AdoptController {
                 .ok()
                 .headers(headers)
                 .body(adoptCollectionResponse);
+    }
+
+    @GetMapping("/autocomplete")
+    public ResponseEntity<AdoptCollectionResponse> getAdoptsAutocomplete(
+            @RequestParam(name ="specieId", required = false) String specieId,
+            @RequestParam(name ="creationType", required = false) String creationType) {
+        return ResponseEntity
+                .ok()
+                .body(adoptService.getAdoptCollectionAutocomplete(specieId, creationType));
     }
 }

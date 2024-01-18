@@ -7,12 +7,14 @@ public class SubTraitInfo {
     private String mainTrait;
     private String additionalInfo;
     private String rarity;
+    private int mainTraitDisplayPriority;
 
     public SubTraitInfo(SubTrait subTrait){
         this.id = subTrait.getId();
         this.mainTrait = subTrait.getMainTrait().getTrait();
         this.additionalInfo = subTrait.getAdditionalInfo();
         this.rarity = subTrait.getRarity().toString();
+        this.mainTraitDisplayPriority = subTrait.getMainTrait().getDisplayPriority();
     }
 
     public String getId() {
@@ -45,5 +47,13 @@ public class SubTraitInfo {
 
     public void setRarity(String rarity) {
         this.rarity = rarity;
+    }
+
+    public int getMainTraitDisplayPriority() {
+        return mainTraitDisplayPriority;
+    }
+
+    public void setMainTraitDisplayPriority(int mainTraitDisplayPriority) {
+        this.mainTraitDisplayPriority = mainTraitDisplayPriority;
     }
 }

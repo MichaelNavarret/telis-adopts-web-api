@@ -40,6 +40,11 @@ public class Adopt {
     private Specie specie;
     @Enumerated(EnumType.STRING)
     private Trait.Rarity rarity;
+    private String iconUrl;
+
+    @ManyToOne
+    @JoinColumn(name = "extra_info_Id")
+    private SpecieForm extraInfo;
 
     public Adopt() {
         this.id = UUID.randomUUID().toString();
@@ -140,5 +145,21 @@ public class Adopt {
 
     public void setDesigners(Set<Owner> designers) {
         this.designers = designers;
+    }
+
+    public String getIconUrl() {
+        return iconUrl;
+    }
+
+    public void setIconUrl(String iconUrl) {
+        this.iconUrl = iconUrl;
+    }
+
+    public SpecieForm getExtraInfo() {
+        return extraInfo;
+    }
+
+    public void setExtraInfo(SpecieForm extraInfo) {
+        this.extraInfo = extraInfo;
     }
 }

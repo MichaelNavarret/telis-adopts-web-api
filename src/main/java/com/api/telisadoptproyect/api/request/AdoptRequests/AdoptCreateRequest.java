@@ -14,10 +14,9 @@ public class AdoptCreateRequest {
     private List<SubTraitCreateRequest> subTraits;
     private String specieId;
     private String creationType;
-
+    private String specieFormId;
     public AdoptCreateRequest() {
     }
-
     public String getName() {
         return name;
     }
@@ -72,5 +71,13 @@ public class AdoptCreateRequest {
 
     public void setNotRegisteredOwner(boolean notRegisteredOwner) {
         this.notRegisteredOwner = notRegisteredOwner;
+    }
+
+    public String getSpecieFormId() {
+        return specieFormId;
+    }
+
+    public void setSpecieFormId(String specieFormId) {
+        this.specieFormId = specieFormId;
     }
 }
