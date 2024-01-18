@@ -7,10 +7,18 @@ import com.api.telisadoptproyect.api.response.OwnerResponses.OwnerSingletonRespo
 import com.api.telisadoptproyect.api.validation.OwnerValidation;
 import com.api.telisadoptproyect.library.entity.Owner;
 import com.api.telisadoptproyect.library.entity.PasswordResetToken;
+import com.api.telisadoptproyect.library.entity.QOwner;
 import com.api.telisadoptproyect.library.exception.BadRequestException;
 import com.api.telisadoptproyect.library.repository.OwnerRepository;
 import com.api.telisadoptproyect.library.repository.PasswordResetTokenRepository;
+import com.api.telisadoptproyect.library.util.PaginationUtils;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -80,5 +88,23 @@ public class OwnerService {
 
     public OwnerCollectionResponse getOwnerCollectionAutocomplete() {
         return new OwnerCollectionResponse(BaseResponse.Status.SUCCESS, HttpStatus.OK.value(), ownerRepository.findAll());
+    }
+
+    public Page<Owner> getOwnersCollection(Integer pageNumber, Integer pageLimit, String nickName, String email) {
+        QOwner qOwner = QOwner.owner;
+        BooleanExpression query = qOwner.id.isNotNull();
+
+        if (StringUtils.isNotBlank(nickName)){
+            query = query.and(qOwner.nickName.eq(nickName));
+        }
+
+        if (StringUtils.isNotBlank(email)){
+            query = query.and(qOwner.email.eq(email));
+        }
+
+        Sort sort = PaginationUtils.createSortCriteria("nickName:ASC");
+        Pageable pageable = PageRequest.of(pageNumber, pageLimit, sort);
+
+        return ownerRepository.findAll(query, pageable);
     }
 }
