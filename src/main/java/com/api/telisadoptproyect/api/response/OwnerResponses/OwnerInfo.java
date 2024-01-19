@@ -4,11 +4,15 @@ import com.api.telisadoptproyect.library.entity.Owner;
 
 public class OwnerInfo {
     private String id;
-    private String name;
+    private String nickName;
+    private String email;
+    private boolean status;
 
     public OwnerInfo(Owner owner){
         this.id = owner.getId();
-        this.name = owner.getNickName();
+        this.nickName = owner.getNickName();
+        this.email = owner.getEmail();
+        this.status = owner.isActive();
     }
 
     public String getId() {
@@ -19,11 +23,27 @@ public class OwnerInfo {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getNickName() {
+        return nickName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
     }
 }
