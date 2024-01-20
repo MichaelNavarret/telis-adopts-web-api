@@ -13,6 +13,8 @@ public class SpecieInfo {
     private String logoUrl;
     private String masterListBannerUrl;
     private List<SpecieFormInfo> specieFormInfoList;
+    private String history;
+    private String guideSheetUrl;
     public SpecieInfo(Specie specie) {
         this.id = specie.getId();
         this.code = specie.getCode();
@@ -22,6 +24,8 @@ public class SpecieInfo {
         this.masterListBannerUrl = specie.getMasterListBannerUrl();
         this.specieFormInfoList = specie.getExtraInfoList() == null || specie.getExtraInfoList().isEmpty() ?
                 null : specie.getExtraInfoList().stream().map(SpecieFormInfo::new).toList();
+        this.history = specie.getHistory() != null? specie.getHistory() : null;
+        this.guideSheetUrl = specie.getGuideSheetUrl() != null? specie.getGuideSheetUrl() : null;
     }
 
     public String getId() {
@@ -77,5 +81,21 @@ public class SpecieInfo {
 
     public void setSpecieFormInfoList(List<SpecieFormInfo> specieFormInfoList) {
         this.specieFormInfoList = specieFormInfoList;
+    }
+
+    public String getHistory() {
+        return history;
+    }
+
+    public void setHistory(String history) {
+        this.history = history;
+    }
+
+    public String getGuideSheetUrl() {
+        return guideSheetUrl;
+    }
+
+    public void setGuideSheetUrl(String guideSheetUrl) {
+        this.guideSheetUrl = guideSheetUrl;
     }
 }

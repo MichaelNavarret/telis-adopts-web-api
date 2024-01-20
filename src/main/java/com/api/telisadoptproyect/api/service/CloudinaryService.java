@@ -55,4 +55,18 @@ public class CloudinaryService {
        }
     }
 
+    public void destroyFile (String urlFile){
+        try {
+            Cloudinary cloudinary = instanceCloudinary();
+            cloudinary.config.secure = true;
+            String publicId = urlFile.substring(urlFile.lastIndexOf("/") + 1, urlFile.lastIndexOf("."));
+            Map params3 = ObjectUtils.asMap(
+                    "public_id", publicId
+            );
+            cloudinary.uploader().destroy(publicId, params3);
+        }catch (Exception e){
+            throw new BadRequestException("The File cannot be deleted");
+        }
+    }
+
 }
