@@ -28,6 +28,8 @@ public class Specie {
     @Column(columnDefinition = "TEXT")
     private String history;
     private String guideSheetUrl;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "specie")
+    private List<Faq> faqs;
 
     public Specie() {
         this.id = UUID.randomUUID().toString();
