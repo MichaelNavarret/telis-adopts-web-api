@@ -25,6 +25,9 @@ public class Specie {
     @OneToMany
     @JoinColumn(name = "specie_Id")
     private Set<SpecieForm> extraInfoList;
+    @Column(columnDefinition = "TEXT")
+    private String history;
+    private String guideSheetUrl;
 
     public Specie() {
         this.id = UUID.randomUUID().toString();
@@ -99,5 +102,21 @@ public class Specie {
 
     public void setExtraInfoList(Set<SpecieForm> extraInfoList) {
         this.extraInfoList = extraInfoList;
+    }
+
+    public String getHistory() {
+        return history;
+    }
+
+    public void setHistory(String history) {
+        this.history = history;
+    }
+
+    public String getGuideSheetUrl() {
+        return guideSheetUrl;
+    }
+
+    public void setGuideSheetUrl(String guideSheetUrl) {
+        this.guideSheetUrl = guideSheetUrl;
     }
 }
