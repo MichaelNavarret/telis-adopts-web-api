@@ -125,9 +125,58 @@ public class SpecieService {
             currentSpecie.setCode(specieCodeGenerator(request.getName()));
         }
 
+        if(StringUtils.isNotBlank(request.getStory())){
+           currentSpecie.setHistory(request.getStory());
+        }
+
         return new SpecieSingletonResponse(BaseResponse.Status.SUCCESS,
                 HttpStatus.CREATED.value(),
                 specieRepository.save(currentSpecie));
+    }
+
+    public SpecieSingletonResponse updateSpecieAsset(String specieId, MultipartFile inputFile, String assetType) {
+        if(StringUtils.isBlank(specieId)) throw new BadRequestException("The specieId cannot be null");
+        if(inputFile == null || inputFile.isEmpty()) throw new BadRequestException("The image cannot be null");
+        if(StringUtils.isBlank(assetType)) throw new BadRequestException("The assetType cannot be null");
+        Specie specie = findById(specieId);
+
+        String publicId = null;
+        switch (assetType){
+            case "LOGO":
+                publicId = cloudinaryService.uploadFile(inputFile, CLOUDINARY_LOGO_FOLDER_PATH);
+                if(specie.getLogoUrl() != null){
+                    cloudinaryService.destroyFile(specie.getLogoUrl(), CLOUDINARY_LOGO_FOLDER_PATH);
+                }
+                specie.setLogoUrl(cloudinaryService.getUrlFile(publicId, CLOUDINARY_LOGO_FOLDER_PATH));
+                break;
+            case "MASTER_LIST_BANNER":
+                publicId = cloudinaryService.uploadFile(inputFile, CLOUDINARY_MASTER_LIST_BANNER_FOLDER_PATH);
+                if(specie.getMasterListBannerUrl() != null){
+                    cloudinaryService.destroyFile(specie.getMasterListBannerUrl(), CLOUDINARY_MASTER_LIST_BANNER_FOLDER_PATH);
+                }
+                specie.setMasterListBannerUrl(cloudinaryService.getUrlFile(publicId, CLOUDINARY_MASTER_LIST_BANNER_FOLDER_PATH));
+                break;
+            case "TRAIT_SHEET":
+                publicId = cloudinaryService.uploadFile(inputFile, CLOUDINARY_TRAITS_SHEET_FOLDER_PATH);
+                if(specie.getTraitSheetUrl() != null){
+                    cloudinaryService.destroyFile(specie.getTraitSheetUrl(),CLOUDINARY_TRAITS_SHEET_FOLDER_PATH);
+                }
+                specie.setTraitSheetUrl(cloudinaryService.getUrlFile(publicId, CLOUDINARY_TRAITS_SHEET_FOLDER_PATH));
+                break;
+            case "GUIDE_SHEET":
+                publicId = cloudinaryService.uploadFile(inputFile, CLOUDINARY_GUIDE_SHEET_FOLDER_PATH);
+                if(specie.getGuideSheetUrl() != null){
+                    cloudinaryService.destroyFile(specie.getGuideSheetUrl(), CLOUDINARY_GUIDE_SHEET_FOLDER_PATH);
+                }
+                specie.setGuideSheetUrl(cloudinaryService.getUrlFile(publicId, CLOUDINARY_GUIDE_SHEET_FOLDER_PATH));
+                break;
+            default:
+                throw new BadRequestException("The assetType is not valid");
+        }
+
+        return new SpecieSingletonResponse(BaseResponse.Status.SUCCESS,
+                HttpStatus.CREATED.value(),
+                specieRepository.save(specie));
     }
 
     // ----------- Public Utils methods --------------

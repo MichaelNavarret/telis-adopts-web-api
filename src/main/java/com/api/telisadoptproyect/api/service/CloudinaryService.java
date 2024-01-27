@@ -55,11 +55,12 @@ public class CloudinaryService {
        }
     }
 
-    public void destroyFile (String urlFile){
+    public void destroyFile (String urlFile, String pathFolder){
         try {
             Cloudinary cloudinary = instanceCloudinary();
             cloudinary.config.secure = true;
-            String publicId = urlFile.substring(urlFile.lastIndexOf("/") + 1, urlFile.lastIndexOf("."));
+            String lastCode = urlFile.substring(urlFile.lastIndexOf("/") + 1, urlFile.lastIndexOf("."));
+            String publicId = pathFolder + "/" + lastCode;
             Map params3 = ObjectUtils.asMap(
                     "public_id", publicId
             );

@@ -85,4 +85,14 @@ public class SpecieController {
                 .ok()
                 .body(specieService.updateSpecie(specieId, request));
     }
+
+    @PatchMapping("/{specieId}/update-asset")
+    public ResponseEntity<SpecieSingletonResponse> updateSpecieAsset(
+            @PathVariable(name = "specieId") String specieId,
+            @RequestParam(name = "file", required = false)MultipartFile inputFile,
+            @RequestParam(name = "assetType", required = false) String assetType){
+        return ResponseEntity
+                .ok()
+                .body(specieService.updateSpecieAsset(specieId, inputFile, assetType));
+    }
 }
