@@ -125,6 +125,10 @@ public class SpecieService {
             currentSpecie.setCode(specieCodeGenerator(request.getName()));
         }
 
+        if(StringUtils.isNotBlank(request.getStory())){
+           currentSpecie.setHistory(request.getStory());
+        }
+
         return new SpecieSingletonResponse(BaseResponse.Status.SUCCESS,
                 HttpStatus.CREATED.value(),
                 specieRepository.save(currentSpecie));
