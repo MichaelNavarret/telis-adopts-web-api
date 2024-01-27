@@ -121,4 +121,12 @@ public class Specie {
     public void setGuideSheetUrl(String guideSheetUrl) {
         this.guideSheetUrl = guideSheetUrl;
     }
+
+    public List<Faq> getFaqs() {
+        return faqs;
+    }
+
+    public void setFaqs(List<Faq> faqs) {
+        this.faqs = faqs;
+    }
 }

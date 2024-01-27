@@ -1,10 +1,13 @@
 package com.api.telisadoptproyect.api.service;
 
 import com.api.telisadoptproyect.api.configuration.PropertiesConfig;
+import com.api.telisadoptproyect.api.request.SpecieRequests.FaqRequest;
 import com.api.telisadoptproyect.api.request.SpecieRequests.SpecieUpdateRequest;
 import com.api.telisadoptproyect.api.response.BaseResponse;
 import com.api.telisadoptproyect.api.response.SpecieResponses.SpecieCollectionResponse;
 import com.api.telisadoptproyect.api.response.SpecieResponses.SpecieSingletonResponse;
+import com.api.telisadoptproyect.api.validation.SpecieValidation;
+import com.api.telisadoptproyect.library.entity.Faq;
 import com.api.telisadoptproyect.library.entity.Specie;
 import com.api.telisadoptproyect.library.entity.SpecieForm;
 import com.api.telisadoptproyect.library.exception.BadRequestException;
@@ -22,6 +25,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Set;
 
 import static com.api.telisadoptproyect.commons.Constants.*;
@@ -36,6 +40,10 @@ public class SpecieService {
     private PropertiesConfig propertiesConfig;
     @Autowired
     private CloudinaryService cloudinaryService;
+    @Autowired
+    private SpecieValidation specieValidation;
+    @Autowired
+    private FaqService faqService;
 
     // ----------- Main Endpoints Methods --------------
     public Page<Specie> getSpecieCollection(Integer pageNumber, Integer pageLimit){

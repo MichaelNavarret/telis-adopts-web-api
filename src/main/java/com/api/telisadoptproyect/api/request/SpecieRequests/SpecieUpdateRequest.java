@@ -1,8 +1,9 @@
 package com.api.telisadoptproyect.api.request.SpecieRequests;
 
+import java.util.List;
+
 public class SpecieUpdateRequest {
     private String name;
-
     private String story;
     public SpecieUpdateRequest() {
     }
