@@ -2,6 +2,9 @@ package com.api.telisadoptproyect.library.entity;
 
 import jakarta.persistence.*;
 
+import java.util.Date;
+import java.util.UUID;
+
 @Entity
 public class Faq {
     @Id
@@ -15,8 +18,11 @@ public class Faq {
     @ManyToOne
     @JoinColumn(name = "specie_Id")
     private Specie specie;
+    private Date createdOn;
 
     public Faq() {
+        this.id = UUID.randomUUID().toString();
+        this.createdOn = new Date();
     }
 
     public String getId() {
@@ -57,5 +63,13 @@ public class Faq {
 
     public void setSpecie(Specie specie) {
         this.specie = specie;
+    }
+
+    public Date getCreatedOn() {
+        return createdOn;
+    }
+
+    public void setCreatedOn(Date createdOn) {
+        this.createdOn = createdOn;
     }
 }

@@ -22,26 +22,26 @@ public class FaqService {
     @Autowired
     private FaqRepository faqRepository;
     @Autowired
-    private SpecieService specieService;
-    @Autowired
     private SpecieRepository specieRepository;
 
     public FaqCollectionResponse getAllFaqsBySpecie(String specieId){
-        List<Faq> faqs = faqRepository.findBySpecie_Id(specieId);
+        List<Faq> faqs = faqRepository.findBySpecie_IdOrderByCreatedOnAsc(specieId);
         return new FaqCollectionResponse(faqs);
     }
 
-    public FaqSingletonResponse createFaq(String specieId, FaqCreateRequest faqCreateRequest){
-        if (StringUtils.isBlank(specieId)) throw new BadRequestException("SpecieId is required");
-        Specie specie = specieService.findById(specieId);
+    public FaqSingletonResponse createFaq(FaqCreateRequest faqCreateRequest){
+        if (faqCreateRequest == null) throw new BadRequestException("FaqCreateRequest is required");
+        if (StringUtils.isBlank(faqCreateRequest.getSpecieId())) throw new BadRequestException("SpecieId is required");
+        Specie specie = specieRepository.findById(faqCreateRequest.getSpecieId()).orElseThrow(() -> new BadRequestException("Specie not found"));
 
         Faq newFaq = buildFaqFromRequest(faqCreateRequest, specie);
+        faqRepository.save(newFaq);
 
-        List<Faq> oldFaqList = faqRepository.findBySpecie_Id(specieId);
+        List<Faq> oldFaqList = faqRepository.findBySpecie_Id(faqCreateRequest.getSpecieId());
         oldFaqList.add(newFaq);
         specie.setFaqs(oldFaqList);
-
         specieRepository.save(specie);
+
 
         return new FaqSingletonResponse(BaseResponse.Status.SUCCESS,
                                         HttpStatus.CREATED.value(),
@@ -51,7 +51,7 @@ public class FaqService {
     public FaqSingletonResponse updateFaq(String specieId, String faqId, FaqUpdateRequest faqUpdateRequest){
         if (StringUtils.isBlank(specieId)) throw new BadRequestException("SpecieId is required");
         if (StringUtils.isBlank(faqId)) throw new BadRequestException("FaqId is required");
-        specieService.findById(specieId);
+        specieRepository.findById(specieId).orElseThrow(() -> new BadRequestException("Specie not found"));
         Faq currentFaq = findById(faqId);
 
         if(StringUtils.isNotBlank(faqUpdateRequest.getQuestion())){
@@ -62,7 +62,11 @@ public class FaqService {
             currentFaq.setAnswer(faqUpdateRequest.getAnswer());
         }
 
-        currentFaq.setQuestion(faqUpdateRequest.getQuestion());
+        if(StringUtils.isNotBlank(faqUpdateRequest.getWarning())){
+            currentFaq.setWarning(faqUpdateRequest.getWarning());
+        }else{
+            currentFaq.setWarning(null);
+        }
 
         return new FaqSingletonResponse(BaseResponse.Status.SUCCESS,
                                         HttpStatus.OK.value(),
@@ -72,7 +76,7 @@ public class FaqService {
     public FaqSingletonResponse deleteFaq(String specieId, String faqId){
         if (StringUtils.isBlank(specieId)) throw new BadRequestException("SpecieId is required");
         if (StringUtils.isBlank(faqId)) throw new BadRequestException("FaqId is required");
-        Specie specie = specieService.findById(specieId);
+        Specie specie = specieRepository.findById(specieId).orElseThrow(() -> new BadRequestException("Specie not found"));
         Faq faq = findById(faqId);
 
         List<Faq> oldFaqList = specie.getFaqs();

@@ -25,12 +25,11 @@ public class FaqController {
 
     @PostMapping
     public ResponseEntity<FaqSingletonResponse> createFaq(
-            @RequestParam(value ="specieId") final String specieId,
             @RequestBody final FaqCreateRequest faqCreateRequest){
-        return ResponseEntity.ok(faqService.createFaq(specieId, faqCreateRequest));
+        return ResponseEntity.ok(faqService.createFaq(faqCreateRequest));
     }
 
-    @PatchMapping("/{faqId}")
+    @PutMapping("/{faqId}")
     public ResponseEntity<FaqSingletonResponse> updateFaq(
             @PathVariable(value = "faqId") final String faqId,
             @RequestParam(value ="specieId") final String specieId,

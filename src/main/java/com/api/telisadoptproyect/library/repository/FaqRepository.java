@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface FaqRepository extends JpaRepository<Faq, String> {
     List<Faq> findBySpecie_Id(String id);
+    List<Faq> findBySpecie_IdOrderByCreatedOnAsc(String id);
 }
