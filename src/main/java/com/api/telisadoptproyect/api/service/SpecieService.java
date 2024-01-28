@@ -5,6 +5,7 @@ import com.api.telisadoptproyect.api.request.SpecieRequests.SpecieUpdateRequest;
 import com.api.telisadoptproyect.api.response.BaseResponse;
 import com.api.telisadoptproyect.api.response.SpecieResponses.SpecieCollectionResponse;
 import com.api.telisadoptproyect.api.response.SpecieResponses.SpecieSingletonResponse;
+import com.api.telisadoptproyect.api.validation.SpecieValidation;
 import com.api.telisadoptproyect.library.entity.Specie;
 import com.api.telisadoptproyect.library.entity.SpecieForm;
 import com.api.telisadoptproyect.library.exception.BadRequestException;
@@ -36,6 +37,10 @@ public class SpecieService {
     private PropertiesConfig propertiesConfig;
     @Autowired
     private CloudinaryService cloudinaryService;
+    @Autowired
+    private SpecieValidation specieValidation;
+    @Autowired
+    private FaqService faqService;
 
     // ----------- Main Endpoints Methods --------------
     public Page<Specie> getSpecieCollection(Integer pageNumber, Integer pageLimit){

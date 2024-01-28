@@ -28,7 +28,7 @@ public class Specie {
     @Column(columnDefinition = "TEXT")
     private String history;
     private String guideSheetUrl;
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "specie")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "specie")
     private List<Faq> faqs;
 
     public Specie() {
@@ -120,5 +120,13 @@ public class Specie {
 
     public void setGuideSheetUrl(String guideSheetUrl) {
         this.guideSheetUrl = guideSheetUrl;
+    }
+
+    public List<Faq> getFaqs() {
+        return faqs;
+    }
+
+    public void setFaqs(List<Faq> faqs) {
+        this.faqs = faqs;
     }
 }
