@@ -51,7 +51,7 @@ public class RoleService {
         final List<String> permissions = new ArrayList<>();
         authorities.forEach(role -> {
             role.getPermissions().forEach(permission -> {
-                permissions.add(permission.getName());
+                permissions.add(permission.getCode());
             });
         });
         return permissions;

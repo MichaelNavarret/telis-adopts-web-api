@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,6 +25,7 @@ public class SpecieController {
     private SpecieService specieService;
 
     @GetMapping("/autocomplete")
+    @PreAuthorize("hasPermission(#null, {'can-read-species', 'can-write-species'})")
     public ResponseEntity<SpecieCollectionResponse> getSpeciesAutocomplete(){
         return ResponseEntity
                 .ok()
