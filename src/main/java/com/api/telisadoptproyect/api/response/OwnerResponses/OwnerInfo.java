@@ -18,7 +18,7 @@ public class OwnerInfo {
         this.nickName = owner.getNickName();
         this.email = owner.getEmail();
         this.status = owner.isActive();
-        Role role = owner.getRoles() != null ? owner.getRoles().iterator().next() : null;
+        Role role = !owner.getRoles().isEmpty() ? owner.getRoles().iterator().next() : null;
         if(role != null){
             this.role = new OwnerRoleSummaryInfo(role);
         }

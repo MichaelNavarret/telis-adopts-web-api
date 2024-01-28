@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,6 +23,7 @@ public class AdoptController {
     private AdoptService adoptService;
 
     @PostMapping("")
+    @PreAuthorize("hasPermission(#null, {'can-write-adopts'})")
     public ResponseEntity<AdoptSingletonResponse> createAdopt(
             @RequestBody AdoptCreateRequest request){
         return ResponseEntity
@@ -30,6 +32,7 @@ public class AdoptController {
     }
 
     @PutMapping("/{adoptId}/icon")
+    @PreAuthorize("hasPermission(#null, {'can-write-adopts'})")
     public ResponseEntity<AdoptSingletonResponse> uploadIconToAdopt(
             @PathVariable(name = "adoptId") String adoptId,
             @RequestParam (name = "file") MultipartFile adoptIcon){
@@ -39,6 +42,7 @@ public class AdoptController {
     }
 
     @GetMapping("")
+    @PreAuthorize("hasPermission(#null, {'can-read-adopts' , 'can-write-adopts'})")
     public ResponseEntity<AdoptCollectionResponse> getAdopts(
             @RequestHeader(name = PaginationUtils.X_PAGINATION_NUM, required = false, defaultValue = PaginationUtils.DEFAULT_PAGINATION_NUM) String pageNumber,
             @RequestHeader(name = PaginationUtils.X_PAGINATION_LIMIT, required = false, defaultValue = PaginationUtils.DEFAULT_PAGINATION_LIMIT) String pageLimit,
@@ -60,6 +64,7 @@ public class AdoptController {
     }
 
     @GetMapping("/autocomplete")
+    @PreAuthorize("hasPermission(#null, {'can-read-adopts' , 'can-write-adopts'})")
     public ResponseEntity<AdoptCollectionResponse> getAdoptsAutocomplete(
             @RequestParam(name ="specieId", required = false) String specieId,
             @RequestParam(name ="creationType", required = false) String creationType) {

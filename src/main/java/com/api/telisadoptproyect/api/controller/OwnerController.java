@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,12 +25,14 @@ public class OwnerController {
     private OwnerService ownerService;
 
     @GetMapping(value = "/autocomplete", produces = "application/json")
+    @PreAuthorize("hasPermission(#null, {'can-read-owners', 'can-write-owners'})")
     public ResponseEntity<OwnerCollectionResponse> getOwnersAutocomplete(){
         return ResponseEntity
                 .ok()
                 .body(ownerService.getOwnerCollectionAutocomplete());
     }
     @PostMapping(value = "", produces = "application/json")
+    @PreAuthorize("hasPermission(#null, {'can-write-owners'})")
     public ResponseEntity<OwnerSingletonResponse> createOwner(
             @RequestBody OwnerCreateRequest request){
         return ResponseEntity
@@ -38,6 +41,7 @@ public class OwnerController {
     }
 
     @GetMapping(value = "/me", produces = "application/json")
+    @PreAuthorize("hasPermission(#null, {'can-read-owners', 'can-write-owners'})")
     public ResponseEntity<OwnerSingletonResponse> getMyProfile(){
         Owner owner = ownerService.getMyProfile();
         return ResponseEntity
@@ -46,6 +50,7 @@ public class OwnerController {
     }
 
     @GetMapping("")
+    @PreAuthorize("hasPermission(#null, {'can-read-owners', 'can-write-owners'})")
     public ResponseEntity<OwnerCollectionResponse> getOwners(
             @RequestHeader(name = PaginationUtils.X_PAGINATION_NUM, required = false, defaultValue = PaginationUtils.DEFAULT_PAGINATION_NUM) String pageNumber,
             @RequestHeader(name = PaginationUtils.X_PAGINATION_LIMIT, required = false, defaultValue = PaginationUtils.DEFAULT_PAGINATION_LIMIT) String pageLimit,

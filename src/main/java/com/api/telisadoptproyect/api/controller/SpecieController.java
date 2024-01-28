@@ -33,6 +33,7 @@ public class SpecieController {
     }
 
     @GetMapping("")
+    @PreAuthorize("hasPermission(#null, {'can-read-species', 'can-write-species'})")
     public ResponseEntity<SpecieCollectionResponse> getSpecies(
             @RequestHeader(name = PaginationUtils.X_PAGINATION_NUM, required = false, defaultValue = PaginationUtils.DEFAULT_PAGINATION_NUM) String pageNumber,
             @RequestHeader(name = PaginationUtils.X_PAGINATION_LIMIT, required = false, defaultValue = PaginationUtils.DEFAULT_PAGINATION_LIMIT) String pageLimit){
@@ -50,6 +51,7 @@ public class SpecieController {
     }
 
     @GetMapping("/{specieId}")
+    @PreAuthorize("hasPermission(#null, {'can-read-species', 'can-write-species'})")
     public ResponseEntity<SpecieSingletonResponse> getSpecie(
             @PathVariable(name = "specieId") String specieId){
         return ResponseEntity
@@ -58,6 +60,7 @@ public class SpecieController {
     }
 
     @PostMapping("")
+    @PreAuthorize("hasPermission(#null, {'can-write-species'})")
     public ResponseEntity<SpecieSingletonResponse> createSpecie(
             @RequestParam(name = "specieName", required = false)String specieName,
             @RequestParam(name = "file", required = false)MultipartFile inputFile,
@@ -69,6 +72,7 @@ public class SpecieController {
     }
 
     @PostMapping("/{specieId}/specieForm")
+    @PreAuthorize("hasPermission(#null, {'can-write-species'})")
     public ResponseEntity<SpecieSingletonResponse> addSpecieForm(
             @PathVariable(name = "specieId") String specieId,
             @RequestParam(name = "file", required = false)MultipartFile imageSpecieForm,
@@ -80,6 +84,7 @@ public class SpecieController {
 
 
     @PutMapping("/{specieId}")
+    @PreAuthorize("hasPermission(#null, {'can-write-species'})")
     public ResponseEntity<SpecieSingletonResponse> updateSpecie(
             @PathVariable(name = "specieId") String specieId,
             @RequestBody SpecieUpdateRequest request){
@@ -89,6 +94,7 @@ public class SpecieController {
     }
 
     @PatchMapping("/{specieId}/update-asset")
+    @PreAuthorize("hasPermission(#null, {'can-write-species'})")
     public ResponseEntity<SpecieSingletonResponse> updateSpecieAsset(
             @PathVariable(name = "specieId") String specieId,
             @RequestParam(name = "file", required = false)MultipartFile inputFile,
