@@ -5,12 +5,11 @@ import com.api.telisadoptproyect.library.exception.RequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConversionException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-
-import java.nio.file.AccessDeniedException;
 
 @ControllerAdvice
 public class ControllerExceptionHandler {
@@ -37,7 +36,7 @@ public class ControllerExceptionHandler {
             errorResponse.setMessage("missing_request_header");
         } else if (e instanceof AccessDeniedException) {
             httpStatus = HttpStatus.FORBIDDEN;
-            errorResponse.setMessage("blocked_resource");
+            errorResponse.setMessage("You don't have permission to access this resource");
 
         } else{
             throw e;

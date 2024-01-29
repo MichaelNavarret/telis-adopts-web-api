@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +24,7 @@ public class TraitController {
 
 
     @GetMapping("/autocomplete")
+    @PreAuthorize("hasPermission(#null, {'can-read-traits', 'can-write-traits'})")
     public ResponseEntity<TraitCollectionResponse> getTraitsAutocomplete(
             @RequestParam(name = "specieId", required = false) String specieId){
         return ResponseEntity
@@ -31,6 +33,7 @@ public class TraitController {
     }
 
     @GetMapping("")
+    @PreAuthorize("hasPermission(#null, {'can-read-traits', 'can-write-traits'})")
     public ResponseEntity<TraitCollectionResponse> getTraits(
             @RequestHeader(name = PaginationUtils.X_PAGINATION_NUM, required = false, defaultValue = PaginationUtils.DEFAULT_PAGINATION_NUM) String pageNumber,
             @RequestHeader(name = PaginationUtils.X_PAGINATION_LIMIT, required = false, defaultValue = PaginationUtils.DEFAULT_PAGINATION_LIMIT) String pageLimit,
@@ -51,6 +54,7 @@ public class TraitController {
     }
 
     @GetMapping("/{traitId}")
+    @PreAuthorize("hasPermission(#null, {'can-read-traits', 'can-write-traits'})")
     public ResponseEntity<TraitSingletonResponse> getTrait(
             @RequestHeader(name = "specieId") String specieId,
             @PathVariable(name = "traitId") String traitId){
@@ -60,6 +64,7 @@ public class TraitController {
     }
 
     @PostMapping("")
+    @PreAuthorize("hasPermission(#null, {'can-write-traits'})")
     public ResponseEntity<TraitSingletonResponse> createTrait(
             @RequestBody TraitCreateRequest request){
         return ResponseEntity
@@ -68,6 +73,7 @@ public class TraitController {
     }
 
     @PutMapping("/{traitId}")
+    @PreAuthorize("hasPermission(#null, {'can-write-traits'})")
     public ResponseEntity<TraitSingletonResponse> updateTrait(
             @RequestHeader(name = "specieId") String specieId,
             @PathVariable(name = "traitId") String traitId,

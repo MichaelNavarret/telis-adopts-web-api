@@ -55,6 +55,6 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
 
     public void validateInputs(Authentication authentication, Object permission) {
         boolean isValidate = authentication != null && permission instanceof List && !Strings.isEmpty(permission.toString());
-        if (!isValidate) throw new BadRequestException("Authentication, targetDomainObject and permission are required");
+        if (!isValidate) throw new BadRequestException("Authentication and permission are required");
     }
 }
