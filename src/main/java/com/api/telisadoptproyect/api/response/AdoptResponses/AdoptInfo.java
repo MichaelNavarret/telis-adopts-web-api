@@ -1,5 +1,6 @@
 package com.api.telisadoptproyect.api.response.AdoptResponses;
 
+import com.api.telisadoptproyect.api.response.BadgeResponses.BadgeInfo;
 import com.api.telisadoptproyect.api.response.SubTraitResponses.SubTraitInfo;
 import com.api.telisadoptproyect.library.entity.Adopt;
 import com.api.telisadoptproyect.library.entity.Owner;
@@ -22,6 +23,7 @@ public class AdoptInfo {
     private List<SubTraitInfo> traits;
     private String iconUrl;
     private String specieFormId;
+    private List<BadgeInfo> badges;
     public AdoptInfo (Adopt adopt){
         this.id = adopt.getId();
         this.code = adopt.getCode();
@@ -36,6 +38,7 @@ public class AdoptInfo {
         this.traits = adopt.getSubTraits() != null? adopt.getSubTraits().stream().map(SubTraitInfo::new).collect(Collectors.toList()) : null;
         this.iconUrl = adopt.getIconUrl();
         this.specieFormId = adopt.getExtraInfo() != null? adopt.getExtraInfo().getId() : null;
+        this.badges = adopt.getBadges().isEmpty() ? null : adopt.getBadges().stream().map(BadgeInfo::new).collect(Collectors.toList());
     }
 
     public String getId() {
@@ -140,5 +143,13 @@ public class AdoptInfo {
 
     public void setSpecieFormId(String specieFormId) {
         this.specieFormId = specieFormId;
+    }
+
+    public List<BadgeInfo> getBadges() {
+        return badges;
+    }
+
+    public void setBadges(List<BadgeInfo> badges) {
+        this.badges = badges;
     }
 }
