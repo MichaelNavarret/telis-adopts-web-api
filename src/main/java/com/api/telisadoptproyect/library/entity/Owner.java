@@ -21,6 +21,9 @@ public class Owner {
     private List<OwnerOtp> otpList;
     private List<String> favorites;
     private boolean superAdmin;
+    @ManyToOne
+    @JoinColumn(name = "profileIconId")
+    private Icon profileIcon;
     public Owner() {
         this.id = UUID.randomUUID().toString();
         this.active = true;
@@ -106,5 +109,13 @@ public class Owner {
 
     public void setFavorites(List<String> favorites) {
         this.favorites = favorites;
+    }
+
+    public Icon getProfileIcon() {
+        return profileIcon;
+    }
+
+    public void setProfileIcon(Icon profileIcon) {
+        this.profileIcon = profileIcon;
     }
 }
