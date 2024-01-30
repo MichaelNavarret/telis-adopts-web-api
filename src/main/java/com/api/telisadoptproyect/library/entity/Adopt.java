@@ -4,6 +4,7 @@ import com.querydsl.core.annotations.QueryEntity;
 import jakarta.persistence.*;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -46,9 +47,16 @@ public class Adopt {
     @JoinColumn(name = "extra_info_Id")
     private SpecieForm extraInfo;
 
+    @ManyToMany
+    @JoinTable(name = "rel_adopt_badge",
+                joinColumns = @JoinColumn(name = "adoptId"),
+                inverseJoinColumns = @JoinColumn(name = "badgeId"))
+    private Set<Badge> badges;
+
     public Adopt() {
         this.id = UUID.randomUUID().toString();
         this.createdOn = new Date();
+        this.badges = new HashSet<>();
     }
 
     public String getId() {
@@ -161,5 +169,13 @@ public class Adopt {
 
     public void setExtraInfo(SpecieForm extraInfo) {
         this.extraInfo = extraInfo;
+    }
+
+    public Set<Badge> getBadges() {
+        return badges;
+    }
+
+    public void setBadges(Set<Badge> badges) {
+        this.badges = badges;
     }
 }
