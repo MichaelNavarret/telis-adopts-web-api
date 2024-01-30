@@ -11,6 +11,7 @@ public class Icon {
     private String id;
     private String code;
     private String iconUrl;
+    private boolean exclusive;
     @ManyToMany
     @JoinTable(name = "rel_icon_owner",
                joinColumns = @JoinColumn(name = "iconId"),
@@ -50,5 +51,13 @@ public class Icon {
 
     public void setAvailableFor(List<Owner> availableFor) {
         this.availableFor = availableFor;
+    }
+
+    public boolean isExclusive() {
+        return exclusive;
+    }
+
+    public void setExclusive(boolean exclusive) {
+        this.exclusive = exclusive;
     }
 }
