@@ -12,7 +12,7 @@ public class OwnerInfo {
     private boolean status;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private OwnerRoleSummaryInfo role;
-
+    private String iconUrl;
     public OwnerInfo(Owner owner){
         this.id = owner.getId();
         this.nickName = owner.getNickName();
@@ -22,6 +22,7 @@ public class OwnerInfo {
         if(role != null){
             this.role = new OwnerRoleSummaryInfo(role);
         }
+        this.iconUrl = owner.getProfileIcon() != null? owner.getProfileIcon().getIconUrl() : null;
     }
 
     public String getId() {
@@ -62,5 +63,13 @@ public class OwnerInfo {
 
     public void setRole(OwnerRoleSummaryInfo role) {
         this.role = role;
+    }
+
+    public String getIconUrl() {
+        return iconUrl;
+    }
+
+    public void setIconUrl(String iconUrl) {
+        this.iconUrl = iconUrl;
     }
 }
