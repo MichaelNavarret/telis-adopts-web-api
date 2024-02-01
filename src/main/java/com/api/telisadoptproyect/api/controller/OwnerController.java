@@ -69,4 +69,13 @@ public class OwnerController {
                 .headers(headers)
                 .body(ownerCollectionResponse);
     }
+
+    @GetMapping("/{ownerId}")
+    @PreAuthorize("hasPermission(#null, {'can-read-owners', 'can-write-owners'})")
+    public ResponseEntity<OwnerSingletonResponse> getOwnerById(
+            @PathVariable(name = "ownerId") String ownerId){
+        return ResponseEntity
+                .ok()
+                .body(new OwnerSingletonResponse(BaseResponse.Status.SUCCESS, HttpStatus.OK.value(), ownerService.getOwnerById(ownerId)));
+    }
 }
