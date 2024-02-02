@@ -76,6 +76,6 @@ public class OwnerController {
             @PathVariable(name = "ownerId") String ownerId){
         return ResponseEntity
                 .ok()
-                .body(new OwnerSingletonResponse(BaseResponse.Status.SUCCESS, HttpStatus.OK.value(), ownerService.getOwnerById(ownerId)));
+                .body(ownerService.getOwnerSingleton(ownerId));
     }
 }

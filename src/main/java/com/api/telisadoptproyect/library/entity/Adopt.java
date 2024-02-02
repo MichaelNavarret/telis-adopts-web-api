@@ -29,7 +29,7 @@ public class Adopt {
     private Owner owner;
     @ManyToMany
     @JoinTable(name="rel_owner_adopt", joinColumns = @JoinColumn(name = "adoptId"),
-                inverseJoinColumns = @JoinColumn(name = "ownerId"))
+                inverseJoinColumns = @JoinColumn(name = "designerId"))
     private Set<Owner> designers;
     @OneToMany(mappedBy = "adopt", cascade = CascadeType.ALL)
     private Set<SubTrait> subTraits;

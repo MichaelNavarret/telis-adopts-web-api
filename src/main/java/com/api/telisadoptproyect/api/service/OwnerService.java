@@ -5,10 +5,9 @@ import com.api.telisadoptproyect.api.response.BaseResponse;
 import com.api.telisadoptproyect.api.response.OwnerResponses.OwnerCollectionResponse;
 import com.api.telisadoptproyect.api.response.OwnerResponses.OwnerSingletonResponse;
 import com.api.telisadoptproyect.api.validation.OwnerValidation;
-import com.api.telisadoptproyect.library.entity.Owner;
-import com.api.telisadoptproyect.library.entity.PasswordResetToken;
-import com.api.telisadoptproyect.library.entity.QOwner;
+import com.api.telisadoptproyect.library.entity.*;
 import com.api.telisadoptproyect.library.exception.BadRequestException;
+import com.api.telisadoptproyect.library.repository.AdoptRepository;
 import com.api.telisadoptproyect.library.repository.OwnerRepository;
 import com.api.telisadoptproyect.library.repository.PasswordResetTokenRepository;
 import com.api.telisadoptproyect.library.util.PaginationUtils;
@@ -25,6 +24,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -37,6 +39,8 @@ public class OwnerService {
     private PasswordResetTokenRepository passwordResetTokenRepository;
     @Autowired
     private OwnerValidation ownerValidation;
+    @Autowired
+    private AdoptRepository adoptRepository;
 
     public OwnerSingletonResponse createOwner(OwnerCreateRequest createRequest) {
         ownerValidation.checkIfNicknameOwnerExist(createRequest.getNickName());
@@ -58,10 +62,24 @@ public class OwnerService {
         return ownerRepository.save(owner);
     }
 
+
+
     public Owner getOwnerByEmail(String email){
         return ownerRepository.findByEmail(email).orElseThrow(
                 () -> new BadRequestException("Owner not found with email: " + email)
         );
+    }
+
+    public OwnerSingletonResponse getOwnerSingleton(String ownerId){
+        Owner owner = getOwnerById(ownerId);
+        List<Adopt> ownerAdoptList = adoptRepository.findByOwner(owner);
+        Set<Badge> badges = new HashSet<>(ownerAdoptList.stream().map(Adopt::getBadges).flatMap(Set::stream).toList().stream().distinct().toList());
+        List<String> badgesCode = badges.stream().map(Badge::getCode).toList();
+
+        OwnerSingletonResponse response = new OwnerSingletonResponse(BaseResponse.Status.SUCCESS, HttpStatus.OK.value(), owner);
+        response.setBadgesCode(badgesCode);
+
+        return response;
     }
 
     public Owner getOwnerById(String ownerId){
