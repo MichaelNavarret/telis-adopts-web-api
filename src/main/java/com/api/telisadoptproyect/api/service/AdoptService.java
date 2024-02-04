@@ -92,7 +92,8 @@ public class AdoptService {
         return new AdoptSingletonResponse(BaseResponse.Status.SUCCESS, HttpStatus.OK.value(), foundAdopt);
     }
 
-    public Page<Adopt> getAdoptCollection(Integer pageNumber, Integer pageLimit, String specieId, String creationType, String sort) {
+    public Page<Adopt> getAdoptCollection(Integer pageNumber, Integer pageLimit, String specieId, String creationType,
+                                          String sort, String ownerId) {
         QAdopt qAdopt = QAdopt.adopt;
         BooleanExpression expression = qAdopt.id.isNotNull();
 
@@ -104,6 +105,10 @@ public class AdoptService {
             Adopt.CreationType creationTypeFound = EnumValidation.toEnum(Adopt.CreationType.class, creationType);
             if (creationTypeFound == null) throw new BadRequestException("The Creation Type is invalid.");
             expression = expression.and(qAdopt.creationType.eq(creationTypeFound));
+        }
+
+        if (StringUtils.isNotBlank(ownerId)){
+            expression = expression.and(qAdopt.owner.id.eq(ownerId));
         }
 
         Sort sortCriteria;

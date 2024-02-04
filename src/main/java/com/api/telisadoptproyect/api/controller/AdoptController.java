@@ -48,12 +48,13 @@ public class AdoptController {
             @RequestHeader(name = PaginationUtils.X_PAGINATION_LIMIT, required = false, defaultValue = PaginationUtils.DEFAULT_PAGINATION_LIMIT) String pageLimit,
             @RequestParam(name ="specieId", required = false) String specieId,
             @RequestParam(name ="creationType", required = false) String creationType,
-            @RequestParam(name = "sort", required = false) String sort) {
+            @RequestParam(name = "sort", required = false) String sort,
+            @RequestParam(name = "ownerId", required = false) String ownerId) {
 
 
         final Integer pageNumberValue = Integer.parseInt(pageNumber);
         final Integer pageLimitValue = Integer.parseInt(pageLimit);
-        final Page<Adopt> response = adoptService.getAdoptCollection(pageNumberValue, pageLimitValue, specieId, creationType, sort);
+        final Page<Adopt> response = adoptService.getAdoptCollection(pageNumberValue, pageLimitValue, specieId, creationType, sort, ownerId);
 
         HttpHeaders headers = PaginationUtils.createHttpHeaderForPagination(response, pageLimitValue);
         AdoptCollectionResponse adoptCollectionResponse = new AdoptCollectionResponse(response);

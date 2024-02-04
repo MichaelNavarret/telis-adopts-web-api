@@ -28,7 +28,7 @@ public class Adopt {
     @JoinColumn(name = "owner_Id")
     private Owner owner;
     @ManyToMany
-    @JoinTable(name="rel_owner_adopt", joinColumns = @JoinColumn(name = "adoptId"),
+    @JoinTable(name="rel_owner_designer", joinColumns = @JoinColumn(name = "adoptId"),
                 inverseJoinColumns = @JoinColumn(name = "designerId"))
     private Set<Owner> designers;
     @OneToMany(mappedBy = "adopt", cascade = CascadeType.ALL)
