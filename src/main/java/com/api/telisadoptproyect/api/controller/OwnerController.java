@@ -2,6 +2,7 @@ package com.api.telisadoptproyect.api.controller;
 
 import com.api.telisadoptproyect.api.request.OwnerRequests.OwnerCreateRequest;
 import com.api.telisadoptproyect.api.request.OwnerRequests.OwnerRequest;
+import com.api.telisadoptproyect.api.request.OwnerRequests.OwnerUpdateRequest;
 import com.api.telisadoptproyect.api.response.BaseResponse;
 import com.api.telisadoptproyect.api.response.OwnerResponses.OwnerCollectionResponse;
 import com.api.telisadoptproyect.api.response.OwnerResponses.OwnerSingletonResponse;
@@ -70,12 +71,22 @@ public class OwnerController {
                 .body(ownerCollectionResponse);
     }
 
-    @GetMapping("/{ownerId}")
+    @GetMapping(value = "/{ownerId}", produces = "application/json")
     @PreAuthorize("hasPermission(#null, {'can-read-owners', 'can-write-owners'})")
     public ResponseEntity<OwnerSingletonResponse> getOwnerById(
             @PathVariable(name = "ownerId") String ownerId){
         return ResponseEntity
                 .ok()
                 .body(ownerService.getOwnerSingleton(ownerId));
+    }
+
+    @PutMapping(value = "/{ownerId}", produces = "application/json")
+    @PreAuthorize("hasPermission(#null, {'can-write-owners'})")
+    public ResponseEntity<OwnerSingletonResponse> updateOwner(
+            @PathVariable(name = "ownerId") String ownerId,
+            @RequestBody OwnerUpdateRequest request){
+        return ResponseEntity
+                .ok()
+                .body(ownerService.updateOwner(ownerId, request));
     }
 }

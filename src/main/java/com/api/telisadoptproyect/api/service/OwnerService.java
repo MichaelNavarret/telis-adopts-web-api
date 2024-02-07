@@ -1,6 +1,7 @@
 package com.api.telisadoptproyect.api.service;
 
 import com.api.telisadoptproyect.api.request.OwnerRequests.OwnerCreateRequest;
+import com.api.telisadoptproyect.api.request.OwnerRequests.OwnerUpdateRequest;
 import com.api.telisadoptproyect.api.response.BaseResponse;
 import com.api.telisadoptproyect.api.response.OwnerResponses.OwnerCollectionResponse;
 import com.api.telisadoptproyect.api.response.OwnerResponses.OwnerSingletonResponse;
@@ -24,10 +25,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class OwnerService {
@@ -124,5 +123,29 @@ public class OwnerService {
         Pageable pageable = PageRequest.of(pageNumber, pageLimit, sort);
 
         return ownerRepository.findAll(query, pageable);
+    }
+
+    public OwnerSingletonResponse updateOwner(String ownerId, OwnerUpdateRequest request) {
+        if (StringUtils.isBlank(ownerId)) throw new BadRequestException("Owner id is required");
+        if (request == null) throw new BadRequestException("Owner update request is required");
+        Owner owner = getOwnerById(ownerId);
+
+        if (request.getFavoriteAdoptsIds() != null && !request.getFavoriteAdoptsIds().isEmpty()){
+            Set<String> favoriteAdoptsIds;
+            if (owner.getFavorites() != null){
+                favoriteAdoptsIds = new HashSet<>(owner.getFavorites());
+            } else {
+                favoriteAdoptsIds = new HashSet<>();
+            }
+
+            request.getFavoriteAdoptsIds().forEach(favoriteAdoptId -> {
+               Optional <Adopt> adopt = adoptRepository.findById(favoriteAdoptId);
+                if (adopt.isPresent()){
+                     favoriteAdoptsIds.add(favoriteAdoptId);
+                }
+            });
+            owner.setFavorites(favoriteAdoptsIds.stream().toList());
+        }
+        return new OwnerSingletonResponse(BaseResponse.Status.SUCCESS, HttpStatus.OK.value(), ownerRepository.save(owner));
     }
 }

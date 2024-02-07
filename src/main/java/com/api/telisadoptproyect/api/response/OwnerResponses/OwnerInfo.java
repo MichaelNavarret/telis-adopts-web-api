@@ -5,6 +5,8 @@ import com.api.telisadoptproyect.library.entity.Owner;
 import com.api.telisadoptproyect.library.entity.Role;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import java.util.List;
+
 public class OwnerInfo {
     private String id;
     private String nickName;
@@ -13,6 +15,7 @@ public class OwnerInfo {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private OwnerRoleSummaryInfo role;
     private String iconUrl;
+    private List<String> favoriteAdopts;
     public OwnerInfo(Owner owner){
         this.id = owner.getId();
         this.nickName = owner.getNickName();
@@ -23,6 +26,7 @@ public class OwnerInfo {
             this.role = new OwnerRoleSummaryInfo(role);
         }
         this.iconUrl = owner.getProfileIcon() != null? owner.getProfileIcon().getIconUrl() : null;
+        this.favoriteAdopts = owner.getFavorites();
     }
 
     public String getId() {
@@ -71,5 +75,13 @@ public class OwnerInfo {
 
     public void setIconUrl(String iconUrl) {
         this.iconUrl = iconUrl;
+    }
+
+    public List<String> getFavoriteAdopts() {
+        return favoriteAdopts;
+    }
+
+    public void setFavoriteAdopts(List<String> favoriteAdopts) {
+        this.favoriteAdopts = favoriteAdopts;
     }
 }
