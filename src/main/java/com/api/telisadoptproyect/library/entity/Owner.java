@@ -19,7 +19,11 @@ public class Owner {
     private Set<Role> roles;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "owner")
     private List<OwnerOtp> otpList;
-    private List<String> favorites;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "rel_owner_favorite_adopt", joinColumns = @JoinColumn(name = "ownerId"),
+            inverseJoinColumns = @JoinColumn(name = "adoptId"))
+    private Set<Adopt> favorites;
     private boolean superAdmin;
     @ManyToOne
     @JoinColumn(name = "profileIconId")
@@ -103,11 +107,11 @@ public class Owner {
         this.superAdmin = superAdmin;
     }
 
-    public List<String> getFavorites() {
+    public Set<Adopt> getFavorites() {
         return favorites;
     }
 
-    public void setFavorites(List<String> favorites) {
+    public void setFavorites(Set<Adopt> favorites) {
         this.favorites = favorites;
     }
 

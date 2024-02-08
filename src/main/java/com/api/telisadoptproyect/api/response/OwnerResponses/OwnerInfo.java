@@ -1,6 +1,7 @@
 package com.api.telisadoptproyect.api.response.OwnerResponses;
 
 import com.api.telisadoptproyect.api.response.RoleResponses.OwnerRoleSummaryInfo;
+import com.api.telisadoptproyect.library.entity.Adopt;
 import com.api.telisadoptproyect.library.entity.Owner;
 import com.api.telisadoptproyect.library.entity.Role;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -26,7 +27,7 @@ public class OwnerInfo {
             this.role = new OwnerRoleSummaryInfo(role);
         }
         this.iconUrl = owner.getProfileIcon() != null? owner.getProfileIcon().getIconUrl() : null;
-        this.favoriteAdopts = owner.getFavorites();
+        this.favoriteAdopts = owner.getFavorites() != null ? owner.getFavorites().stream().map(Adopt::getId).toList() : null;
     }
 
     public String getId() {

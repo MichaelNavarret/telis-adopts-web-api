@@ -122,6 +122,19 @@ public class AdoptService {
         return adoptRepository.findAll(expression, pageable);
     }
 
+    public Page<Adopt> getFavoriteAdopts(Integer pageNumber, Integer pageLimit, String ownerId){
+        Owner owner = ownerService.getOwnerById(ownerId);
+        Set<Adopt> favoriteAdopts = owner.getFavorites();
+
+        QAdopt qAdopt = QAdopt.adopt;
+        BooleanExpression expression = qAdopt.id.in(favoriteAdopts.stream().map(Adopt::getId).toList());
+
+        Sort sortCriteria = PaginationUtils.createSortCriteria("code:ASC");
+        Pageable pageable = PageRequest.of(pageNumber, pageLimit, sortCriteria);
+
+        return adoptRepository.findAll(expression, pageable);
+    }
+
     public AdoptCollectionResponse getAdoptCollectionAutocomplete(String specieId, String creationType) {
         QAdopt qAdopt = QAdopt.adopt;
         BooleanExpression expression = qAdopt.id.isNotNull();

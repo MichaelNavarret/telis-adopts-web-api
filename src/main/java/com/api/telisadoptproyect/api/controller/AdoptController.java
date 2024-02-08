@@ -73,4 +73,22 @@ public class AdoptController {
                 .ok()
                 .body(adoptService.getAdoptCollectionAutocomplete(specieId, creationType));
     }
+
+    @GetMapping("/{ownerId}/favorites")
+    @PreAuthorize("hasPermission(#null, {'can-read-adopts' , 'can-write-adopts'})")
+    public ResponseEntity<AdoptCollectionResponse> getFavoritesAdopts(
+            @PathVariable(name = "ownerId") String ownerId,
+            @RequestHeader(name = PaginationUtils.X_PAGINATION_NUM, required = false, defaultValue = PaginationUtils.DEFAULT_PAGINATION_NUM) String pageNumber,
+            @RequestHeader(name = PaginationUtils.X_PAGINATION_LIMIT, required = false, defaultValue = PaginationUtils.DEFAULT_PAGINATION_LIMIT) String pageLimit) {
+        final Integer pageNumberValue = Integer.parseInt(pageNumber);
+        final Integer pageLimitValue = Integer.parseInt(pageLimit);
+        final Page<Adopt> response = adoptService.getFavoriteAdopts(pageNumberValue, pageLimitValue, ownerId);
+
+        HttpHeaders headers = PaginationUtils.createHttpHeaderForPagination(response, pageLimitValue);
+        AdoptCollectionResponse adoptCollectionResponse = new AdoptCollectionResponse(response);
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .body(adoptCollectionResponse);
+    }
 }

@@ -131,21 +131,19 @@ public class OwnerService {
         Owner owner = getOwnerById(ownerId);
 
         if (request.getFavoriteAdoptsIds() != null && !request.getFavoriteAdoptsIds().isEmpty()){
-            Set<String> favoriteAdoptsIds;
-            if (owner.getFavorites() != null){
-                favoriteAdoptsIds = new HashSet<>(owner.getFavorites());
-            } else {
-                favoriteAdoptsIds = new HashSet<>();
+            if (owner.getFavorites().size() <= request.getFavoriteAdoptsIds().size()){
+                Set<Adopt> favoriteAdopts =  new HashSet<>();
+                request.getFavoriteAdoptsIds().forEach(favoriteAdoptId -> {
+                    Optional <Adopt> adopt = adoptRepository.findById(favoriteAdoptId);
+                    adopt.ifPresent(favoriteAdopts::add);
+                });
+                owner.setFavorites(favoriteAdopts);
             }
-
-            request.getFavoriteAdoptsIds().forEach(favoriteAdoptId -> {
-               Optional <Adopt> adopt = adoptRepository.findById(favoriteAdoptId);
-                if (adopt.isPresent()){
-                     favoriteAdoptsIds.add(favoriteAdoptId);
-                }
-            });
-            owner.setFavorites(favoriteAdoptsIds.stream().toList());
+        }else{
+            owner.setFavorites(null);
         }
         return new OwnerSingletonResponse(BaseResponse.Status.SUCCESS, HttpStatus.OK.value(), ownerRepository.save(owner));
     }
+
+
 }
