@@ -135,6 +135,16 @@ public class AdoptService {
         return adoptRepository.findAll(expression, pageable);
     }
 
+    public Page<Adopt> getDesignedAdopts(Integer pageNumber, Integer pageLimit, String ownerId){
+        QAdopt qAdopt = QAdopt.adopt;
+        BooleanExpression expression = qAdopt.designers.any().id.eq(ownerId);
+
+        Sort sortCriteria = PaginationUtils.createSortCriteria("code:ASC");
+        Pageable pageable = PageRequest.of(pageNumber, pageLimit, sortCriteria);
+
+        return adoptRepository.findAll(expression, pageable);
+    }
+
     public AdoptCollectionResponse getAdoptCollectionAutocomplete(String specieId, String creationType) {
         QAdopt qAdopt = QAdopt.adopt;
         BooleanExpression expression = qAdopt.id.isNotNull();
