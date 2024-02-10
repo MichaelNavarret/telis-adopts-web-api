@@ -130,6 +130,36 @@ public class OwnerService {
         if (request == null) throw new BadRequestException("Owner update request is required");
         Owner owner = getOwnerById(ownerId);
 
+        if (StringUtils.isNotBlank(request.getNickName()) && !request.getNickName().equals(owner.getNickName())){
+            ownerValidation.checkIfNicknameOwnerExist(request.getNickName());
+            owner.setNickName(request.getNickName());
+        }
+
+        if (StringUtils.isNotBlank(request.getEmail()) && !request.getEmail().equals(owner.getEmail())){
+            ownerValidation.checkIfEmailOwnerExist(request.getEmail());
+            owner.setEmail(request.getEmail());
+        }
+
+        if (StringUtils.isNotBlank(request.getDiscord())){
+            owner.setDiscord(request.getDiscord());
+        }
+
+        if (StringUtils.isNotBlank(request.getInstagram())){
+            owner.setInstagram(request.getInstagram());
+        }
+
+        if (StringUtils.isNotBlank(request.getTwitter())){
+            owner.setTwitter(request.getTwitter());
+        }
+
+        if (StringUtils.isNotBlank(request.getDevianart())){
+            owner.setDevianart(request.getDevianart());
+        }
+
+        if (StringUtils.isNotBlank(request.getToyhouse())){
+            owner.setToyhouse(request.getToyhouse());
+        }
+
         if (request.getFavoriteAdoptsIds() != null && !request.getFavoriteAdoptsIds().isEmpty()){
             if (owner.getFavorites().size() <= request.getFavoriteAdoptsIds().size()){
                 Set<Adopt> favoriteAdopts =  new HashSet<>();

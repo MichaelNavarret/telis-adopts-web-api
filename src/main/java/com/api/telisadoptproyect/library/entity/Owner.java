@@ -28,6 +28,11 @@ public class Owner {
     @ManyToOne
     @JoinColumn(name = "profileIconId")
     private Icon profileIcon;
+    private String discord;
+    private String instagram;
+    private String twitter;
+    private String toyhouse;
+    private String devianart;
     public Owner() {
         this.id = UUID.randomUUID().toString();
         this.active = true;
@@ -121,5 +126,45 @@ public class Owner {
 
     public void setProfileIcon(Icon profileIcon) {
         this.profileIcon = profileIcon;
+    }
+
+    public String getDiscord() {
+        return discord;
+    }
+
+    public void setDiscord(String discord) {
+        this.discord = discord;
+    }
+
+    public String getInstagram() {
+        return instagram;
+    }
+
+    public void setInstagram(String instagram) {
+        this.instagram = instagram;
+    }
+
+    public String getTwitter() {
+        return twitter;
+    }
+
+    public void setTwitter(String twitter) {
+        this.twitter = twitter;
+    }
+
+    public String getToyhouse() {
+        return toyhouse;
+    }
+
+    public void setToyhouse(String toyhouse) {
+        this.toyhouse = toyhouse;
+    }
+
+    public String getDevianart() {
+        return devianart;
+    }
+
+    public void setDevianart(String devianart) {
+        this.devianart = devianart;
     }
 }

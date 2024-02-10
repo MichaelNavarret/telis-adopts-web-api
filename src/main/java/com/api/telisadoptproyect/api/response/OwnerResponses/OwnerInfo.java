@@ -17,6 +17,11 @@ public class OwnerInfo {
     private OwnerRoleSummaryInfo role;
     private String iconUrl;
     private List<String> favoriteAdopts;
+    private String discord;
+    private String instagram;
+    private String twitter;
+    private String toyhouse;
+    private String devianart;
     public OwnerInfo(Owner owner){
         this.id = owner.getId();
         this.nickName = owner.getNickName();
@@ -28,6 +33,11 @@ public class OwnerInfo {
         }
         this.iconUrl = owner.getProfileIcon() != null? owner.getProfileIcon().getIconUrl() : null;
         this.favoriteAdopts = owner.getFavorites() != null ? owner.getFavorites().stream().map(Adopt::getId).toList() : null;
+        this.discord = owner.getDiscord();
+        this.instagram = owner.getInstagram();
+        this.twitter = owner.getTwitter();
+        this.toyhouse = owner.getToyhouse();
+        this.devianart = owner.getDevianart();
     }
 
     public String getId() {
@@ -84,5 +94,45 @@ public class OwnerInfo {
 
     public void setFavoriteAdopts(List<String> favoriteAdopts) {
         this.favoriteAdopts = favoriteAdopts;
+    }
+
+    public String getDiscord() {
+        return discord;
+    }
+
+    public void setDiscord(String discord) {
+        this.discord = discord;
+    }
+
+    public String getInstagram() {
+        return instagram;
+    }
+
+    public void setInstagram(String instagram) {
+        this.instagram = instagram;
+    }
+
+    public String getTwitter() {
+        return twitter;
+    }
+
+    public void setTwitter(String twitter) {
+        this.twitter = twitter;
+    }
+
+    public String getToyhouse() {
+        return toyhouse;
+    }
+
+    public void setToyhouse(String toyhouse) {
+        this.toyhouse = toyhouse;
+    }
+
+    public String getDevianart() {
+        return devianart;
+    }
+
+    public void setDevianart(String devianart) {
+        this.devianart = devianart;
     }
 }
