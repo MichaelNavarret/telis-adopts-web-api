@@ -9,6 +9,7 @@ import com.api.telisadoptproyect.api.validation.OwnerValidation;
 import com.api.telisadoptproyect.library.entity.*;
 import com.api.telisadoptproyect.library.exception.BadRequestException;
 import com.api.telisadoptproyect.library.repository.AdoptRepository;
+import com.api.telisadoptproyect.library.repository.IconRepository;
 import com.api.telisadoptproyect.library.repository.OwnerRepository;
 import com.api.telisadoptproyect.library.repository.PasswordResetTokenRepository;
 import com.api.telisadoptproyect.library.util.PaginationUtils;
@@ -40,6 +41,8 @@ public class OwnerService {
     private OwnerValidation ownerValidation;
     @Autowired
     private AdoptRepository adoptRepository;
+    @Autowired
+    private IconRepository iconRepository;
 
     public OwnerSingletonResponse createOwner(OwnerCreateRequest createRequest) {
         ownerValidation.checkIfNicknameOwnerExist(createRequest.getNickName());
@@ -158,6 +161,15 @@ public class OwnerService {
 
         if (StringUtils.isNotBlank(request.getToyhouse())){
             owner.setToyhouse(request.getToyhouse());
+        }
+
+        if (StringUtils.isNotBlank(request.getIconId())){
+            Optional<Icon> icon = iconRepository.findById(request.getIconId());
+            if(icon.isPresent()){
+                owner.setProfileIcon(icon.get());
+            }else{
+                throw new BadRequestException("Icon not found with id: " + request.getIconId());
+            }
         }
 
         if (request.getFavoriteAdoptsIds() != null && !request.getFavoriteAdoptsIds().isEmpty()){

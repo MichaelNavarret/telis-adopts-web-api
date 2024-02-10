@@ -10,6 +10,7 @@ public class OwnerUpdateRequest {
     private String twitter;
     private String devianart;
     private String toyhouse;
+    private String iconId;
     private List<String> favoriteAdoptsIds;
 
     public OwnerUpdateRequest() {
@@ -77,5 +78,13 @@ public class OwnerUpdateRequest {
 
     public void setToyhouse(String toyhouse) {
         this.toyhouse = toyhouse;
+    }
+
+    public String getIconId() {
+        return iconId;
+    }
+
+    public void setIconId(String iconId) {
+        this.iconId = iconId;
     }
 }
