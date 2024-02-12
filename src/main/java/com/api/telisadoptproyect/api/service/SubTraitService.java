@@ -1,6 +1,8 @@
 package com.api.telisadoptproyect.api.service;
 
 import com.api.telisadoptproyect.api.request.SubTraitRequests.SubTraitCreateRequest;
+import com.api.telisadoptproyect.api.request.SubTraitRequests.SubTraitUpdateRequest;
+import com.api.telisadoptproyect.api.response.SubTraitResponses.SubTraitInfo;
 import com.api.telisadoptproyect.api.validation.SubTraitValidation;
 import com.api.telisadoptproyect.library.entity.Adopt;
 import com.api.telisadoptproyect.library.entity.SubTrait;
@@ -41,6 +43,15 @@ public class SubTraitService {
 
         subTraitValidation.validateIfSubTraitsBelongSpecie(mainTraits, adopt.getSpecie());
         return new HashSet<>(subTraitRepository.saveAll(subTraits));
+    }
+
+
+    public void updateSubTraitAdditionalInfo(SubTraitUpdateRequest subTrait){
+        SubTrait subTraitToUpdate = subTraitRepository.findById(subTrait.getId()).orElseThrow(
+                () -> new BadRequestException("The SubTrait does not exist.")
+        );
+        subTraitToUpdate.setAdditionalInfo(subTrait.getAdditionalInfo());
+        save(subTraitToUpdate);
     }
 
     public SubTrait save (SubTrait subTrait){

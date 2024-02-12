@@ -1,10 +1,12 @@
 package com.api.telisadoptproyect.api.service;
 
 import com.api.telisadoptproyect.api.request.AdoptRequests.AdoptCreateRequest;
+import com.api.telisadoptproyect.api.request.AdoptRequests.AdoptUpdateRequest;
 import com.api.telisadoptproyect.api.request.SubTraitRequests.SubTraitCreateRequest;
 import com.api.telisadoptproyect.api.response.AdoptResponses.AdoptCollectionResponse;
 import com.api.telisadoptproyect.api.response.AdoptResponses.AdoptSingletonResponse;
 import com.api.telisadoptproyect.api.response.BaseResponse;
+import com.api.telisadoptproyect.api.response.SubTraitResponses.SubTraitInfo;
 import com.api.telisadoptproyect.library.entity.*;
 import com.api.telisadoptproyect.library.exception.BadRequestException;
 import com.api.telisadoptproyect.library.repository.AdoptRepository;
@@ -162,6 +164,26 @@ public class AdoptService {
         return new AdoptCollectionResponse((List<Adopt>) adoptRepository.findAll(expression));
     }
 
+    public AdoptSingletonResponse updateAdopt(String adoptId, AdoptUpdateRequest request) {
+        if (adoptId == null) throw new BadRequestException("The adoptId cannot be null");
+        if (request == null) throw new BadRequestException("The request cannot be null");
+
+        Adopt adopt = adoptRepository.findById(adoptId).orElseThrow(() -> new BadRequestException("The adoptId is invalid"));
+
+        if (StringUtils.isNotBlank(request.getName())){
+            adopt.setName(request.getName());
+        }
+
+        if(request.getSubTraits() != null && !request.getSubTraits().isEmpty()){
+          request.getSubTraits().forEach(subTraitInfo -> {
+              subTraitService.updateSubTraitAdditionalInfo(subTraitInfo);
+          });
+        }
+        adoptRepository.save(adopt);
+
+        return new AdoptSingletonResponse(BaseResponse.Status.SUCCESS, HttpStatus.OK.value(), adopt);
+    }
+
     //------------------------------------------- [PRIVATE METHODS]
     //---------------------------------------------------------------------------------------
     private void createAndLinkSubTraitsToAdopt(List<SubTraitCreateRequest> requests, Adopt adopt){
@@ -261,6 +283,4 @@ public class AdoptService {
             adopt.setOwner(owner);
         }
     }
-
-
 }

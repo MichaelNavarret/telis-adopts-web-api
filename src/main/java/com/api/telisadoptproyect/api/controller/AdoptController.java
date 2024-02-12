@@ -1,6 +1,7 @@
 package com.api.telisadoptproyect.api.controller;
 
 import com.api.telisadoptproyect.api.request.AdoptRequests.AdoptCreateRequest;
+import com.api.telisadoptproyect.api.request.AdoptRequests.AdoptUpdateRequest;
 import com.api.telisadoptproyect.api.response.AdoptResponses.AdoptCollectionResponse;
 import com.api.telisadoptproyect.api.response.AdoptResponses.AdoptSingletonResponse;
 import com.api.telisadoptproyect.api.service.AdoptService;
@@ -108,5 +109,15 @@ public class AdoptController {
                 .ok()
                 .headers(headers)
                 .body(adoptCollectionResponse);
+    }
+
+    @PutMapping("/{adoptId}")
+    @PreAuthorize("hasPermission(#null, {'can-write-adopts'})")
+    public ResponseEntity<AdoptSingletonResponse> updateAdopt(
+            @PathVariable(name = "adoptId") String adoptId,
+            @RequestBody AdoptUpdateRequest request){
+        return ResponseEntity
+                .ok()
+                .body(adoptService.updateAdopt(adoptId, request));
     }
 }
