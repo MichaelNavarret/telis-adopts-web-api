@@ -184,6 +184,49 @@ public class OwnerService {
         }else{
             owner.setFavorites(null);
         }
+
+        return new OwnerSingletonResponse(BaseResponse.Status.SUCCESS, HttpStatus.OK.value(), ownerRepository.save(owner));
+    }
+
+    public OwnerSingletonResponse addFavoriteCharacter(String ownerId, String adoptId){
+        Owner owner = getOwnerById(ownerId);
+        Adopt adopt = adoptRepository.findById(adoptId).orElseThrow(
+                () -> new BadRequestException("Adopt not found with id: " + adoptId)
+        );
+
+        Set<Adopt> oldFavoritesCharacters = owner.getFavoriteCharacters();
+
+        if (oldFavoritesCharacters == null || oldFavoritesCharacters.isEmpty()){
+            oldFavoritesCharacters = new HashSet<>();
+            adopt.setFavoriteCharacterIndex(1);
+            oldFavoritesCharacters.add(adopt);
+            owner.setFavoriteCharacters(oldFavoritesCharacters);
+        }else{
+            if (oldFavoritesCharacters.contains(adopt)){
+                throw new BadRequestException("The character is already in the favorites");
+            }
+
+            if(oldFavoritesCharacters.size() != 3){
+                adopt.setFavoriteCharacterIndex(oldFavoritesCharacters.size() + 1);
+                oldFavoritesCharacters.add(adopt);
+                owner.setFavoriteCharacters(oldFavoritesCharacters);
+            }
+
+            if(oldFavoritesCharacters.size() == 3){
+                oldFavoritesCharacters.forEach(favoriteCharacter -> {
+                    if(favoriteCharacter.getFavoriteCharacterIndex() == 1){
+                        favoriteCharacter.setFavoriteCharacterIndex(0);
+                    }else{
+                        favoriteCharacter.setFavoriteCharacterIndex(favoriteCharacter.getFavoriteCharacterIndex() - 1);
+                    }
+                });
+                adopt.setFavoriteCharacterIndex(3);
+                oldFavoritesCharacters.add(adopt);
+                Set<Adopt> newFavoritesCharacters = oldFavoritesCharacters.stream()
+                        .filter(favoriteCharacter -> favoriteCharacter.getFavoriteCharacterIndex() != 0).collect(Collectors.toSet());
+                owner.setFavoriteCharacters(newFavoritesCharacters);
+            }
+        }
         return new OwnerSingletonResponse(BaseResponse.Status.SUCCESS, HttpStatus.OK.value(), ownerRepository.save(owner));
     }
 

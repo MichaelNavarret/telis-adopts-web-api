@@ -9,6 +9,5 @@ import java.util.List;
 
 public interface AdoptRepository extends JpaRepository<Adopt, String>, QuerydslPredicateExecutor<Adopt> {
     Adopt findFirstByCreationTypeOrderByCreatedOnDesc(Adopt.CreationType type);
-
     List<Adopt> findByOwner(Owner owner);
 }

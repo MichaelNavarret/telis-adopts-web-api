@@ -184,6 +184,19 @@ public class AdoptService {
         return new AdoptSingletonResponse(BaseResponse.Status.SUCCESS, HttpStatus.OK.value(), adopt);
     }
 
+    public Page<Adopt> getFavoriteCharacters(Integer pageNumber, Integer pageLimit, String ownerId){
+        Owner owner = ownerService.getOwnerById(ownerId);
+        Set<Adopt> favoriteAdopts = owner.getFavoriteCharacters();
+
+        QAdopt qAdopt = QAdopt.adopt;
+        BooleanExpression expression = qAdopt.id.in(favoriteAdopts.stream().map(Adopt::getId).toList());
+
+        Sort sortCriteria = PaginationUtils.createSortCriteria("code:ASC");
+        Pageable pageable = PageRequest.of(pageNumber, pageLimit, sortCriteria);
+
+        return adoptRepository.findAll(expression, pageable);
+    }
+
     //------------------------------------------- [PRIVATE METHODS]
     //---------------------------------------------------------------------------------------
     private void createAndLinkSubTraitsToAdopt(List<SubTraitCreateRequest> requests, Adopt adopt){

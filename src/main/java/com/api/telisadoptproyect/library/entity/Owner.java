@@ -33,6 +33,10 @@ public class Owner {
     private String twitter;
     private String toyhouse;
     private String devianart;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "rel_owner_favorite_character", joinColumns = @JoinColumn(name = "ownerId"),
+            inverseJoinColumns = @JoinColumn(name = "adoptId"))
+    private Set<Adopt> favoriteCharacters;
     public Owner() {
         this.id = UUID.randomUUID().toString();
         this.active = true;
@@ -166,5 +170,13 @@ public class Owner {
 
     public void setDevianart(String devianart) {
         this.devianart = devianart;
+    }
+
+    public Set<Adopt> getFavoriteCharacters() {
+        return favoriteCharacters;
+    }
+
+    public void setFavoriteCharacters(Set<Adopt> favoriteCharacters) {
+        this.favoriteCharacters = favoriteCharacters;
     }
 }

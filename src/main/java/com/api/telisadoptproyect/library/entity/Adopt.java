@@ -53,10 +53,12 @@ public class Adopt {
                 inverseJoinColumns = @JoinColumn(name = "badgeId"))
     private Set<Badge> badges;
 
+    private int favoriteCharacterIndex;
     public Adopt() {
         this.id = UUID.randomUUID().toString();
         this.createdOn = new Date();
         this.badges = new HashSet<>();
+        this.favoriteCharacterIndex = 0;
     }
 
     public String getId() {
@@ -177,5 +179,13 @@ public class Adopt {
 
     public void setBadges(Set<Badge> badges) {
         this.badges = badges;
+    }
+
+    public int getFavoriteCharacterIndex() {
+        return favoriteCharacterIndex;
+    }
+
+    public void setFavoriteCharacterIndex(int favoriteCharacterIndex) {
+        this.favoriteCharacterIndex = favoriteCharacterIndex;
     }
 }

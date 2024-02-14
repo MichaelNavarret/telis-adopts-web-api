@@ -12,7 +12,6 @@ public class OwnerUpdateRequest {
     private String toyhouse;
     private String iconId;
     private List<String> favoriteAdoptsIds;
-
     public OwnerUpdateRequest() {
     }
 
