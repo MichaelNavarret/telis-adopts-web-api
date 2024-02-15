@@ -24,7 +24,6 @@ public class OwnerInfo {
     private String twitter;
     private String toyhouse;
     private String devianart;
-    private List<String> favoriteCharacters;
     public OwnerInfo(Owner owner){
         this.id = owner.getId();
         this.nickName = owner.getNickName();
@@ -41,10 +40,6 @@ public class OwnerInfo {
         this.twitter = owner.getTwitter();
         this.toyhouse = owner.getToyhouse();
         this.devianart = owner.getDevianart();
-        this.favoriteCharacters = owner.getFavoriteCharacters() != null ? owner.getFavoriteCharacters().stream()
-                                                                                .sorted(Comparator.comparingInt(Adopt::getFavoriteCharacterIndex))
-                                                                                .map(Adopt::getId)
-                                                                                .collect(Collectors.toList()) : null;
     }
 
     public String getId() {
@@ -141,13 +136,5 @@ public class OwnerInfo {
 
     public void setDevianart(String devianart) {
         this.devianart = devianart;
-    }
-
-    public List<String> getFavoriteCharacters() {
-        return favoriteCharacters;
-    }
-
-    public void setFavoriteCharacters(List<String> favoriteCharacters) {
-        this.favoriteCharacters = favoriteCharacters;
     }
 }

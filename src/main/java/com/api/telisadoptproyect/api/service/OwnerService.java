@@ -1,5 +1,6 @@
 package com.api.telisadoptproyect.api.service;
 
+import com.api.telisadoptproyect.api.request.OwnerRequests.OwnerAddCharacterFavoriteRequest;
 import com.api.telisadoptproyect.api.request.OwnerRequests.OwnerCreateRequest;
 import com.api.telisadoptproyect.api.request.OwnerRequests.OwnerUpdateRequest;
 import com.api.telisadoptproyect.api.response.BaseResponse;
@@ -188,10 +189,10 @@ public class OwnerService {
         return new OwnerSingletonResponse(BaseResponse.Status.SUCCESS, HttpStatus.OK.value(), ownerRepository.save(owner));
     }
 
-    public OwnerSingletonResponse addFavoriteCharacter(String ownerId, String adoptId){
+    public OwnerSingletonResponse addFavoriteCharacter(String ownerId, OwnerAddCharacterFavoriteRequest request){
         Owner owner = getOwnerById(ownerId);
-        Adopt adopt = adoptRepository.findById(adoptId).orElseThrow(
-                () -> new BadRequestException("Adopt not found with id: " + adoptId)
+        Adopt adopt = adoptRepository.findById(request.getAdoptId()).orElseThrow(
+                () -> new BadRequestException("Adopt not found with id: " + request.getAdoptId())
         );
 
         Set<Adopt> oldFavoritesCharacters = owner.getFavoriteCharacters();

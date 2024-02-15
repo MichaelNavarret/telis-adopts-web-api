@@ -191,7 +191,7 @@ public class AdoptService {
         QAdopt qAdopt = QAdopt.adopt;
         BooleanExpression expression = qAdopt.id.in(favoriteAdopts.stream().map(Adopt::getId).toList());
 
-        Sort sortCriteria = PaginationUtils.createSortCriteria("code:ASC");
+        Sort sortCriteria = PaginationUtils.createSortCriteria("favoriteCharacterIndex:ASC");
         Pageable pageable = PageRequest.of(pageNumber, pageLimit, sortCriteria);
 
         return adoptRepository.findAll(expression, pageable);

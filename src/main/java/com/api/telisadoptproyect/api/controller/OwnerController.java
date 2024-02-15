@@ -1,5 +1,6 @@
 package com.api.telisadoptproyect.api.controller;
 
+import com.api.telisadoptproyect.api.request.OwnerRequests.OwnerAddCharacterFavoriteRequest;
 import com.api.telisadoptproyect.api.request.OwnerRequests.OwnerCreateRequest;
 import com.api.telisadoptproyect.api.request.OwnerRequests.OwnerRequest;
 import com.api.telisadoptproyect.api.request.OwnerRequests.OwnerUpdateRequest;
@@ -88,5 +89,15 @@ public class OwnerController {
         return ResponseEntity
                 .ok()
                 .body(ownerService.updateOwner(ownerId, request));
+    }
+
+    @PutMapping(value = "/{ownerId}/favorite-character", produces = "application/json")
+    @PreAuthorize("hasPermission(#null, {'can-write-owners'})")
+    public ResponseEntity<OwnerSingletonResponse> addFavoriteCharacter(
+            @PathVariable(name = "ownerId") String ownerId,
+            @RequestBody OwnerAddCharacterFavoriteRequest request){
+        return ResponseEntity
+                .ok()
+                .body(ownerService.addFavoriteCharacter(ownerId, request));
     }
 }
