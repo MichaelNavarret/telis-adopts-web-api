@@ -4,6 +4,7 @@ import com.api.telisadoptproyect.api.response.OwnerResponses.OwnerInfo;
 import com.api.telisadoptproyect.library.entity.Icon;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class IconInfo {
     private String id;
@@ -15,7 +16,7 @@ public class IconInfo {
         this.id = icon.getId();
         this.code = icon.getCode();
         this.iconUrl = icon.getIconUrl();
-        this.availableFor = icon.getAvailableFor().stream().map(OwnerInfo::new).toList();
+        this.availableFor = icon.getAvailableFor().stream().map(OwnerInfo::new).collect(Collectors.toList());
     }
 
     public String getId() {

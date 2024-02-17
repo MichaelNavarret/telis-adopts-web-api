@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class SubTraitService {
@@ -36,9 +37,9 @@ public class SubTraitService {
             subTrait.setMainTrait(traitService.findById(request.getMainTraitId()));
             subTrait.setRarity(rarity);
             return subTrait;
-        }).toList();
+        }).collect(Collectors.toList());
 
-        List<String> mainTraitsIds = createRequestList.stream().map(SubTraitCreateRequest::getMainTraitId).toList();
+        List<String> mainTraitsIds = createRequestList.stream().map(SubTraitCreateRequest::getMainTraitId).collect(Collectors.toList());
         List<Trait> mainTraits = traitService.findByIds(mainTraitsIds);
 
         subTraitValidation.validateIfSubTraitsBelongSpecie(mainTraits, adopt.getSpecie());

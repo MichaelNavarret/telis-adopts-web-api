@@ -25,6 +25,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TraitService {
@@ -100,7 +101,7 @@ public class TraitService {
         }
 
         if (updateRequest.getRarities() != null){
-            trait.setRarities(updateRequest.getRarities().stream().map(rarity -> EnumValidation.toEnum(Trait.Rarity.class, rarity)).toList());
+            trait.setRarities(updateRequest.getRarities().stream().map(rarity -> EnumValidation.toEnum(Trait.Rarity.class, rarity)).collect(Collectors.toList()));
         }
 
         return new TraitSingletonResponse(
@@ -125,7 +126,7 @@ public class TraitService {
     public List<Trait> findByIds(List<String> traitIds){
         return traitIds.stream().map(traitId -> traitRepository.findById(traitId).orElseThrow(
                 () -> new BadRequestException("One of the trait ids are not valid")
-        )).toList();
+        )).collect(Collectors.toList());
     }
 
     public TraitCollectionResponse getTraitCollectionAutocomplete(String specieId) {
@@ -147,7 +148,7 @@ public class TraitService {
     private Trait buildTrait(TraitCreateRequest createRequest, Specie specie){
         Trait trait = new Trait();
         trait.setTrait(createRequest.getTrait());
-        trait.setRarities(createRequest.getRarities().stream().map(rarity -> EnumValidation.toEnum(Trait.Rarity.class, rarity)).toList());
+        trait.setRarities(createRequest.getRarities().stream().map(rarity -> EnumValidation.toEnum(Trait.Rarity.class, rarity)).collect(Collectors.toList()));
         trait.setSpecie(specie);
         trait.setDisplayPriority(createRequest.getDisplayPriority());
         return traitRepository.save(trait);

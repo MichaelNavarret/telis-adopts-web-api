@@ -6,6 +6,7 @@ import com.api.telisadoptproyect.library.entity.Role;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class RoleInfo {
     private String id;
@@ -21,7 +22,7 @@ public class RoleInfo {
         this.id = role.getId();
         this.name = role.getName();
         this.active = role.isActive();
-        this.permissions = role.getPermissions() != null? role.getPermissions().stream().map(PermissionInfo::new).toList() : null;
+        this.permissions = role.getPermissions() != null? role.getPermissions().stream().map(PermissionInfo::new).collect(Collectors.toList()) : null;
         this.description = role.getDescription();
         this.createdOn = role.getCreatedOn();
         this.updatedOn = role.getUpdatedOn();

@@ -34,7 +34,7 @@ public class OwnerInfo {
             this.role = new OwnerRoleSummaryInfo(role);
         }
         this.iconUrl = owner.getProfileIcon() != null? owner.getProfileIcon().getIconUrl() : null;
-        this.favoriteAdopts = owner.getFavorites() != null ? owner.getFavorites().stream().map(Adopt::getId).toList() : null;
+        this.favoriteAdopts = owner.getFavorites() != null ? owner.getFavorites().stream().map(Adopt::getId).collect(Collectors.toList()) : null;
         this.discord = owner.getDiscord();
         this.instagram = owner.getInstagram();
         this.twitter = owner.getTwitter();

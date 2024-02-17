@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class OwnerCollectionResponse extends BaseResponse {
     private List<OwnerInfo> ownerInfoList;
@@ -18,12 +19,12 @@ public class OwnerCollectionResponse extends BaseResponse {
 
     public  OwnerCollectionResponse(Page<Owner> owners){
         super(BaseResponse.Status.SUCCESS, HttpStatus.OK.value());
-        this.ownerInfoList = owners.stream().map(OwnerInfo::new).toList();
+        this.ownerInfoList = owners.stream().map(OwnerInfo::new).collect(Collectors.toList());
     }
 
     public OwnerCollectionResponse(Status status, Integer code, List<Owner> owners){
         super(status, code);
-        this.ownerInfoList = owners.stream().map(OwnerInfo::new).toList();
+        this.ownerInfoList = owners.stream().map(OwnerInfo::new).collect(Collectors.toList());
     }
 
     public List<OwnerInfo> getOwnerInfoList() {

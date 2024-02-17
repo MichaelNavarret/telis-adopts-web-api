@@ -5,6 +5,7 @@ import com.api.telisadoptproyect.library.entity.Icon;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class IconCollectionResponse extends BaseResponse {
     private List<IconInfo> iconInfoList;
@@ -16,7 +17,7 @@ public class IconCollectionResponse extends BaseResponse {
 
     public IconCollectionResponse(Status status, Integer code, List<Icon> icons){
         super(status, code);
-        this.iconInfoList = icons.stream().map(IconInfo::new).toList();
+        this.iconInfoList = icons.stream().map(IconInfo::new).collect(Collectors.toList());
     }
 
     public void setIconInfoList(List<IconInfo> iconInfoList) {

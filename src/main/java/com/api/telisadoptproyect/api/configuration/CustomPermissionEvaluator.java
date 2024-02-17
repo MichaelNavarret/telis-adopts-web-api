@@ -16,6 +16,8 @@ import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
 public class CustomPermissionEvaluator implements PermissionEvaluator {
     @Autowired
@@ -40,7 +42,7 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
 
         if(requiredPermissions.contains("super-admin")) return false;
 
-        List<String> userRoleIds = authentication.getAuthorities().stream().map(Object::toString).toList();
+        List<String> userRoleIds = authentication.getAuthorities().stream().map(Object::toString).collect(Collectors.toList());
 
         final List<Role> authorities = roleService.findAllByIdIn(userRoleIds);
         final List<String> permissions = roleService.getAllPermissionsFromRole(authorities);

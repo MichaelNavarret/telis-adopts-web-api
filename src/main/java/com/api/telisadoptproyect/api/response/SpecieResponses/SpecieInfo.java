@@ -4,6 +4,7 @@ import com.api.telisadoptproyect.api.response.SpecieForm.SpecieFormInfo;
 import com.api.telisadoptproyect.library.entity.Specie;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SpecieInfo {
     private String id;
@@ -23,7 +24,7 @@ public class SpecieInfo {
         this.logoUrl = specie.getLogoUrl();
         this.masterListBannerUrl = specie.getMasterListBannerUrl();
         this.specieFormInfoList = specie.getExtraInfoList() == null || specie.getExtraInfoList().isEmpty() ?
-                null : specie.getExtraInfoList().stream().map(SpecieFormInfo::new).toList();
+                null : specie.getExtraInfoList().stream().map(SpecieFormInfo::new).collect(Collectors.toList());
         this.history = specie.getHistory() != null? specie.getHistory() : null;
         this.guideSheetUrl = specie.getGuideSheetUrl() != null? specie.getGuideSheetUrl() : null;
     }

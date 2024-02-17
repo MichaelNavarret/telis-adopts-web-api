@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.api.telisadoptproyect.commons.Constants.CLOUDINARY_ADOPTS_ICONS_FOLDER_PATH;
 
@@ -129,7 +130,7 @@ public class AdoptService {
         Set<Adopt> favoriteAdopts = owner.getFavorites();
 
         QAdopt qAdopt = QAdopt.adopt;
-        BooleanExpression expression = qAdopt.id.in(favoriteAdopts.stream().map(Adopt::getId).toList());
+        BooleanExpression expression = qAdopt.id.in(favoriteAdopts.stream().map(Adopt::getId).collect(Collectors.toList()));
 
         Sort sortCriteria = PaginationUtils.createSortCriteria("code:ASC");
         Pageable pageable = PageRequest.of(pageNumber, pageLimit, sortCriteria);
@@ -189,7 +190,7 @@ public class AdoptService {
         Set<Adopt> favoriteAdopts = owner.getFavoriteCharacters();
 
         QAdopt qAdopt = QAdopt.adopt;
-        BooleanExpression expression = qAdopt.id.in(favoriteAdopts.stream().map(Adopt::getId).toList());
+        BooleanExpression expression = qAdopt.id.in(favoriteAdopts.stream().map(Adopt::getId).collect(Collectors.toList()));
 
         Sort sortCriteria = PaginationUtils.createSortCriteria("favoriteCharacterIndex:ASC");
         Pageable pageable = PageRequest.of(pageNumber, pageLimit, sortCriteria);
@@ -210,12 +211,24 @@ public class AdoptService {
         Adopt.CreationType type = EnumValidation.toEnum(Adopt.CreationType.class, creationType);
         if (type == null) throw new BadRequestException("The Creation Type is invalid.");
         int numberCode = getLastNumberCode(type) + 1;
-        return switch (type) {
-            case PREMADE -> "PRE-" + String.format("%04d", numberCode);
-            case CUSTOM -> "CUS-" + String.format("%04d", numberCode);
-            case MYO -> "MYO-" + String.format("%04d", numberCode);
-            case GUEST_ARTIST -> "GA-" + String.format("%04d", numberCode);
-        };
+
+        if(type == Adopt.CreationType.PREMADE){
+            return "PRE-" + String.format("%04d", numberCode);
+        }
+
+        if(type == Adopt.CreationType.CUSTOM){
+            return "CUS-" + String.format("%04d", numberCode);
+        }
+
+        if(type == Adopt.CreationType.MYO){
+            return "MYO-" + String.format("%04d", numberCode);
+        }
+
+        if(type == Adopt.CreationType.GUEST_ARTIST){
+            return "GA-" + String.format("%04d", numberCode);
+        }
+
+        return null;
     }
 
     private int getLastNumberCode(Adopt.CreationType type){
@@ -223,10 +236,12 @@ public class AdoptService {
         if (adopt == null){
             return 0;
         }
-        return switch (type) {
-            case PREMADE, MYO, CUSTOM -> Integer.parseInt(adopt.getCode().substring(4));
-            case GUEST_ARTIST -> Integer.parseInt(adopt.getCode().substring(3));
-        };
+
+        if (type == Adopt.CreationType.GUEST_ARTIST){
+            return Integer.parseInt(adopt.getCode().substring(3));
+        }
+
+        return Integer.parseInt(adopt.getCode().substring(4));
     }
 
     private Trait.Rarity getAdoptRarity(AdoptCreateRequest createRequest){
@@ -236,17 +251,19 @@ public class AdoptService {
             return Trait.Rarity.COMMON;
         }else{
             for (SubTraitCreateRequest subTrait : createRequest.getSubTraits()){
-                switch (subTrait.getRarity()){
-                    case "UNCOMMON" -> {
-                        auxTraitLevel = 2;
-                    }
-                    case "RARE" -> {
-                        auxTraitLevel = 3;
-                    }
-                    case "EPIC" -> {
-                        auxTraitLevel = 4;
-                    }
+
+                if(subTrait.getRarity().equals("UNCOMMON")){
+                    auxTraitLevel = 2;
                 }
+
+                if(subTrait.getRarity().equals("RARE")){
+                    auxTraitLevel = 3;
+                }
+
+                if(subTrait.getRarity().equals("EPIC")){
+                    auxTraitLevel = 4;
+                }
+
                 if (auxTraitLevel > traitLevel){
                     traitLevel = auxTraitLevel;
                 }
@@ -256,12 +273,20 @@ public class AdoptService {
     }
 
     private Trait.Rarity getRarityByNumber(int number){
-        return switch (number) {
-            case 2 -> Trait.Rarity.UNCOMMON;
-            case 3 -> Trait.Rarity.RARE;
-            case 4 -> Trait.Rarity.EPIC;
-            default -> Trait.Rarity.COMMON;
-        };
+        if (number == 2){
+            return Trait.Rarity.UNCOMMON;
+        }
+
+        if (number == 3){
+            return Trait.Rarity.RARE;
+        }
+
+        if (number == 4){
+            return Trait.Rarity.EPIC;
+        }
+
+        return Trait.Rarity.COMMON;
+
     }
 
 
@@ -279,7 +304,7 @@ public class AdoptService {
                     }else{
                         return ownerService.getOwnerById(designer.getId());
                     }
-                }).toList();
+                }).collect(Collectors.toList());
             }
         }
         adopt.setDesigners(new HashSet<>(designers));

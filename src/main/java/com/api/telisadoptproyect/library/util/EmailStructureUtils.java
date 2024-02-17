@@ -18,10 +18,13 @@ public class EmailStructureUtils {
         if (params.isEmpty()) throw new BadRequestException("Email Params can not be empty");
         if (!EnumValidation.validateEnum(Type.class, emailType.name())) throw new BadRequestException("Email Type is not valid");
 
-        return switch (emailType) {
-            case TOKEN -> buildTokenEmail(params);
-            case RESET -> buildResetPassEmail(params);
-        };
+        if(emailType == Type.TOKEN){
+            return buildTokenEmail(params);
+        }
+        if(emailType == Type.RESET){
+            return buildResetPassEmail(params);
+        }
+        return null;
     }
 
     private static EmailStructure buildTokenEmail(Map<String, String> params) {

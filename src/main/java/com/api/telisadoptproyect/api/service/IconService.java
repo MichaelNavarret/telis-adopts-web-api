@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class IconService {
@@ -25,7 +26,7 @@ public class IconService {
     public IconCollectionResponse getAllIcons(String ownerId) {
         if (StringUtils.isBlank(ownerId)) throw new BadRequestException("Owner id is required");
         Owner owner = ownerService.getOwnerById(ownerId);
-        List<Icon> iconsList = new ArrayList<>(iconRepository.findAll().stream().map(icon -> {
+        List<Icon> iconsList = iconRepository.findAll().stream().map(icon -> {
             if (icon.isExclusive()) {
                 if (icon.getAvailableFor().contains(owner)) {
                     return icon;
@@ -34,7 +35,7 @@ public class IconService {
                 return icon;
             }
             return null;
-        }).toList());
+        }).collect(Collectors.toList());
 
         iconsList.removeIf(Objects::isNull);
 

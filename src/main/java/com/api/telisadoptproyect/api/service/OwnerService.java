@@ -76,8 +76,8 @@ public class OwnerService {
     public OwnerSingletonResponse getOwnerSingleton(String ownerId){
         Owner owner = getOwnerById(ownerId);
         List<Adopt> ownerAdoptList = adoptRepository.findByOwner(owner);
-        Set<Badge> badges = new HashSet<>(ownerAdoptList.stream().map(Adopt::getBadges).flatMap(Set::stream).toList().stream().distinct().toList());
-        List<String> badgesCode = badges.stream().map(Badge::getCode).toList();
+        Set<Badge> badges = ownerAdoptList.stream().map(Adopt::getBadges).flatMap(Set::stream).collect(Collectors.toSet());
+        List<String> badgesCode = badges.stream().map(Badge::getCode).collect(Collectors.toList());
 
         OwnerSingletonResponse response = new OwnerSingletonResponse(BaseResponse.Status.SUCCESS, HttpStatus.OK.value(), owner);
         response.setBadgesCode(badgesCode);
