@@ -6,6 +6,7 @@ import com.api.telisadoptproyect.api.request.OwnerRequests.OwnerUpdateRequest;
 import com.api.telisadoptproyect.api.response.BaseResponse;
 import com.api.telisadoptproyect.api.response.OwnerResponses.OwnerCollectionResponse;
 import com.api.telisadoptproyect.api.response.OwnerResponses.OwnerSingletonResponse;
+import com.api.telisadoptproyect.api.validation.InputValidation;
 import com.api.telisadoptproyect.api.validation.OwnerValidation;
 import com.api.telisadoptproyect.library.entity.*;
 import com.api.telisadoptproyect.library.exception.BadRequestException;
@@ -44,6 +45,8 @@ public class OwnerService {
     private AdoptRepository adoptRepository;
     @Autowired
     private IconRepository iconRepository;
+    @Autowired
+    private InputValidation inputValidation;
 
     public OwnerSingletonResponse createOwner(OwnerCreateRequest createRequest) {
         ownerValidation.checkIfNicknameOwnerExist(createRequest.getNickName());
@@ -171,6 +174,15 @@ public class OwnerService {
             }else{
                 throw new BadRequestException("Icon not found with id: " + request.getIconId());
             }
+        }
+
+        if(request.isSkip2fa() != null){
+            owner.setSkip2fa(request.isSkip2fa());
+        }
+
+        if(StringUtils.isNotBlank(request.getPassword())){
+            inputValidation.checkUpdatePasswordData(request.getPassword());
+            owner.setPassword(passwordEncoder.encode(request.getPassword()));
         }
 
         if (request.getFavoriteAdoptsIds() != null && !request.getFavoriteAdoptsIds().isEmpty()){

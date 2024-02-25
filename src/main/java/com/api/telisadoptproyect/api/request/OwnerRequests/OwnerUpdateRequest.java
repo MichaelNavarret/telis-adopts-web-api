@@ -12,6 +12,8 @@ public class OwnerUpdateRequest {
     private String toyhouse;
     private String iconId;
     private List<String> favoriteAdoptsIds;
+    private Boolean skip2fa;
+    private String password;
     public OwnerUpdateRequest() {
     }
 
@@ -85,5 +87,25 @@ public class OwnerUpdateRequest {
 
     public void setIconId(String iconId) {
         this.iconId = iconId;
+    }
+
+    public Boolean isSkip2fa() {
+        return skip2fa;
+    }
+
+    public void setSkip2fa(Boolean skip2fa) {
+        this.skip2fa = skip2fa;
+    }
+
+    public Boolean getSkip2fa() {
+        return skip2fa;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

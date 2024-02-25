@@ -24,6 +24,7 @@ public class OwnerInfo {
     private String twitter;
     private String toyhouse;
     private String devianart;
+    private boolean skip2fa;
     public OwnerInfo(Owner owner){
         this.id = owner.getId();
         this.nickName = owner.getNickName();
@@ -40,6 +41,7 @@ public class OwnerInfo {
         this.twitter = owner.getTwitter();
         this.toyhouse = owner.getToyhouse();
         this.devianart = owner.getDevianart();
+        this.skip2fa = owner.isSkip2fa();
     }
 
     public String getId() {
@@ -136,5 +138,13 @@ public class OwnerInfo {
 
     public void setDevianart(String devianart) {
         this.devianart = devianart;
+    }
+
+    public boolean isSkip2fa() {
+        return skip2fa;
+    }
+
+    public void setSkip2fa(boolean skip2fa) {
+        this.skip2fa = skip2fa;
     }
 }
