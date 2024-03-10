@@ -44,6 +44,8 @@ public class AdoptService {
     private CloudinaryService cloudinaryService;
     @Autowired
     private SpecieFormRepository specieFormRepository;
+    @Autowired
+    private BadgeService badgeService;
 
     @Transactional
     public AdoptSingletonResponse createAdopt(AdoptCreateRequest createRequest){
@@ -67,6 +69,11 @@ public class AdoptService {
         if(StringUtils.isNotBlank(createRequest.getSpecieFormId())){
             Optional<SpecieForm> specieForm = specieFormRepository.findById(createRequest.getSpecieFormId());
             specieForm.ifPresent(adopt::setExtraInfo);
+        }
+
+        if(createRequest.getBadges() != null && !createRequest.getBadges().isEmpty()){
+            List<Badge> badges = badgeService.getBadgesByIds(createRequest.getBadges());
+            adopt.setBadges(new HashSet<>(badges));
         }
 
         safeSetOwnerToAdopt(adopt, createRequest);
