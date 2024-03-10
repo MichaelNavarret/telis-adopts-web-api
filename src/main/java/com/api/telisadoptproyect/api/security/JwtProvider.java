@@ -5,6 +5,7 @@ import com.api.telisadoptproyect.api.request.OwnerRequests.PrincipalOwner;
 import com.api.telisadoptproyect.library.entity.Owner;
 import com.api.telisadoptproyect.library.exception.BadRequestException;
 import io.jsonwebtoken.*;
+import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +14,12 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
 public class JwtProvider {
+    private final List<String> excludeUrls = List.of("/auth/login", "/auth/resend-otp-code");
     @Autowired
     private PropertiesConfig propertiesConfig;
     public String generateToken(Authentication authentication, Owner owner){
@@ -37,6 +40,7 @@ public class JwtProvider {
 
     public String generate2FABearerToken(String email){
         final Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("onlyLogin", true);
         return Jwts.builder()
                 .setClaims(extraClaims)
                 .setSubject(email)
@@ -65,5 +69,18 @@ public class JwtProvider {
         }catch (SignatureException e){
             throw new BadRequestException("Invalid JWT signature");
         }
+    }
+
+    private boolean isOnlyLoginToken(String token){
+        Object object = (Jwts.parser().setSigningKey(propertiesConfig.getJwtSecret()).parseClaimsJws(token).getBody().get("onlyLogin"));
+        if(object != null){
+            return (boolean) object;
+        }
+        return false;
+    }
+
+    public boolean validateIfTokenIsOnlyForLogin(String token, HttpServletRequest httpRequest) {
+        boolean onExcludeUrl = excludeUrls.contains(httpRequest.getRequestURI());
+        return !isOnlyLoginToken(token) || onExcludeUrl;
     }
 }

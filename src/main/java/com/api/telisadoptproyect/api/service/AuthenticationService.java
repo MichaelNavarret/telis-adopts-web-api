@@ -82,9 +82,20 @@ public class AuthenticationService {
 
         EmailStructure emailStructure = EmailStructureUtils.buildEmailStructure(EmailStructureUtils.Type.TOKEN, params);
 
-        messageUtils.buildOwnerOtp(ownerFound, ownerOtp, emailStructure);
-        sendgridEmailSender.sendHtmlEmail(emailStructure);
-        ownerOtpRepository.save(ownerOtp);
+        if(ownerFound.isSkip2fa()){
+            LoginRequest loginRequest = new LoginRequest();
+            loginRequest.setUsername(ownerLoginRequest.getUsername());
+            loginRequest.setPassword(ownerLoginRequest.getPassword());
+
+            JwtResponse jwtResponse = createPermission(ownerFound, loginRequest, ownerOtp, ownerFound.isSkip2fa());
+            return new AuthenticationResponse(BaseResponse.Status.SUCCESS, HttpStatus.OK.value(),
+                    jwtResponse.getToken(), ownerFound.isSkip2fa(), jwtResponse.getBearer(), jwtResponse.getUsername(),
+                    jwtResponse.getAuthorities());
+        }else{
+            messageUtils.buildOwnerOtp(ownerFound, ownerOtp, emailStructure);
+            sendgridEmailSender.sendHtmlEmail(emailStructure);
+            ownerOtpRepository.save(ownerOtp);
+        }
 
         return new AuthenticationResponse(BaseResponse.Status.SUCCESS, HttpStatus.CREATED.value(),
                 "We send ur authentication code to ur email: " + ownerFound.getEmail(), token);
@@ -115,7 +126,7 @@ public class AuthenticationService {
 
         ownerValidation.checkOptCode(loginRequest.getOtpCode(), lastOtpCodeRequest);
 
-        return createPermission(ownerFound, loginRequest, lastOtpCodeRequest);
+        return createPermission(ownerFound, loginRequest, lastOtpCodeRequest, false);
     }
 
     private OwnerOtp searchLastOtpCodeRequest(Owner owner){
@@ -123,11 +134,13 @@ public class AuthenticationService {
                 .orElseThrow(() -> new BadRequestException("Otp code not found"));
     }
 
-    private JwtResponse createPermission(Owner owner, LoginRequest loginRequest, OwnerOtp ownerOtp){
+    private JwtResponse createPermission(Owner owner, LoginRequest loginRequest, OwnerOtp ownerOtp, boolean canSkip2fa){
         Authentication authentication = null;
         try{
-            ownerOtp.setWasUsed(true);
-            ownerOtpRepository.save(ownerOtp);
+            if(!canSkip2fa){
+                ownerOtp.setWasUsed(true);
+                ownerOtpRepository.save(ownerOtp);
+            }
 
             authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(

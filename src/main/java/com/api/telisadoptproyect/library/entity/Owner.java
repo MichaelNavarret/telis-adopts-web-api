@@ -37,11 +37,14 @@ public class Owner {
     @JoinTable(name = "rel_owner_favorite_character", joinColumns = @JoinColumn(name = "ownerId"),
             inverseJoinColumns = @JoinColumn(name = "adoptId"))
     private Set<Adopt> favoriteCharacters;
+
+    private boolean skip2fa;
     public Owner() {
         this.id = UUID.randomUUID().toString();
         this.active = true;
         this.createdOn = new Date();
         this.superAdmin = false;
+        this.skip2fa = false;
     }
 
     public String getId() {
@@ -178,5 +181,13 @@ public class Owner {
 
     public void setFavoriteCharacters(Set<Adopt> favoriteCharacters) {
         this.favoriteCharacters = favoriteCharacters;
+    }
+
+    public boolean isSkip2fa() {
+        return skip2fa;
+    }
+
+    public void setSkip2fa(boolean skip2fa) {
+        this.skip2fa = skip2fa;
     }
 }
