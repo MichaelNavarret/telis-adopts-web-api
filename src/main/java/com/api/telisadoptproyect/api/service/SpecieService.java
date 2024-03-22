@@ -1,6 +1,7 @@
 package com.api.telisadoptproyect.api.service;
 
 import com.api.telisadoptproyect.api.configuration.PropertiesConfig;
+import com.api.telisadoptproyect.api.request.SpecieRequests.SpecieCreateRequest;
 import com.api.telisadoptproyect.api.request.SpecieRequests.SpecieUpdateRequest;
 import com.api.telisadoptproyect.api.response.BaseResponse;
 import com.api.telisadoptproyect.api.response.SpecieResponses.SpecieCollectionResponse;
@@ -55,28 +56,24 @@ public class SpecieService {
     }
 
     @Transactional
-    public SpecieSingletonResponse createSpecie( MultipartFile traitsSheet, MultipartFile logo,
-                                                 MultipartFile masterListBanner, String specieName){
-        if(StringUtils.isBlank(specieName)) throw new BadRequestException("The name of specie cannot be null");
-        Specie foundedSpecie = specieRepository.findByName(specieName).orElse(null);
+    public SpecieSingletonResponse createSpecie(SpecieCreateRequest request){
+        if(StringUtils.isBlank(request.getName())) throw new BadRequestException("The name of specie cannot be null");
+        Specie foundedSpecie = specieRepository.findByName(request.getName()).orElse(null);
         if (foundedSpecie != null) throw new BadRequestException("The name of specie cannot be repeated");
         Specie specie = new Specie();
-        specie.setCode(specieCodeGenerator(specieName));
-        specie.setName(specieName);
+        specie.setCode(specieCodeGenerator(request.getName()));
+        specie.setName(request.getName());
 
-        if(traitsSheet != null && !traitsSheet.isEmpty()){
-           String publicId = cloudinaryService.uploadFile(traitsSheet, CLOUDINARY_TRAITS_SHEET_FOLDER_PATH);
-           specie.setTraitSheetUrl(cloudinaryService.getUrlFile(publicId, CLOUDINARY_TRAITS_SHEET_FOLDER_PATH));
-        }
+        if(StringUtils.isNotBlank(request.getMainSpecieId())){
+            Specie mainSpecie = specieRepository.findById(request.getMainSpecieId()).orElseThrow(
+                    () -> new BadRequestException("The mainSpecieId not exist"));
+            specie.setMainSpecie(mainSpecie);
+            specieRepository.save(specie);
 
-        if (logo != null && !logo.isEmpty()){
-            String publicId = cloudinaryService.uploadFile(logo, CLOUDINARY_LOGO_FOLDER_PATH);
-            specie.setLogoUrl(cloudinaryService.getUrlFile(publicId, CLOUDINARY_LOGO_FOLDER_PATH));
-        }
-
-        if (masterListBanner != null && !masterListBanner.isEmpty()){
-            String publicId = cloudinaryService.uploadFile(masterListBanner, CLOUDINARY_MASTER_LIST_BANNER_FOLDER_PATH);
-            specie.setMasterListBannerUrl(cloudinaryService.getUrlFile(publicId, CLOUDINARY_MASTER_LIST_BANNER_FOLDER_PATH));
+            Set<Specie> subSpecies = mainSpecie.getSubSpecies();
+            subSpecies.add(specie);
+            mainSpecie.setSubSpecies(subSpecies);
+            specieRepository.save(mainSpecie);
         }
 
         specieRepository.save(specie);

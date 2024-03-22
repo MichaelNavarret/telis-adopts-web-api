@@ -5,6 +5,8 @@ import org.springframework.web.multipart.MultipartFile;
 public class SpecieCreateRequest {
     private String name;
 
+    private String mainSpecieId;
+
     public String getName() {
         return name;
     }
@@ -13,4 +15,11 @@ public class SpecieCreateRequest {
         this.name = name;
     }
 
+    public String getMainSpecieId() {
+        return mainSpecieId;
+    }
+
+    public void setMainSpecieId(String mainSpecieId) {
+        this.mainSpecieId = mainSpecieId;
+    }
 }

@@ -130,11 +130,17 @@ public class TraitService {
     }
 
     public TraitCollectionResponse getTraitCollectionAutocomplete(String specieId) {
-       QTrait qTrait = QTrait.trait1;
+        QTrait qTrait = QTrait.trait1;
         BooleanExpression query = qTrait.isNotNull();
+
+        Specie specie = specieService.findById(specieId);
 
         if(StringUtils.isNotBlank(specieId)){
             query = query.and(qTrait.specie.id.eq(specieId));
+        }
+
+        if(specie.getMainSpecie() != null){
+            query = query.or(qTrait.specie.id.eq(specie.getMainSpecie().getId()));
         }
 
         return new TraitCollectionResponse(
