@@ -62,9 +62,13 @@ public class OwnerService {
     }
 
     public Owner createNotRegisteredOwner(String ownerNickname){
-        ownerValidation.checkIfNicknameOwnerExist(ownerNickname);
+        Optional<Owner> foundOwner = ownerRepository.findByNickName(ownerNickname);
+        if (foundOwner.isPresent()){
+            return foundOwner.get();
+        }
         Owner owner = new Owner();
         owner.setNickName(ownerNickname);
+        owner.setActive(false);
         return ownerRepository.save(owner);
     }
 
