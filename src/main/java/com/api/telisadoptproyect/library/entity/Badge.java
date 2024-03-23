@@ -15,14 +15,11 @@ public class Badge {
     private String name;
     private String code;
     private String description;
-    @ManyToMany(mappedBy = "badges")
-    private Set<Adopt> adopts;
+    private String badgeUrl;
 
     public Badge() {
         this.id = UUID.randomUUID().toString();
-        this.adopts = new HashSet<>();
     }
-
     public String getId() {
         return id;
     }
@@ -47,19 +44,19 @@ public class Badge {
         this.description = description;
     }
 
-    public Set<Adopt> getAdopts() {
-        return adopts;
-    }
-
-    public void setAdopts(Set<Adopt> adopts) {
-        this.adopts = adopts;
-    }
-
     public String getCode() {
         return code;
     }
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public String getBadgeUrl() {
+        return badgeUrl;
+    }
+
+    public void setBadgeUrl(String badgeUrl) {
+        this.badgeUrl = badgeUrl;
     }
 }

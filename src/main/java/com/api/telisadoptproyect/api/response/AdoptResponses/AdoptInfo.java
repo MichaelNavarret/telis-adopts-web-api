@@ -23,9 +23,10 @@ public class AdoptInfo {
     private List<SubTraitInfo> traits;
     private String iconUrl;
     private String specieFormId;
-    private List<BadgeInfo> badges;
+    private BadgeInfo badge;
     private int favoriteCharacterIndex;
     private String ownerId;
+    private String specieCode;
     public AdoptInfo (Adopt adopt){
         this.id = adopt.getId();
         this.code = adopt.getCode();
@@ -40,9 +41,10 @@ public class AdoptInfo {
         this.traits = adopt.getSubTraits() != null? adopt.getSubTraits().stream().map(SubTraitInfo::new).collect(Collectors.toList()) : null;
         this.iconUrl = adopt.getIconUrl();
         this.specieFormId = adopt.getExtraInfo() != null? adopt.getExtraInfo().getId() : null;
-        this.badges = adopt.getBadges().isEmpty() ? null : adopt.getBadges().stream().map(BadgeInfo::new).collect(Collectors.toList());
+        this.badge = adopt.getBadge() != null ? new BadgeInfo(adopt.getBadge()) : null;
         this.favoriteCharacterIndex = adopt.getFavoriteCharacterIndex();
         this.ownerId = adopt.getOwner() != null ? adopt.getOwner().getId() : null;
+        this.specieCode = adopt.getSpecie().getCode();
     }
 
     public String getId() {
@@ -149,14 +151,6 @@ public class AdoptInfo {
         this.specieFormId = specieFormId;
     }
 
-    public List<BadgeInfo> getBadges() {
-        return badges;
-    }
-
-    public void setBadges(List<BadgeInfo> badges) {
-        this.badges = badges;
-    }
-
     public int getFavoriteCharacterIndex() {
         return favoriteCharacterIndex;
     }
@@ -171,5 +165,21 @@ public class AdoptInfo {
 
     public void setOwnerId(String ownerId) {
         this.ownerId = ownerId;
+    }
+
+    public String getSpecieCode() {
+        return specieCode;
+    }
+
+    public void setSpecieCode(String specieCode) {
+        this.specieCode = specieCode;
+    }
+
+    public BadgeInfo getBadge() {
+        return badge;
+    }
+
+    public void setBadge(BadgeInfo badge) {
+        this.badge = badge;
     }
 }

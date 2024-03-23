@@ -7,12 +7,14 @@ public class BadgeInfo {
     private String name;
     private String code;
     private String description;
+    private String badgeUrl;
 
     public BadgeInfo(Badge badge) {
         this.id = badge.getId();
         this.name = badge.getName();
         this.code = badge.getCode();
         this.description = badge.getDescription();
+        this.badgeUrl = badge.getBadgeUrl();
     }
 
     public String getId() {
@@ -45,5 +47,13 @@ public class BadgeInfo {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getBadgeUrl() {
+        return badgeUrl;
+    }
+
+    public void setBadgeUrl(String badgeUrl) {
+        this.badgeUrl = badgeUrl;
     }
 }

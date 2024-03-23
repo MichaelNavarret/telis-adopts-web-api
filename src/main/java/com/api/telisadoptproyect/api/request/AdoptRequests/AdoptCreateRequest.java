@@ -15,7 +15,7 @@ public class AdoptCreateRequest {
     private String specieId;
     private String creationType;
     private String specieFormId;
-    private List<String> badges;
+    private String badgeId;
     public AdoptCreateRequest() {
     }
     public String getName() {
@@ -82,11 +82,11 @@ public class AdoptCreateRequest {
         this.specieFormId = specieFormId;
     }
 
-    public List<String> getBadges() {
-        return badges;
+    public String getBadgeId() {
+        return badgeId;
     }
 
-    public void setBadges(List<String> badges) {
-        this.badges = badges;
+    public void setBadgeId(String badgeId) {
+        this.badgeId = badgeId;
     }
 }

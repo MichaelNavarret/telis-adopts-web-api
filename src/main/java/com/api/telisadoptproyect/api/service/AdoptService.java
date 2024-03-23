@@ -6,7 +6,6 @@ import com.api.telisadoptproyect.api.request.SubTraitRequests.SubTraitCreateRequ
 import com.api.telisadoptproyect.api.response.AdoptResponses.AdoptCollectionResponse;
 import com.api.telisadoptproyect.api.response.AdoptResponses.AdoptSingletonResponse;
 import com.api.telisadoptproyect.api.response.BaseResponse;
-import com.api.telisadoptproyect.api.response.SubTraitResponses.SubTraitInfo;
 import com.api.telisadoptproyect.library.entity.*;
 import com.api.telisadoptproyect.library.exception.BadRequestException;
 import com.api.telisadoptproyect.library.repository.AdoptRepository;
@@ -71,9 +70,9 @@ public class AdoptService {
             specieForm.ifPresent(adopt::setExtraInfo);
         }
 
-        if(createRequest.getBadges() != null && !createRequest.getBadges().isEmpty()){
-            List<Badge> badges = badgeService.getBadgesByIds(createRequest.getBadges());
-            adopt.setBadges(new HashSet<>(badges));
+        if(StringUtils.isNotBlank(createRequest.getBadgeId())){
+            Badge badge = badgeService.getBadgeById(createRequest.getBadgeId());
+            adopt.setBadge(badge);
         }
 
         safeSetOwnerToAdopt(adopt, createRequest);
@@ -327,5 +326,11 @@ public class AdoptService {
             }
             adopt.setOwner(owner);
         }
+    }
+
+    public AdoptSingletonResponse getAdopt(String adoptId) {
+        if (StringUtils.isBlank(adoptId)) throw new BadRequestException("The adoptId cannot be null");
+        Adopt adopt = adoptRepository.findById(adoptId).orElseThrow(() -> new BadRequestException("The adoptId is invalid"));
+        return new AdoptSingletonResponse(BaseResponse.Status.SUCCESS, HttpStatus.OK.value(), adopt);
     }
 }
