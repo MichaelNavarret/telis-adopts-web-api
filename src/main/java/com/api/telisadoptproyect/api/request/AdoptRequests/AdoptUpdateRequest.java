@@ -8,6 +8,7 @@ import java.util.List;
 public class AdoptUpdateRequest {
     private String name;
     private List<SubTraitUpdateRequest> subTraits;
+    private String specieId;
 
     public String getName() {
         return name;
@@ -20,8 +21,13 @@ public class AdoptUpdateRequest {
     public List<SubTraitUpdateRequest> getSubTraits() {
         return subTraits;
     }
-
     public void setSubTraits(List<SubTraitUpdateRequest> subTraits) {
         this.subTraits = subTraits;
+    }
+    public String getSpecieId() {
+        return specieId;
+    }
+    public void setSpecieId(String specieId) {
+        this.specieId = specieId;
     }
 }

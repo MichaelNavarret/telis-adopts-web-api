@@ -10,6 +10,7 @@ import com.api.telisadoptproyect.library.entity.*;
 import com.api.telisadoptproyect.library.exception.BadRequestException;
 import com.api.telisadoptproyect.library.repository.AdoptRepository;
 import com.api.telisadoptproyect.library.repository.SpecieFormRepository;
+import com.api.telisadoptproyect.library.repository.SubTraitRepository;
 import com.api.telisadoptproyect.library.util.PaginationUtils;
 import com.api.telisadoptproyect.library.validation.EnumValidation;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -45,6 +46,9 @@ public class AdoptService {
     private SpecieFormRepository specieFormRepository;
     @Autowired
     private BadgeService badgeService;
+
+    @Autowired
+    private SubTraitRepository subTraitRepository;
 
     @Transactional
     public AdoptSingletonResponse createAdopt(AdoptCreateRequest createRequest){
@@ -171,21 +175,34 @@ public class AdoptService {
         return new AdoptCollectionResponse((List<Adopt>) adoptRepository.findAll(expression));
     }
 
+    @Transactional
     public AdoptSingletonResponse updateAdopt(String adoptId, AdoptUpdateRequest request) {
         if (adoptId == null) throw new BadRequestException("The adoptId cannot be null");
         if (request == null) throw new BadRequestException("The request cannot be null");
 
         Adopt adopt = adoptRepository.findById(adoptId).orElseThrow(() -> new BadRequestException("The adoptId is invalid"));
 
-        if (StringUtils.isNotBlank(request.getName())){
+        if (StringUtils.isNotBlank(request.getName()) && !request.getName().equals(adopt.getName())){
             adopt.setName(request.getName());
         }
 
-        if(request.getSubTraits() != null && !request.getSubTraits().isEmpty()){
-          request.getSubTraits().forEach(subTraitInfo -> {
-              subTraitService.updateSubTraitAdditionalInfo(subTraitInfo);
-          });
+        if(request.getSubTraits() != null && !request.getSubTraits().isEmpty()) {
+            request.getSubTraits().forEach(subTraitInfo -> {
+                subTraitService.updateSubTraitAdditionalInfo(subTraitInfo);
+            });
         }
+
+        if(StringUtils.isNotBlank(request.getSpecieId()) && !request.getSpecieId().equals(adopt.getSpecie().getId())){
+           Specie newSpecie = specieService.findById(request.getSpecieId());
+           adopt.setSpecie(newSpecie);
+
+           Set<SubTrait> subTraits = adopt.getSubTraits();
+           subTraitRepository.deleteAll(subTraits);
+           adopt.setSubTraits(Collections.emptySet());
+
+        }
+
+
         adoptRepository.save(adopt);
 
         return new AdoptSingletonResponse(BaseResponse.Status.SUCCESS, HttpStatus.OK.value(), adopt);
@@ -202,6 +219,12 @@ public class AdoptService {
         Pageable pageable = PageRequest.of(pageNumber, pageLimit, sortCriteria);
 
         return adoptRepository.findAll(expression, pageable);
+    }
+
+    public AdoptSingletonResponse getAdopt(String adoptId) {
+        if (StringUtils.isBlank(adoptId)) throw new BadRequestException("The adoptId cannot be null");
+        Adopt adopt = adoptRepository.findById(adoptId).orElseThrow(() -> new BadRequestException("The adoptId is invalid"));
+        return new AdoptSingletonResponse(BaseResponse.Status.SUCCESS, HttpStatus.OK.value(), adopt);
     }
 
     //------------------------------------------- [PRIVATE METHODS]
@@ -326,11 +349,5 @@ public class AdoptService {
             }
             adopt.setOwner(owner);
         }
-    }
-
-    public AdoptSingletonResponse getAdopt(String adoptId) {
-        if (StringUtils.isBlank(adoptId)) throw new BadRequestException("The adoptId cannot be null");
-        Adopt adopt = adoptRepository.findById(adoptId).orElseThrow(() -> new BadRequestException("The adoptId is invalid"));
-        return new AdoptSingletonResponse(BaseResponse.Status.SUCCESS, HttpStatus.OK.value(), adopt);
     }
 }

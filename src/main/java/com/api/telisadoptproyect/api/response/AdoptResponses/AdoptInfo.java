@@ -27,6 +27,8 @@ public class AdoptInfo {
     private int favoriteCharacterIndex;
     private String ownerId;
     private String specieCode;
+    private String specieFormUrl;
+    private String specieId;
     public AdoptInfo (Adopt adopt){
         this.id = adopt.getId();
         this.code = adopt.getCode();
@@ -45,6 +47,8 @@ public class AdoptInfo {
         this.favoriteCharacterIndex = adopt.getFavoriteCharacterIndex();
         this.ownerId = adopt.getOwner() != null ? adopt.getOwner().getId() : null;
         this.specieCode = adopt.getSpecie().getCode();
+        this.specieFormUrl = adopt.getExtraInfo() != null ? adopt.getExtraInfo().getFormUrlImage() : null;
+        this.specieId = adopt.getSpecie().getId();
     }
 
     public String getId() {
@@ -181,5 +185,21 @@ public class AdoptInfo {
 
     public void setBadge(BadgeInfo badge) {
         this.badge = badge;
+    }
+
+    public String getSpecieFormUrl() {
+        return specieFormUrl;
+    }
+
+    public void setSpecieFormUrl(String specieFormUrl) {
+        this.specieFormUrl = specieFormUrl;
+    }
+
+    public String getSpecieId() {
+        return specieId;
+    }
+
+    public void setSpecieId(String specieId) {
+        this.specieId = specieId;
     }
 }
