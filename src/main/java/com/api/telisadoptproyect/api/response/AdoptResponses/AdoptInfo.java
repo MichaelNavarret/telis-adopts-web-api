@@ -25,6 +25,7 @@ public class AdoptInfo {
     private String specieFormId;
     private List<BadgeInfo> badges;
     private int favoriteCharacterIndex;
+    private String ownerId;
     public AdoptInfo (Adopt adopt){
         this.id = adopt.getId();
         this.code = adopt.getCode();
@@ -41,6 +42,7 @@ public class AdoptInfo {
         this.specieFormId = adopt.getExtraInfo() != null? adopt.getExtraInfo().getId() : null;
         this.badges = adopt.getBadges().isEmpty() ? null : adopt.getBadges().stream().map(BadgeInfo::new).collect(Collectors.toList());
         this.favoriteCharacterIndex = adopt.getFavoriteCharacterIndex();
+        this.ownerId = adopt.getOwner() != null ? adopt.getOwner().getId() : null;
     }
 
     public String getId() {
@@ -161,5 +163,13 @@ public class AdoptInfo {
 
     public void setFavoriteCharacterIndex(int favoriteCharacterIndex) {
         this.favoriteCharacterIndex = favoriteCharacterIndex;
+    }
+
+    public String getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
     }
 }
