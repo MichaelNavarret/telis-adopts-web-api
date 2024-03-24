@@ -125,9 +125,11 @@ public class AdoptService {
         }
 
         if (StringUtils.isNotBlank(query)){
-            expression = expression.and(qAdopt.name.containsIgnoreCase(query)
+            expression = expression.and(qAdopt.name.containsIgnoreCase(query))
                     .or(qAdopt.code.containsIgnoreCase(query))
-                    .or(qAdopt.owner.nickName.containsIgnoreCase(query)));
+                    .or(qAdopt.specie.name.containsIgnoreCase(query))
+                    .or(qAdopt.specie.code.containsIgnoreCase(query))
+                    .or(qAdopt.designers.any().nickName.containsIgnoreCase(query));
         }
         
         Sort sortCriteria;
