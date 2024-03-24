@@ -1,6 +1,7 @@
 package com.api.telisadoptproyect.library.entity;
 
 import com.querydsl.core.annotations.QueryEntity;
+import com.querydsl.core.annotations.QueryInit;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -24,7 +25,9 @@ public class Adopt {
     private CreationType creationType;
     private String name;
     @ManyToOne(fetch = FetchType.LAZY)
+
     @JoinColumn(name = "owner_Id")
+    @QueryInit("nickName")
     private Owner owner;
     @ManyToMany
     @JoinTable(name="rel_owner_designer", joinColumns = @JoinColumn(name = "adoptId"),
