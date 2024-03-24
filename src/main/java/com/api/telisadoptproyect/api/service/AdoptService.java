@@ -129,7 +129,9 @@ public class AdoptService {
                     .or(qAdopt.code.containsIgnoreCase(query))
                     .or(qAdopt.specie.name.containsIgnoreCase(query))
                     .or(qAdopt.specie.code.containsIgnoreCase(query))
-                    .or(qAdopt.designers.any().nickName.containsIgnoreCase(query));
+                    .or(qAdopt.designers.any().nickName.containsIgnoreCase(query))
+                    .or(qAdopt.badge.code.containsIgnoreCase(query))
+                    .or(qAdopt.rarity.stringValue().containsIgnoreCase(query));
         }
         
         Sort sortCriteria;
