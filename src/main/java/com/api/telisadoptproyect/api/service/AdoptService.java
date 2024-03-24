@@ -106,7 +106,7 @@ public class AdoptService {
     }
 
     public Page<Adopt> getAdoptCollection(Integer pageNumber, Integer pageLimit, String specieId, String creationType,
-                                          String sort, String ownerId) {
+                                          String sort, String ownerId, String query) {
         QAdopt qAdopt = QAdopt.adopt;
         BooleanExpression expression = qAdopt.id.isNotNull();
 
@@ -122,6 +122,12 @@ public class AdoptService {
 
         if (StringUtils.isNotBlank(ownerId)){
             expression = expression.and(qAdopt.owner.id.eq(ownerId));
+        }
+
+        if (StringUtils.isNotBlank(query)){
+            expression = expression.and(qAdopt.name.containsIgnoreCase(query)
+                    .or(qAdopt.code.containsIgnoreCase(query))
+                    .or(qAdopt.owner.nickName.containsIgnoreCase(query)));
         }
 
         Sort sortCriteria;
