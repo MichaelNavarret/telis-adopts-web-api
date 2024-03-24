@@ -46,7 +46,6 @@ public class AdoptService {
     private SpecieFormRepository specieFormRepository;
     @Autowired
     private BadgeService badgeService;
-
     @Autowired
     private SubTraitRepository subTraitRepository;
 
@@ -199,9 +198,19 @@ public class AdoptService {
            Set<SubTrait> subTraits = adopt.getSubTraits();
            subTraitRepository.deleteAll(subTraits);
            adopt.setSubTraits(Collections.emptySet());
-
+           adopt.setExtraInfo(null);
         }
 
+        if(StringUtils.isNotBlank(request.getBadgeId())){
+            Badge badge = badgeService.getBadgeById(request.getBadgeId());
+            adopt.setBadge(badge);
+        }
+
+        if(StringUtils.isNotBlank(request.getSpecieFormId())){
+            SpecieForm specieForm = specieFormRepository.findById(request.getSpecieFormId()).orElseThrow(
+                    () -> new BadRequestException("The specieFormId is invalid"));
+            adopt.setExtraInfo(specieForm);
+        }
 
         adoptRepository.save(adopt);
 
