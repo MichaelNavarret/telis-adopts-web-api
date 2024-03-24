@@ -129,7 +129,7 @@ public class AdoptService {
                     .or(qAdopt.code.containsIgnoreCase(query))
                     .or(qAdopt.owner.nickName.containsIgnoreCase(query)));
         }
-
+        
         Sort sortCriteria;
         if(StringUtils.isNotBlank(sort)) {
             sortCriteria = PaginationUtils.createSortCriteria(sort);
