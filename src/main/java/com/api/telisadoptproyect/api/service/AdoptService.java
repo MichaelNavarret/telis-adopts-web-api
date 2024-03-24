@@ -25,6 +25,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -105,7 +106,7 @@ public class AdoptService {
     }
 
     public Page<Adopt> getAdoptCollection(Integer pageNumber, Integer pageLimit, String specieId, String creationType,
-                                          String sort, String ownerId) {
+                                          String sort, String ownerId, String query) {
         QAdopt qAdopt = QAdopt.adopt;
         BooleanExpression expression = qAdopt.id.isNotNull();
 
@@ -121,6 +122,12 @@ public class AdoptService {
 
         if (StringUtils.isNotBlank(ownerId)){
             expression = expression.and(qAdopt.owner.id.eq(ownerId));
+        }
+
+        if (StringUtils.isNotBlank(query)){
+            expression = expression.and(qAdopt.name.containsIgnoreCase(query)
+                    .or(qAdopt.code.containsIgnoreCase(query))
+                    .or(qAdopt.owner.nickName.containsIgnoreCase(query)));
         }
 
         Sort sortCriteria;
@@ -201,15 +208,31 @@ public class AdoptService {
            adopt.setExtraInfo(null);
         }
 
-        if(StringUtils.isNotBlank(request.getBadgeId())){
-            Badge badge = badgeService.getBadgeById(request.getBadgeId());
-            adopt.setBadge(badge);
+        if(request.getBadgeId() != null){
+            if(StringUtils.isNotBlank(request.getBadgeId())){
+                Badge badge = badgeService.getBadgeById(request.getBadgeId());
+                adopt.setBadge(badge);
+            }
+
+            if(StringUtils.isEmpty(request.getBadgeId())){
+                adopt.setBadge(null);
+            }
         }
 
         if(StringUtils.isNotBlank(request.getSpecieFormId())){
             SpecieForm specieForm = specieFormRepository.findById(request.getSpecieFormId()).orElseThrow(
                     () -> new BadRequestException("The specieFormId is invalid"));
             adopt.setExtraInfo(specieForm);
+        }
+
+        if(StringUtils.isNotBlank(request.getCreatedOn())){
+            try{
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                Date date = sdf.parse(request.getCreatedOn());
+                adopt.setCreatedOn(date);
+            }catch (Exception e){
+                throw new BadRequestException("The createdOn date is invalid");
+            }
         }
 
         adoptRepository.save(adopt);

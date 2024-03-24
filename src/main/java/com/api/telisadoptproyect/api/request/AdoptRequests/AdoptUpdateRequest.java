@@ -11,6 +11,7 @@ public class AdoptUpdateRequest {
     private String specieId;
     private String badgeId;
     private String specieFormId;
+    private String createdOn;
     public String getName() {
         return name;
     }
@@ -46,5 +47,13 @@ public class AdoptUpdateRequest {
 
     public void setSpecieFormId(String specieFormId) {
         this.specieFormId = specieFormId;
+    }
+
+    public String getCreatedOn() {
+        return createdOn;
+    }
+
+    public void setCreatedOn(String createdOn) {
+        this.createdOn = createdOn;
     }
 }
