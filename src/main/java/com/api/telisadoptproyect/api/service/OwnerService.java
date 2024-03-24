@@ -83,11 +83,12 @@ public class OwnerService {
     public OwnerSingletonResponse getOwnerSingleton(String ownerId){
         Owner owner = getOwnerById(ownerId);
         List<Adopt> ownerAdoptList = adoptRepository.findByOwner(owner);
-        Set<Badge> badges = ownerAdoptList.stream().map(Adopt::getBadges).flatMap(Set::stream).collect(Collectors.toSet());
-        List<String> badgesCode = badges.stream().map(Badge::getCode).collect(Collectors.toList());
-
+        Set<Badge> badges = ownerAdoptList.stream().map(Adopt::getBadge).filter(Objects::nonNull).collect(Collectors.toSet());
         OwnerSingletonResponse response = new OwnerSingletonResponse(BaseResponse.Status.SUCCESS, HttpStatus.OK.value(), owner);
-        response.setBadgesCode(badgesCode);
+        if(!badges.isEmpty()){
+            List<String> badgesCode = badges.stream().map(Badge::getCode).collect(Collectors.toList());
+            response.setBadgesCode(badgesCode);
+        }
 
         return response;
     }

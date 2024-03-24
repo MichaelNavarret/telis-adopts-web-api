@@ -138,4 +138,13 @@ public class AdoptController {
                 .headers(headers)
                 .body(adoptCollectionResponse);
     }
+
+    @GetMapping("/{adoptId}")
+    @PreAuthorize("hasPermission(#null, {'can-read-adopts' , 'can-write-adopts'})")
+    public ResponseEntity<AdoptSingletonResponse> getAdopt(
+            @PathVariable(name = "adoptId") String adoptId){
+        return ResponseEntity
+                .ok()
+                .body(adoptService.getAdopt(adoptId));
+    }
 }

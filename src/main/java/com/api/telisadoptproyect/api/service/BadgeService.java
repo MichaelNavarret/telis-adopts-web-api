@@ -21,4 +21,7 @@ public class BadgeService {
     public List<Badge> getBadgesByIds(List<String> badgeIds) {
         return badgeRepository.findAllById(badgeIds);
     }
+    public Badge getBadgeById(String badgeId) {
+        return badgeRepository.findById(badgeId).orElseThrow(() -> new RuntimeException("Badge not found"));
+    }
 }
