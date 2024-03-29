@@ -1,13 +1,12 @@
 package com.api.telisadoptproyect.api.request.AdoptRequests;
 
-import com.api.telisadoptproyect.api.request.SubTraitRequests.SubTraitUpdateRequest;
-import com.api.telisadoptproyect.api.response.SubTraitResponses.SubTraitInfo;
+import com.api.telisadoptproyect.api.request.SubTraitRequests.SubTraitCreateRequest;
 
 import java.util.List;
 
 public class AdoptUpdateRequest {
     private String name;
-    private List<SubTraitUpdateRequest> subTraits;
+    private List<SubTraitCreateRequest> subTraits;
     private String specieId;
     private String badgeId;
     private String specieFormId;
@@ -20,10 +19,10 @@ public class AdoptUpdateRequest {
         this.name = name;
     }
 
-    public List<SubTraitUpdateRequest> getSubTraits() {
+    public List<SubTraitCreateRequest> getSubTraits() {
         return subTraits;
     }
-    public void setSubTraits(List<SubTraitUpdateRequest> subTraits) {
+    public void setSubTraits(List<SubTraitCreateRequest> subTraits) {
         this.subTraits = subTraits;
     }
     public String getSpecieId() {

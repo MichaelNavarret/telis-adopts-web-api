@@ -194,12 +194,6 @@ public class AdoptService {
             adopt.setName(request.getName());
         }
 
-        if(request.getSubTraits() != null && !request.getSubTraits().isEmpty()) {
-            request.getSubTraits().forEach(subTraitInfo -> {
-                subTraitService.updateSubTraitAdditionalInfo(subTraitInfo);
-            });
-        }
-
         if(StringUtils.isNotBlank(request.getSpecieId()) && !request.getSpecieId().equals(adopt.getSpecie().getId())){
            Specie newSpecie = specieService.findById(request.getSpecieId());
            adopt.setSpecie(newSpecie);
@@ -208,6 +202,7 @@ public class AdoptService {
            subTraitRepository.deleteAll(subTraits);
            adopt.setSubTraits(Collections.emptySet());
            adopt.setExtraInfo(null);
+           adopt.setRarity(Trait.Rarity.COMMON);
         }
 
         if(request.getBadgeId() != null){
@@ -235,6 +230,12 @@ public class AdoptService {
             }catch (Exception e){
                 throw new BadRequestException("The createdOn date is invalid");
             }
+        }
+
+        if(request.getSubTraits()!=null && !request.getSubTraits().isEmpty()){
+            List<SubTrait> oldSubTraits = new ArrayList<>(adopt.getSubTraits());
+            oldSubTraits.stream().map(SubTrait::getId).forEach(subTraitService::deleteSubTrait);
+            createAndLinkSubTraitsToAdopt(request.getSubTraits(), adopt);
         }
 
         adoptRepository.save(adopt);
