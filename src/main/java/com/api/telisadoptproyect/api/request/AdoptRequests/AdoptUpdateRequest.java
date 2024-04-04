@@ -12,6 +12,7 @@ public class AdoptUpdateRequest {
     private String specieFormId;
     private String createdOn;
     private String ownerId;
+    private List<String> designerIds;
     public String getName() {
         return name;
     }
@@ -55,5 +56,13 @@ public class AdoptUpdateRequest {
     }
     public void setOwnerId(String ownerId) {
         this.ownerId = ownerId;
+    }
+
+    public List<String> getDesignerIds() {
+        return designerIds;
+    }
+
+    public void setDesignerIds(List<String> designerIds) {
+        this.designerIds = designerIds;
     }
 }

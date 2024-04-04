@@ -6,6 +6,7 @@ import com.api.telisadoptproyect.api.response.SubTraitResponses.SubTraitInfo;
 import com.api.telisadoptproyect.library.entity.Adopt;
 import com.api.telisadoptproyect.library.entity.Owner;
 
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,7 +40,8 @@ public class AdoptInfo {
         this.boughtOn = adopt.getBoughtOn();
         this.specieName = adopt.getSpecie().getName();
         this.registeredOn = adopt.getRegisteredOn();
-        this.designers = adopt.getDesigners() != null? adopt.getDesigners().stream().map(OwnerInfo::new).collect(Collectors.toList()) : null;
+        this.designers = adopt.getDesigners() != null? adopt.getDesigners().stream().map(OwnerInfo::new)
+                .sorted(Comparator.comparing(OwnerInfo::getNickName)).collect(Collectors.toList()) : null;
         this.rarity = adopt.getRarity().toString();
         this.traits = adopt.getSubTraits() != null? adopt.getSubTraits().stream().map(SubTraitInfo::new).collect(Collectors.toList()) : null;
         this.iconUrl = adopt.getIconUrl();

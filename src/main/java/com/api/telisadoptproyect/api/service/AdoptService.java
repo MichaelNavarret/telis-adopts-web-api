@@ -234,6 +234,7 @@ public class AdoptService {
         updateAdoptCreatedOn(adopt, request.getCreatedOn());
         updateAdoptSubTraits(adopt, request.getSubTraits());
         updateAdoptOwner(adopt, request.getOwnerId());
+        updateAdoptDesigners(adopt, request.getDesignerIds());
 
         adoptRepository.save(adopt);
 
@@ -306,6 +307,16 @@ public class AdoptService {
             }
             if(StringUtils.isEmpty(ownerId)){
                 adopt.setOwner(null);
+            }
+        }
+    }
+    private void updateAdoptDesigners(Adopt adopt, List<String> designerIds){
+        if (designerIds != null){
+            if(designerIds.isEmpty()){
+                adopt.setDesigners(Collections.emptySet());
+            }else{
+                Set<Owner> designers = designerIds.stream().map(ownerService::getOwnerById).collect(Collectors.toSet());
+                adopt.setDesigners(designers);
             }
         }
     }
