@@ -11,6 +11,7 @@ public class AdoptUpdateRequest {
     private String badgeId;
     private String specieFormId;
     private String createdOn;
+    private String ownerId;
     public String getName() {
         return name;
     }
@@ -31,28 +32,28 @@ public class AdoptUpdateRequest {
     public void setSpecieId(String specieId) {
         this.specieId = specieId;
     }
-
     public String getBadgeId() {
         return badgeId;
     }
-
     public void setBadgeId(String badgeId) {
         this.badgeId = badgeId;
     }
-
     public String getSpecieFormId() {
         return specieFormId;
     }
-
     public void setSpecieFormId(String specieFormId) {
         this.specieFormId = specieFormId;
     }
-
     public String getCreatedOn() {
         return createdOn;
     }
-
     public void setCreatedOn(String createdOn) {
         this.createdOn = createdOn;
+    }
+    public String getOwnerId() {
+        return ownerId;
+    }
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
     }
 }
