@@ -1,6 +1,7 @@
 package com.api.telisadoptproyect.api.response.AdoptResponses;
 
 import com.api.telisadoptproyect.api.response.BadgeResponses.BadgeInfo;
+import com.api.telisadoptproyect.api.response.OwnerResponses.OwnerInfo;
 import com.api.telisadoptproyect.api.response.SubTraitResponses.SubTraitInfo;
 import com.api.telisadoptproyect.library.entity.Adopt;
 import com.api.telisadoptproyect.library.entity.Owner;
@@ -15,7 +16,7 @@ public class AdoptInfo {
     private String name;
     private String ownerName;
     private String specieName;
-    private List<String> designers;
+    private List<OwnerInfo> designers;
     private Date createdOn;
     private Date boughtOn;
     private Date registeredOn;
@@ -38,7 +39,7 @@ public class AdoptInfo {
         this.boughtOn = adopt.getBoughtOn();
         this.specieName = adopt.getSpecie().getName();
         this.registeredOn = adopt.getRegisteredOn();
-        this.designers = adopt.getDesigners() != null ? adopt.getDesigners().stream().map(Owner::getNickName).collect(Collectors.toList()) : null;
+        this.designers = adopt.getDesigners() != null? adopt.getDesigners().stream().map(OwnerInfo::new).collect(Collectors.toList()) : null;
         this.rarity = adopt.getRarity().toString();
         this.traits = adopt.getSubTraits() != null? adopt.getSubTraits().stream().map(SubTraitInfo::new).collect(Collectors.toList()) : null;
         this.iconUrl = adopt.getIconUrl();
@@ -83,11 +84,11 @@ public class AdoptInfo {
         this.ownerName = ownerName;
     }
 
-    public List<String> getDesigners() {
+    public List<OwnerInfo> getDesigners() {
         return designers;
     }
 
-    public void setDesigners(List<String> designers) {
+    public void setDesigners(List<OwnerInfo> designers) {
         this.designers = designers;
     }
 

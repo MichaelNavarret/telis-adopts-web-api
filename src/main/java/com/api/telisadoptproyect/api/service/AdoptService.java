@@ -53,6 +53,7 @@ public class AdoptService {
     @Autowired
     private AdoptValidation adoptValidation;
 
+    // ======================================= Start Created Adopt =======================================
     @Transactional
     public AdoptSingletonResponse createAdopt(AdoptCreateRequest createRequest){
         if (createRequest == null) throw new BadRequestException("The request cannot be null");
@@ -93,6 +94,40 @@ public class AdoptService {
 
         return new AdoptSingletonResponse(BaseResponse.Status.SUCCESS, HttpStatus.CREATED.value(), adopt);
     }
+
+    private void safeSetDesignersToAdopt(Adopt adopt, AdoptCreateRequest createRequest){
+        List<Owner> designers = new ArrayList<>();
+        Adopt.CreationType creationTypeRequest = EnumValidation.toEnum(Adopt.CreationType.class, createRequest.getCreationType());
+        if (EnumValidation.equals(Adopt.CreationType.PREMADE, creationTypeRequest) ||
+                EnumValidation.equals(Adopt.CreationType.CUSTOM, creationTypeRequest)){
+            designers = List.of(ownerService.getMyProfile());
+        }else{
+            if (createRequest.getDesigners() != null && !createRequest.getDesigners().isEmpty()){
+                designers = createRequest.getDesigners().stream().map(designer -> {
+                    if (designer.isNotRegisteredDesigner()){
+                        return ownerService.createNotRegisteredOwner(designer.getId());
+                    }else{
+                        return ownerService.getOwnerById(designer.getId());
+                    }
+                }).collect(Collectors.toList());
+            }
+        }
+        adopt.setDesigners(new HashSet<>(designers));
+    }
+
+    private void safeSetOwnerToAdopt(Adopt adopt, AdoptCreateRequest createRequest){
+        Owner owner;
+        if (StringUtils.isNotBlank(createRequest.getOwnerId())){
+            if (createRequest.isNotRegisteredOwner()){
+                owner = ownerService.createNotRegisteredOwner(createRequest.getOwnerId());
+            }else{
+                owner = ownerService.getOwnerById(createRequest.getOwnerId());
+            }
+            adopt.setOwner(owner);
+        }
+    }
+
+    // ======================================= End Created Adopt =======================================
 
     public AdoptSingletonResponse uploadIconToAdopt(String adoptId, MultipartFile adoptIcon){
         if (adoptId == null) throw new BadRequestException("The adoptId cannot be null");
@@ -385,38 +420,5 @@ public class AdoptService {
 
         return Trait.Rarity.COMMON;
 
-    }
-
-
-    private void safeSetDesignersToAdopt(Adopt adopt, AdoptCreateRequest createRequest){
-        List<Owner> designers = new ArrayList<>();
-        Adopt.CreationType creationTypeRequest = EnumValidation.toEnum(Adopt.CreationType.class, createRequest.getCreationType());
-        if (EnumValidation.equals(Adopt.CreationType.PREMADE, creationTypeRequest) ||
-            EnumValidation.equals(Adopt.CreationType.CUSTOM, creationTypeRequest)){
-            designers = List.of(ownerService.getMyProfile());
-        }else{
-            if (createRequest.getDesigners() != null && !createRequest.getDesigners().isEmpty()){
-                designers = createRequest.getDesigners().stream().map(designer -> {
-                    if (designer.isNotRegisteredDesigner()){
-                        return ownerService.createNotRegisteredOwner(designer.getId());
-                    }else{
-                        return ownerService.getOwnerById(designer.getId());
-                    }
-                }).collect(Collectors.toList());
-            }
-        }
-        adopt.setDesigners(new HashSet<>(designers));
-    }
-
-    private void safeSetOwnerToAdopt(Adopt adopt, AdoptCreateRequest createRequest){
-        Owner owner;
-        if (StringUtils.isNotBlank(createRequest.getOwnerId())){
-            if (createRequest.isNotRegisteredOwner()){
-                owner = ownerService.createNotRegisteredOwner(createRequest.getOwnerId());
-            }else{
-                owner = ownerService.getOwnerById(createRequest.getOwnerId());
-            }
-            adopt.setOwner(owner);
-        }
     }
 }
