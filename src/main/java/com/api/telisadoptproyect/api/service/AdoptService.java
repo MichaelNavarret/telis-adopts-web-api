@@ -236,6 +236,7 @@ public class AdoptService {
         updateAdoptOwner(adopt, request.getOwnerId());
         updateAdoptDesigners(adopt, request.getDesignerIds());
         updateAdoptCreationType(adopt, request.getCreationType());
+        updateToyhouseLink(adopt, request.getToyhouseLink());
 
         adoptRepository.save(adopt);
 
@@ -349,7 +350,15 @@ public class AdoptService {
            }
        }
     }
-
+    private void updateToyhouseLink(Adopt adopt, String toyhouseLink){
+        if (toyhouseLink != null){
+            if(!StringUtils.isEmpty(toyhouseLink)){
+                adopt.setToyhouseLink(toyhouseLink);
+            }else{
+                adopt.setToyhouseLink(null);
+            }
+        }
+    }
     // ======================================= End Updated Adopt =======================================
 
     public Page<Adopt> getFavoriteCharacters(Integer pageNumber, Integer pageLimit, String ownerId){

@@ -14,6 +14,7 @@ public class AdoptUpdateRequest {
     private String ownerId;
     private List<String> designerIds;
     private String creationType;
+    private String toyhouseLink;
     public String getName() {
         return name;
     }
@@ -69,5 +70,13 @@ public class AdoptUpdateRequest {
     }
     public void setCreationType(String creationType) {
         this.creationType = creationType;
+    }
+
+    public String getToyhouseLink() {
+        return toyhouseLink;
+    }
+
+    public void setToyhouseLink(String toyhouseLink) {
+        this.toyhouseLink = toyhouseLink;
     }
 }

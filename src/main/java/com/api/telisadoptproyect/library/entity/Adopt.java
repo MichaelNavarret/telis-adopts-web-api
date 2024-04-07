@@ -52,6 +52,7 @@ public class Adopt {
     @ManyToOne
     @JoinColumn(name = "badge_Id")
     private Badge badge;
+    private String toyhouseLink;
 
     private int favoriteCharacterIndex;
     public Adopt() {
@@ -184,5 +185,13 @@ public class Adopt {
     }
     public void setBadge(Badge badge) {
         this.badge = badge;
+    }
+
+    public String getToyhouseLink() {
+        return toyhouseLink;
+    }
+
+    public void setToyhouseLink(String toyhouseLink) {
+        this.toyhouseLink = toyhouseLink;
     }
 }

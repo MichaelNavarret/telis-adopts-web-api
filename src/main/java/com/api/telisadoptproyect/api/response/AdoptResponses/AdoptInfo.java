@@ -31,6 +31,7 @@ public class AdoptInfo {
     private String specieFormUrl;
     private String specieId;
     private String creationType;
+    private String toyhouseLink;
     public AdoptInfo (Adopt adopt){
         this.id = adopt.getId();
         this.code = adopt.getCode();
@@ -53,6 +54,7 @@ public class AdoptInfo {
         this.specieFormUrl = adopt.getExtraInfo() != null ? adopt.getExtraInfo().getFormUrlImage() : null;
         this.specieId = adopt.getSpecie().getId();
         this.creationType = adopt.getCreationType().toString();
+        this.toyhouseLink = adopt.getToyhouseLink();
     }
 
     public String getId() {
@@ -213,5 +215,13 @@ public class AdoptInfo {
 
     public void setCreationType(String creationType) {
         this.creationType = creationType;
+    }
+
+    public String getToyhouseLink() {
+        return toyhouseLink;
+    }
+
+    public void setToyhouseLink(String toyhouseLink) {
+        this.toyhouseLink = toyhouseLink;
     }
 }
