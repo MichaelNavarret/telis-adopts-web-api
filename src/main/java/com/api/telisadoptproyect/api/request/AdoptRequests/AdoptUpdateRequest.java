@@ -13,6 +13,7 @@ public class AdoptUpdateRequest {
     private String createdOn;
     private String ownerId;
     private List<String> designerIds;
+    private String creationType;
     public String getName() {
         return name;
     }
@@ -57,12 +58,16 @@ public class AdoptUpdateRequest {
     public void setOwnerId(String ownerId) {
         this.ownerId = ownerId;
     }
-
     public List<String> getDesignerIds() {
         return designerIds;
     }
-
     public void setDesignerIds(List<String> designerIds) {
         this.designerIds = designerIds;
+    }
+    public String getCreationType() {
+        return creationType;
+    }
+    public void setCreationType(String creationType) {
+        this.creationType = creationType;
     }
 }

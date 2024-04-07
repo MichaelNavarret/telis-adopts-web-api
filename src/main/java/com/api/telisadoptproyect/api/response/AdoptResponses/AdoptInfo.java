@@ -4,7 +4,6 @@ import com.api.telisadoptproyect.api.response.BadgeResponses.BadgeInfo;
 import com.api.telisadoptproyect.api.response.OwnerResponses.OwnerInfo;
 import com.api.telisadoptproyect.api.response.SubTraitResponses.SubTraitInfo;
 import com.api.telisadoptproyect.library.entity.Adopt;
-import com.api.telisadoptproyect.library.entity.Owner;
 
 import java.util.Comparator;
 import java.util.Date;
@@ -31,6 +30,7 @@ public class AdoptInfo {
     private String specieCode;
     private String specieFormUrl;
     private String specieId;
+    private String creationType;
     public AdoptInfo (Adopt adopt){
         this.id = adopt.getId();
         this.code = adopt.getCode();
@@ -52,6 +52,7 @@ public class AdoptInfo {
         this.specieCode = adopt.getSpecie().getCode();
         this.specieFormUrl = adopt.getExtraInfo() != null ? adopt.getExtraInfo().getFormUrlImage() : null;
         this.specieId = adopt.getSpecie().getId();
+        this.creationType = adopt.getCreationType().toString();
     }
 
     public String getId() {
@@ -204,5 +205,13 @@ public class AdoptInfo {
 
     public void setSpecieId(String specieId) {
         this.specieId = specieId;
+    }
+
+    public String getCreationType() {
+        return creationType;
+    }
+
+    public void setCreationType(String creationType) {
+        this.creationType = creationType;
     }
 }

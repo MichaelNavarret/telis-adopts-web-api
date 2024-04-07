@@ -235,6 +235,7 @@ public class AdoptService {
         updateAdoptSubTraits(adopt, request.getSubTraits());
         updateAdoptOwner(adopt, request.getOwnerId());
         updateAdoptDesigners(adopt, request.getDesignerIds());
+        updateAdoptCreationType(adopt, request.getCreationType());
 
         adoptRepository.save(adopt);
 
@@ -319,6 +320,34 @@ public class AdoptService {
                 adopt.setDesigners(designers);
             }
         }
+    }
+    private void updateAdoptCreationType(Adopt adopt, String creationType){
+       if (StringUtils.isNotBlank(creationType)){
+           if (!EnumValidation.validateEnum(Adopt.CreationType.class, creationType)) throw new BadRequestException("The Creation Type is invalid.");
+           Adopt.CreationType newType = EnumValidation.toEnum(Adopt.CreationType.class, creationType);
+           switch (newType){
+               case PREMADE:
+                   adopt.setCode(generateCodeToAdopt("PREMADE"));
+                   adopt.setDesigners(Collections.emptySet());
+                   adopt.setCreationType(Adopt.CreationType.PREMADE);
+                   break;
+               case CUSTOM:
+                   adopt.setCode(generateCodeToAdopt("CUSTOM"));
+                   adopt.setDesigners(Collections.emptySet());
+                   adopt.setCreationType(Adopt.CreationType.CUSTOM);
+                   break;
+               case MYO:
+                   adopt.setCode(generateCodeToAdopt("MYO"));
+                   adopt.setCreationType(Adopt.CreationType.MYO);
+                   break;
+               case GUEST_ARTIST:
+                   adopt.setCode(generateCodeToAdopt("GUEST_ARTIST"));
+                   adopt.setCreationType(Adopt.CreationType.GUEST_ARTIST);
+                   break;
+               case null:
+                   break;
+           }
+       }
     }
 
     // ======================================= End Updated Adopt =======================================
