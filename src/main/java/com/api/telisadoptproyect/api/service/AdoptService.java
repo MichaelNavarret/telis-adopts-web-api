@@ -6,6 +6,7 @@ import com.api.telisadoptproyect.api.request.SubTraitRequests.SubTraitCreateRequ
 import com.api.telisadoptproyect.api.response.AdoptResponses.AdoptCollectionResponse;
 import com.api.telisadoptproyect.api.response.AdoptResponses.AdoptSingletonResponse;
 import com.api.telisadoptproyect.api.response.BaseResponse;
+import com.api.telisadoptproyect.api.validation.AdoptValidation;
 import com.api.telisadoptproyect.library.entity.*;
 import com.api.telisadoptproyect.library.exception.BadRequestException;
 import com.api.telisadoptproyect.library.repository.AdoptRepository;
@@ -49,7 +50,10 @@ public class AdoptService {
     private BadgeService badgeService;
     @Autowired
     private SubTraitRepository subTraitRepository;
+    @Autowired
+    private AdoptValidation adoptValidation;
 
+    // ======================================= Start Created Adopt =======================================
     @Transactional
     public AdoptSingletonResponse createAdopt(AdoptCreateRequest createRequest){
         if (createRequest == null) throw new BadRequestException("The request cannot be null");
@@ -91,6 +95,40 @@ public class AdoptService {
         return new AdoptSingletonResponse(BaseResponse.Status.SUCCESS, HttpStatus.CREATED.value(), adopt);
     }
 
+    private void safeSetDesignersToAdopt(Adopt adopt, AdoptCreateRequest createRequest){
+        List<Owner> designers = new ArrayList<>();
+        Adopt.CreationType creationTypeRequest = EnumValidation.toEnum(Adopt.CreationType.class, createRequest.getCreationType());
+        if (EnumValidation.equals(Adopt.CreationType.PREMADE, creationTypeRequest) ||
+                EnumValidation.equals(Adopt.CreationType.CUSTOM, creationTypeRequest)){
+            designers = List.of(ownerService.getMyProfile());
+        }else{
+            if (createRequest.getDesigners() != null && !createRequest.getDesigners().isEmpty()){
+                designers = createRequest.getDesigners().stream().map(designer -> {
+                    if (designer.isNotRegisteredDesigner()){
+                        return ownerService.createNotRegisteredOwner(designer.getId());
+                    }else{
+                        return ownerService.getOwnerById(designer.getId());
+                    }
+                }).collect(Collectors.toList());
+            }
+        }
+        adopt.setDesigners(new HashSet<>(designers));
+    }
+
+    private void safeSetOwnerToAdopt(Adopt adopt, AdoptCreateRequest createRequest){
+        Owner owner;
+        if (StringUtils.isNotBlank(createRequest.getOwnerId())){
+            if (createRequest.isNotRegisteredOwner()){
+                owner = ownerService.createNotRegisteredOwner(createRequest.getOwnerId());
+            }else{
+                owner = ownerService.getOwnerById(createRequest.getOwnerId());
+            }
+            adopt.setOwner(owner);
+        }
+    }
+
+    // ======================================= End Created Adopt =======================================
+
     public AdoptSingletonResponse uploadIconToAdopt(String adoptId, MultipartFile adoptIcon){
         if (adoptId == null) throw new BadRequestException("The adoptId cannot be null");
         if (adoptIcon == null || adoptIcon.isEmpty()) throw new BadRequestException("The adoptIcon cannot be null");
@@ -106,12 +144,16 @@ public class AdoptService {
     }
 
     public Page<Adopt> getAdoptCollection(Integer pageNumber, Integer pageLimit, String specieId, String creationType,
-                                          String sort, String ownerId, String query) {
+                                          String sort, String ownerId, String query, Boolean active) {
         QAdopt qAdopt = QAdopt.adopt;
         BooleanExpression expression = qAdopt.id.isNotNull();
 
         if (StringUtils.isNotBlank(specieId)){
             expression = expression.and(qAdopt.specie.id.eq(specieId));
+        }
+
+        if (active != null){
+            expression = expression.and(qAdopt.active.eq(active));
         }
 
         if (StringUtils.isNotBlank(creationType)){
@@ -183,64 +225,151 @@ public class AdoptService {
         return new AdoptCollectionResponse((List<Adopt>) adoptRepository.findAll(expression));
     }
 
+    // ======================================= Start Updated Adopt =======================================
     @Transactional
     public AdoptSingletonResponse updateAdopt(String adoptId, AdoptUpdateRequest request) {
-        if (adoptId == null) throw new BadRequestException("The adoptId cannot be null");
-        if (request == null) throw new BadRequestException("The request cannot be null");
+        adoptValidation.updateAdoptParamsValidation(adoptId, request);
+        Adopt adopt = adoptRepository.findById(adoptId).orElseThrow(() -> new BadRequestException("Adopt not found with Id: " + adoptId));
 
-        Adopt adopt = adoptRepository.findById(adoptId).orElseThrow(() -> new BadRequestException("The adoptId is invalid"));
-
-        if (StringUtils.isNotBlank(request.getName()) && !request.getName().equals(adopt.getName())){
-            adopt.setName(request.getName());
-        }
-
-        if(request.getSubTraits() != null && !request.getSubTraits().isEmpty()) {
-            request.getSubTraits().forEach(subTraitInfo -> {
-                subTraitService.updateSubTraitAdditionalInfo(subTraitInfo);
-            });
-        }
-
-        if(StringUtils.isNotBlank(request.getSpecieId()) && !request.getSpecieId().equals(adopt.getSpecie().getId())){
-           Specie newSpecie = specieService.findById(request.getSpecieId());
-           adopt.setSpecie(newSpecie);
-
-           Set<SubTrait> subTraits = adopt.getSubTraits();
-           subTraitRepository.deleteAll(subTraits);
-           adopt.setSubTraits(Collections.emptySet());
-           adopt.setExtraInfo(null);
-        }
-
-        if(request.getBadgeId() != null){
-            if(StringUtils.isNotBlank(request.getBadgeId())){
-                Badge badge = badgeService.getBadgeById(request.getBadgeId());
-                adopt.setBadge(badge);
-            }
-
-            if(StringUtils.isEmpty(request.getBadgeId())){
-                adopt.setBadge(null);
-            }
-        }
-
-        if(StringUtils.isNotBlank(request.getSpecieFormId())){
-            SpecieForm specieForm = specieFormRepository.findById(request.getSpecieFormId()).orElseThrow(
-                    () -> new BadRequestException("The specieFormId is invalid"));
-            adopt.setExtraInfo(specieForm);
-        }
-
-        if(StringUtils.isNotBlank(request.getCreatedOn())){
-            try{
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                Date date = sdf.parse(request.getCreatedOn());
-                adopt.setCreatedOn(date);
-            }catch (Exception e){
-                throw new BadRequestException("The createdOn date is invalid");
-            }
-        }
+        updateAdoptName(adopt, request.getName());
+        updateAdoptSpecie(adopt, request.getSpecieId());
+        updateAdoptBadge(adopt, request.getBadgeId());
+        updateAdoptSpecieForm(adopt, request.getSpecieFormId());
+        updateAdoptCreatedOn(adopt, request.getCreatedOn());
+        updateAdoptSubTraits(adopt, request.getSubTraits());
+        updateAdoptOwner(adopt, request.getOwnerId());
+        updateAdoptDesigners(adopt, request.getDesignerIds());
+        updateAdoptCreationType(adopt, request.getCreationType());
+        updateToyhouseLink(adopt, request.getToyhouseLink());
+        updateAdoptActiveStatus(adopt, request.getActive());
 
         adoptRepository.save(adopt);
 
         return new AdoptSingletonResponse(BaseResponse.Status.SUCCESS, HttpStatus.OK.value(), adopt);
     }
+    private void updateAdoptName(Adopt adopt, String name){
+        if(name != null){
+            if (StringUtils.isNotBlank(name)){
+                adopt.setName(name);
+            }
+
+            if(StringUtils.isEmpty(name)){
+                adopt.setName("TBN");
+            }
+        }
+    }
+    private void updateAdoptSpecie(Adopt adopt, String specieId){
+        if(StringUtils.isNotBlank(specieId) && !specieId.equals(adopt.getSpecie().getId())){
+            Specie newSpecie = specieService.findById(specieId);
+            adopt.setSpecie(newSpecie);
+
+            Set<SubTrait> subTraits = adopt.getSubTraits();
+            subTraitRepository.deleteAll(subTraits);
+            adopt.setSubTraits(Collections.emptySet());
+            adopt.setExtraInfo(null);
+            adopt.setRarity(Trait.Rarity.COMMON);
+        }
+    }
+    private void updateAdoptBadge(Adopt adopt, String badgeId){
+        if(badgeId != null){
+            if(StringUtils.isNotBlank(badgeId)){
+                Badge badge = badgeService.getBadgeById(badgeId);
+                adopt.setBadge(badge);
+            }
+            if(StringUtils.isEmpty(badgeId)){
+                adopt.setBadge(null);
+            }
+        }
+    }
+    private void updateAdoptSpecieForm(Adopt adopt, String specieFormId){
+        if(StringUtils.isNotBlank(specieFormId)){
+            SpecieForm specieForm = specieFormRepository.findById(specieFormId).orElseThrow(
+                    () -> new BadRequestException("The specieFormId is invalid"));
+            adopt.setExtraInfo(specieForm);
+        }
+    }
+    private void updateAdoptCreatedOn(Adopt adopt, String createdOn){
+        if(StringUtils.isNotBlank(createdOn)){
+            try{
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                Date date = sdf.parse(createdOn);
+                adopt.setCreatedOn(date);
+            }catch (Exception e){
+                throw new BadRequestException("The createdOn date is invalid");
+            }
+        }
+    }
+    private void updateAdoptSubTraits(Adopt adopt, List<SubTraitCreateRequest> subTraits){
+        if(subTraits != null && !subTraits.isEmpty()){
+            Set<SubTrait> oldSubTraits = adopt.getSubTraits();
+            oldSubTraits.stream().map(SubTrait::getId).forEach(subTraitService::deleteSubTrait);
+            createAndLinkSubTraitsToAdopt(subTraits, adopt);
+        }
+    }
+    private void updateAdoptOwner(Adopt adopt, String ownerId){
+        if(ownerId != null){
+            if(StringUtils.isNotBlank(ownerId)){
+                Owner owner = ownerService.getOwnerById(ownerId);
+                adopt.setOwner(owner);
+            }
+            if(StringUtils.isEmpty(ownerId)){
+                adopt.setOwner(null);
+            }
+        }
+    }
+    private void updateAdoptDesigners(Adopt adopt, List<String> designerIds){
+        if (designerIds != null){
+            if(designerIds.isEmpty()){
+                adopt.setDesigners(Collections.emptySet());
+            }else{
+                Set<Owner> designers = designerIds.stream().map(ownerService::getOwnerById).collect(Collectors.toSet());
+                adopt.setDesigners(designers);
+            }
+        }
+    }
+    private void updateAdoptCreationType(Adopt adopt, String creationType){
+       if (StringUtils.isNotBlank(creationType)){
+           if (!EnumValidation.validateEnum(Adopt.CreationType.class, creationType)) throw new BadRequestException("The Creation Type is invalid.");
+           Adopt.CreationType newType = EnumValidation.toEnum(Adopt.CreationType.class, creationType);
+           switch (newType){
+               case PREMADE:
+                   adopt.setCode(generateCodeToAdopt("PREMADE"));
+                   adopt.setDesigners(Collections.emptySet());
+                   adopt.setCreationType(Adopt.CreationType.PREMADE);
+                   break;
+               case CUSTOM:
+                   adopt.setCode(generateCodeToAdopt("CUSTOM"));
+                   adopt.setDesigners(Collections.emptySet());
+                   adopt.setCreationType(Adopt.CreationType.CUSTOM);
+                   break;
+               case MYO:
+                   adopt.setCode(generateCodeToAdopt("MYO"));
+                   adopt.setCreationType(Adopt.CreationType.MYO);
+                   break;
+               case GUEST_ARTIST:
+                   adopt.setCode(generateCodeToAdopt("GUEST_ARTIST"));
+                   adopt.setCreationType(Adopt.CreationType.GUEST_ARTIST);
+                   break;
+               case null:
+                   break;
+           }
+       }
+    }
+    private void updateToyhouseLink(Adopt adopt, String toyhouseLink){
+        if (toyhouseLink != null){
+            if(!StringUtils.isEmpty(toyhouseLink)){
+                adopt.setToyhouseLink(toyhouseLink);
+            }else{
+                adopt.setToyhouseLink(null);
+            }
+        }
+    }
+    private void updateAdoptActiveStatus(Adopt adopt, Boolean active){
+        if (active != null){
+            adopt.setActive(active);
+        }
+    }
+    // ======================================= End Updated Adopt =======================================
 
     public Page<Adopt> getFavoriteCharacters(Integer pageNumber, Integer pageLimit, String ownerId){
         Owner owner = ownerService.getOwnerById(ownerId);
@@ -350,38 +479,5 @@ public class AdoptService {
 
         return Trait.Rarity.COMMON;
 
-    }
-
-
-    private void safeSetDesignersToAdopt(Adopt adopt, AdoptCreateRequest createRequest){
-        List<Owner> designers = new ArrayList<>();
-        Adopt.CreationType creationTypeRequest = EnumValidation.toEnum(Adopt.CreationType.class, createRequest.getCreationType());
-        if (EnumValidation.equals(Adopt.CreationType.PREMADE, creationTypeRequest) ||
-            EnumValidation.equals(Adopt.CreationType.CUSTOM, creationTypeRequest)){
-            designers = List.of(ownerService.getMyProfile());
-        }else{
-            if (createRequest.getDesigners() != null && !createRequest.getDesigners().isEmpty()){
-                designers = createRequest.getDesigners().stream().map(designer -> {
-                    if (designer.isNotRegisteredDesigner()){
-                        return ownerService.createNotRegisteredOwner(designer.getId());
-                    }else{
-                        return ownerService.getOwnerById(designer.getId());
-                    }
-                }).collect(Collectors.toList());
-            }
-        }
-        adopt.setDesigners(new HashSet<>(designers));
-    }
-
-    private void safeSetOwnerToAdopt(Adopt adopt, AdoptCreateRequest createRequest){
-        Owner owner;
-        if (StringUtils.isNotBlank(createRequest.getOwnerId())){
-            if (createRequest.isNotRegisteredOwner()){
-                owner = ownerService.createNotRegisteredOwner(createRequest.getOwnerId());
-            }else{
-                owner = ownerService.getOwnerById(createRequest.getOwnerId());
-            }
-            adopt.setOwner(owner);
-        }
     }
 }

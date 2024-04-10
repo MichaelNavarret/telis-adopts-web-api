@@ -1,17 +1,21 @@
 package com.api.telisadoptproyect.api.request.AdoptRequests;
 
-import com.api.telisadoptproyect.api.request.SubTraitRequests.SubTraitUpdateRequest;
-import com.api.telisadoptproyect.api.response.SubTraitResponses.SubTraitInfo;
+import com.api.telisadoptproyect.api.request.SubTraitRequests.SubTraitCreateRequest;
 
 import java.util.List;
 
 public class AdoptUpdateRequest {
     private String name;
-    private List<SubTraitUpdateRequest> subTraits;
+    private List<SubTraitCreateRequest> subTraits;
     private String specieId;
     private String badgeId;
     private String specieFormId;
     private String createdOn;
+    private String ownerId;
+    private List<String> designerIds;
+    private String creationType;
+    private String toyhouseLink;
+    private Boolean active;
     public String getName() {
         return name;
     }
@@ -20,10 +24,10 @@ public class AdoptUpdateRequest {
         this.name = name;
     }
 
-    public List<SubTraitUpdateRequest> getSubTraits() {
+    public List<SubTraitCreateRequest> getSubTraits() {
         return subTraits;
     }
-    public void setSubTraits(List<SubTraitUpdateRequest> subTraits) {
+    public void setSubTraits(List<SubTraitCreateRequest> subTraits) {
         this.subTraits = subTraits;
     }
     public String getSpecieId() {
@@ -32,28 +36,56 @@ public class AdoptUpdateRequest {
     public void setSpecieId(String specieId) {
         this.specieId = specieId;
     }
-
     public String getBadgeId() {
         return badgeId;
     }
-
     public void setBadgeId(String badgeId) {
         this.badgeId = badgeId;
     }
-
     public String getSpecieFormId() {
         return specieFormId;
     }
-
     public void setSpecieFormId(String specieFormId) {
         this.specieFormId = specieFormId;
     }
-
     public String getCreatedOn() {
         return createdOn;
     }
-
     public void setCreatedOn(String createdOn) {
         this.createdOn = createdOn;
+    }
+    public String getOwnerId() {
+        return ownerId;
+    }
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
+    }
+    public List<String> getDesignerIds() {
+        return designerIds;
+    }
+    public void setDesignerIds(List<String> designerIds) {
+        this.designerIds = designerIds;
+    }
+    public String getCreationType() {
+        return creationType;
+    }
+    public void setCreationType(String creationType) {
+        this.creationType = creationType;
+    }
+
+    public String getToyhouseLink() {
+        return toyhouseLink;
+    }
+
+    public void setToyhouseLink(String toyhouseLink) {
+        this.toyhouseLink = toyhouseLink;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 }

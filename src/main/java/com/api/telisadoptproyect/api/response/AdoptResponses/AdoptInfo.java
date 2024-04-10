@@ -1,10 +1,11 @@
 package com.api.telisadoptproyect.api.response.AdoptResponses;
 
 import com.api.telisadoptproyect.api.response.BadgeResponses.BadgeInfo;
+import com.api.telisadoptproyect.api.response.OwnerResponses.OwnerInfo;
 import com.api.telisadoptproyect.api.response.SubTraitResponses.SubTraitInfo;
 import com.api.telisadoptproyect.library.entity.Adopt;
-import com.api.telisadoptproyect.library.entity.Owner;
 
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,7 +16,7 @@ public class AdoptInfo {
     private String name;
     private String ownerName;
     private String specieName;
-    private List<String> designers;
+    private List<OwnerInfo> designers;
     private Date createdOn;
     private Date boughtOn;
     private Date registeredOn;
@@ -29,6 +30,9 @@ public class AdoptInfo {
     private String specieCode;
     private String specieFormUrl;
     private String specieId;
+    private String creationType;
+    private String toyhouseLink;
+    private Boolean active;
     public AdoptInfo (Adopt adopt){
         this.id = adopt.getId();
         this.code = adopt.getCode();
@@ -38,7 +42,8 @@ public class AdoptInfo {
         this.boughtOn = adopt.getBoughtOn();
         this.specieName = adopt.getSpecie().getName();
         this.registeredOn = adopt.getRegisteredOn();
-        this.designers = adopt.getDesigners() != null ? adopt.getDesigners().stream().map(Owner::getNickName).collect(Collectors.toList()) : null;
+        this.designers = adopt.getDesigners() != null? adopt.getDesigners().stream().map(OwnerInfo::new)
+                .sorted(Comparator.comparing(OwnerInfo::getNickName)).collect(Collectors.toList()) : null;
         this.rarity = adopt.getRarity().toString();
         this.traits = adopt.getSubTraits() != null? adopt.getSubTraits().stream().map(SubTraitInfo::new).collect(Collectors.toList()) : null;
         this.iconUrl = adopt.getIconUrl();
@@ -49,6 +54,9 @@ public class AdoptInfo {
         this.specieCode = adopt.getSpecie().getCode();
         this.specieFormUrl = adopt.getExtraInfo() != null ? adopt.getExtraInfo().getFormUrlImage() : null;
         this.specieId = adopt.getSpecie().getId();
+        this.creationType = adopt.getCreationType().toString();
+        this.toyhouseLink = adopt.getToyhouseLink();
+        this.active = adopt.isActive();
     }
 
     public String getId() {
@@ -83,11 +91,11 @@ public class AdoptInfo {
         this.ownerName = ownerName;
     }
 
-    public List<String> getDesigners() {
+    public List<OwnerInfo> getDesigners() {
         return designers;
     }
 
-    public void setDesigners(List<String> designers) {
+    public void setDesigners(List<OwnerInfo> designers) {
         this.designers = designers;
     }
 
@@ -201,5 +209,29 @@ public class AdoptInfo {
 
     public void setSpecieId(String specieId) {
         this.specieId = specieId;
+    }
+
+    public String getCreationType() {
+        return creationType;
+    }
+
+    public void setCreationType(String creationType) {
+        this.creationType = creationType;
+    }
+
+    public String getToyhouseLink() {
+        return toyhouseLink;
+    }
+
+    public void setToyhouseLink(String toyhouseLink) {
+        this.toyhouseLink = toyhouseLink;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 }
