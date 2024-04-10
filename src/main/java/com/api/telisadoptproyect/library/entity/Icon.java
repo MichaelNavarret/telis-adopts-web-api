@@ -2,6 +2,8 @@ package com.api.telisadoptproyect.library.entity;
 
 import jakarta.persistence.*;
 
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -12,14 +14,19 @@ public class Icon {
     private String code;
     private String iconUrl;
     private boolean exclusive;
+    private boolean active;
     @ManyToMany
     @JoinTable(name = "rel_icon_owner",
                joinColumns = @JoinColumn(name = "iconId"),
                inverseJoinColumns = @JoinColumn(name = "ownerId"))
     private List<Owner> availableFor;
+    private Date createdOn;
 
     public Icon() {
         this.id = UUID.randomUUID().toString();
+        this.active = false;
+        this.availableFor = Collections.emptyList();
+        this.createdOn = new Date();
     }
 
     public String getId() {
@@ -59,5 +66,21 @@ public class Icon {
 
     public void setExclusive(boolean exclusive) {
         this.exclusive = exclusive;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public Date getCreatedOn() {
+        return createdOn;
+    }
+
+    public void setCreatedOn(Date createdOn) {
+        this.createdOn = createdOn;
     }
 }

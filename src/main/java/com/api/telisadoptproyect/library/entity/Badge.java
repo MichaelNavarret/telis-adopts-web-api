@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -16,9 +17,13 @@ public class Badge {
     private String code;
     private String description;
     private String badgeUrl;
+    private boolean active;
+    private Date createdOn;
 
     public Badge() {
         this.id = UUID.randomUUID().toString();
+        this.active = true;
+        this.createdOn = new Date();
     }
     public String getId() {
         return id;
@@ -58,5 +63,21 @@ public class Badge {
 
     public void setBadgeUrl(String badgeUrl) {
         this.badgeUrl = badgeUrl;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public Date getCreatedOn() {
+        return createdOn;
+    }
+
+    public void setCreatedOn(Date createdOn) {
+        this.createdOn = createdOn;
     }
 }
