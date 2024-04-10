@@ -15,6 +15,7 @@ public class AdoptUpdateRequest {
     private List<String> designerIds;
     private String creationType;
     private String toyhouseLink;
+    private Boolean active;
     public String getName() {
         return name;
     }
@@ -78,5 +79,13 @@ public class AdoptUpdateRequest {
 
     public void setToyhouseLink(String toyhouseLink) {
         this.toyhouseLink = toyhouseLink;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 }

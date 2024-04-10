@@ -144,12 +144,16 @@ public class AdoptService {
     }
 
     public Page<Adopt> getAdoptCollection(Integer pageNumber, Integer pageLimit, String specieId, String creationType,
-                                          String sort, String ownerId, String query) {
+                                          String sort, String ownerId, String query, Boolean active) {
         QAdopt qAdopt = QAdopt.adopt;
         BooleanExpression expression = qAdopt.id.isNotNull();
 
         if (StringUtils.isNotBlank(specieId)){
             expression = expression.and(qAdopt.specie.id.eq(specieId));
+        }
+
+        if (active != null){
+            expression = expression.and(qAdopt.active.eq(active));
         }
 
         if (StringUtils.isNotBlank(creationType)){
@@ -237,6 +241,7 @@ public class AdoptService {
         updateAdoptDesigners(adopt, request.getDesignerIds());
         updateAdoptCreationType(adopt, request.getCreationType());
         updateToyhouseLink(adopt, request.getToyhouseLink());
+        updateAdoptActiveStatus(adopt, request.getActive());
 
         adoptRepository.save(adopt);
 
@@ -357,6 +362,11 @@ public class AdoptService {
             }else{
                 adopt.setToyhouseLink(null);
             }
+        }
+    }
+    private void updateAdoptActiveStatus(Adopt adopt, Boolean active){
+        if (active != null){
+            adopt.setActive(active);
         }
     }
     // ======================================= End Updated Adopt =======================================

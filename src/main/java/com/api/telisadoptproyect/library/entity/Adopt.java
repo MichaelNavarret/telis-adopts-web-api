@@ -55,10 +55,12 @@ public class Adopt {
     private String toyhouseLink;
 
     private int favoriteCharacterIndex;
+    private boolean active;
     public Adopt() {
         this.id = UUID.randomUUID().toString();
         this.createdOn = new Date();
         this.favoriteCharacterIndex = 0;
+        this.active = true;
     }
 
     public String getId() {
@@ -193,5 +195,13 @@ public class Adopt {
 
     public void setToyhouseLink(String toyhouseLink) {
         this.toyhouseLink = toyhouseLink;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

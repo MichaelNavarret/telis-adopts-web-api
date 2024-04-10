@@ -51,12 +51,13 @@ public class AdoptController {
             @RequestParam(name = "creationType", required = false) String creationType,
             @RequestParam(name = "sort", required = false) String sort,
             @RequestParam(name = "ownerId", required = false) String ownerId,
-            @RequestParam(name = "q", required = false) String query) {
+            @RequestParam(name = "q", required = false) String query,
+            @RequestParam(name = "active", required = false) Boolean active) {
 
 
         final Integer pageNumberValue = Integer.parseInt(pageNumber);
         final Integer pageLimitValue = Integer.parseInt(pageLimit);
-        final Page<Adopt> response = adoptService.getAdoptCollection(pageNumberValue, pageLimitValue, specieId, creationType, sort, ownerId, query);
+        final Page<Adopt> response = adoptService.getAdoptCollection(pageNumberValue, pageLimitValue, specieId, creationType, sort, ownerId, query, active);
 
         HttpHeaders headers = PaginationUtils.createHttpHeaderForPagination(response, pageLimitValue);
         AdoptCollectionResponse adoptCollectionResponse = new AdoptCollectionResponse(response);

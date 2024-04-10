@@ -32,6 +32,7 @@ public class AdoptInfo {
     private String specieId;
     private String creationType;
     private String toyhouseLink;
+    private Boolean active;
     public AdoptInfo (Adopt adopt){
         this.id = adopt.getId();
         this.code = adopt.getCode();
@@ -55,6 +56,7 @@ public class AdoptInfo {
         this.specieId = adopt.getSpecie().getId();
         this.creationType = adopt.getCreationType().toString();
         this.toyhouseLink = adopt.getToyhouseLink();
+        this.active = adopt.isActive();
     }
 
     public String getId() {
@@ -223,5 +225,13 @@ public class AdoptInfo {
 
     public void setToyhouseLink(String toyhouseLink) {
         this.toyhouseLink = toyhouseLink;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 }
