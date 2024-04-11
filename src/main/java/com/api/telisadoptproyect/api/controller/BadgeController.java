@@ -1,6 +1,8 @@
 package com.api.telisadoptproyect.api.controller;
 
+import com.api.telisadoptproyect.api.request.BadgeRequests.UpdateBadgeRequest;
 import com.api.telisadoptproyect.api.response.BadgeResponses.BadgeCollectionResponse;
+import com.api.telisadoptproyect.api.response.BadgeResponses.BadgeSingletonResponse;
 import com.api.telisadoptproyect.api.service.BadgeService;
 import com.api.telisadoptproyect.library.entity.Badge;
 import com.api.telisadoptproyect.library.util.MessageUtils;
@@ -39,7 +41,7 @@ public class BadgeController {
         LOGGER.info("Getting badges collection...");
         LOGGER.info("Sort: " + sort);
         LOGGER.info("Query: " + query);
-        LOGGER.info("active" + active);
+        LOGGER.info("active: " + active);
 
         final Integer pageNumberValue = Integer.parseInt(pageNumber);
         final Integer pageLimitValue = Integer.parseInt(pageLimit);
@@ -55,5 +57,27 @@ public class BadgeController {
                 .body(badgeCollectionResponse);
     }
 
+    @GetMapping(value = "/{badgeId}", produces = "application/json")
+    public ResponseEntity<BadgeSingletonResponse> getBadgeSingleton(
+            @PathVariable(name ="badgeId") String badgeId){
+
+        LOGGER.info("Getting badge with id " + badgeId + "...");
+        return ResponseEntity
+                .ok()
+                .body(badgeService.getBadgeSingleton(badgeId));
+    }
+
+    @PutMapping(value = "/{badgeId}", produces = "application/json")
+    public ResponseEntity<BadgeSingletonResponse> updateBadge(
+            @PathVariable(name ="badgeId") String badgeId,
+            @RequestBody UpdateBadgeRequest request){
+
+        LOGGER.info("Updating badge with id " + badgeId + "...");
+        LOGGER.info("Request: " + request.toString());
+
+        return ResponseEntity
+                .ok()
+                .body(badgeService.updateBadge(badgeId, request));
+    }
 
 }
