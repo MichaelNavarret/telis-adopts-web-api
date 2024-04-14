@@ -13,4 +13,5 @@ public class Constants {
     public static final String CLOUDINARY_GUIDE_SHEET_FOLDER_PATH = CLOUDINARY_SPECIES_FOLDER_PATH + "/guide_sheet";
     public static final String CLOUDINARY_ADOPTS_FOLDER_PATH = CLOUDINARY_MAIN_FOLDER_PATH + "/adopts";
     public static final String CLOUDINARY_ADOPTS_ICONS_FOLDER_PATH = CLOUDINARY_ADOPTS_FOLDER_PATH + "/icons";
+    public static final String CLOUDINARY_BADGES_FOLDER_PATH = CLOUDINARY_MAIN_FOLDER_PATH + "/badges";
 }

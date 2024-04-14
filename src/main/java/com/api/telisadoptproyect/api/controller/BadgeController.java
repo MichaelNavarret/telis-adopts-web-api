@@ -1,5 +1,6 @@
 package com.api.telisadoptproyect.api.controller;
 
+import com.api.telisadoptproyect.api.request.BadgeRequests.CreateBadgeRequest;
 import com.api.telisadoptproyect.api.request.BadgeRequests.UpdateBadgeRequest;
 import com.api.telisadoptproyect.api.response.BadgeResponses.BadgeCollectionResponse;
 import com.api.telisadoptproyect.api.response.BadgeResponses.BadgeSingletonResponse;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @RequestMapping("/badges")
@@ -78,6 +80,29 @@ public class BadgeController {
         return ResponseEntity
                 .ok()
                 .body(badgeService.updateBadge(badgeId, request));
+    }
+
+    @PutMapping(value = "/{badgeId}/badgeImage", produces = "application/json")
+    public ResponseEntity<BadgeSingletonResponse> uploadBadgeImage(
+            @PathVariable(name = "badgeId") String badgeId,
+            @RequestParam (name = "file") MultipartFile badgeImage){
+
+        LOGGER.info("Uploading badgeImage to badge with id: " + badgeId);
+
+        return ResponseEntity
+                .ok()
+                .body(badgeService.uploadBadgeImage(badgeId, badgeImage));
+    }
+
+    @PostMapping(value = "", produces = "application/json")
+    public ResponseEntity<BadgeSingletonResponse> createBadge(
+            @RequestBody CreateBadgeRequest request){
+
+        LOGGER.info("Creating new badge...");
+
+        return ResponseEntity
+                .ok()
+                .body(badgeService.createBadge(request));
     }
 
 }

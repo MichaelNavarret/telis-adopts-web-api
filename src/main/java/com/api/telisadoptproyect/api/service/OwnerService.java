@@ -3,6 +3,7 @@ package com.api.telisadoptproyect.api.service;
 import com.api.telisadoptproyect.api.request.OwnerRequests.OwnerAddCharacterFavoriteRequest;
 import com.api.telisadoptproyect.api.request.OwnerRequests.OwnerCreateRequest;
 import com.api.telisadoptproyect.api.request.OwnerRequests.OwnerUpdateRequest;
+import com.api.telisadoptproyect.api.response.BadgeResponses.BadgeInfo;
 import com.api.telisadoptproyect.api.response.BaseResponse;
 import com.api.telisadoptproyect.api.response.OwnerResponses.OwnerCollectionResponse;
 import com.api.telisadoptproyect.api.response.OwnerResponses.OwnerSingletonResponse;
@@ -86,8 +87,8 @@ public class OwnerService {
         Set<Badge> badges = ownerAdoptList.stream().map(Adopt::getBadge).filter(Objects::nonNull).collect(Collectors.toSet());
         OwnerSingletonResponse response = new OwnerSingletonResponse(BaseResponse.Status.SUCCESS, HttpStatus.OK.value(), owner);
         if(!badges.isEmpty()){
-            List<String> badgesCode = badges.stream().map(Badge::getCode).collect(Collectors.toList());
-            response.setBadgesCode(badgesCode);
+            List<BadgeInfo> badgesCode = badges.stream().map(BadgeInfo::new).collect(Collectors.toList());
+            response.setBadges(badgesCode);
         }
 
         return response;
