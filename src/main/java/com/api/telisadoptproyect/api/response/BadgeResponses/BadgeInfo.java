@@ -2,12 +2,16 @@ package com.api.telisadoptproyect.api.response.BadgeResponses;
 
 import com.api.telisadoptproyect.library.entity.Badge;
 
+import java.util.Date;
+
 public class BadgeInfo {
     private String id;
     private String name;
     private String code;
     private String description;
     private String badgeUrl;
+    private Date createdOn;
+    private Boolean active;
 
     public BadgeInfo(Badge badge) {
         this.id = badge.getId();
@@ -15,6 +19,8 @@ public class BadgeInfo {
         this.code = badge.getCode();
         this.description = badge.getDescription();
         this.badgeUrl = badge.getBadgeUrl();
+        this.createdOn = badge.getCreatedOn();
+        this.active = badge.isActive();
     }
 
     public String getId() {
@@ -55,5 +61,21 @@ public class BadgeInfo {
 
     public void setBadgeUrl(String badgeUrl) {
         this.badgeUrl = badgeUrl;
+    }
+
+    public Date getCreatedOn() {
+        return createdOn;
+    }
+
+    public void setCreatedOn(Date createdOn) {
+        this.createdOn = createdOn;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 }
