@@ -172,6 +172,12 @@ public class SpecieService {
                 }
                 specie.setGuideSheetUrl(cloudinaryService.getUrlFile(publicId, CLOUDINARY_GUIDE_SHEET_FOLDER_PATH));
                 break;
+            case "CHARACTER":
+                publicId = cloudinaryService.uploadFile(inputFile, CLOUDINARY_CHARACTER_FOLDER_PATH);
+                if(specie.getCharacterUrl() != null){
+                    cloudinaryService.destroyFile(specie.getCharacterUrl(), CLOUDINARY_CHARACTER_FOLDER_PATH);
+                }
+                specie.setCharacterUrl(cloudinaryService.getUrlFile(publicId, CLOUDINARY_CHARACTER_FOLDER_PATH));
             default:
                 throw new BadRequestException("The assetType is not valid");
         }

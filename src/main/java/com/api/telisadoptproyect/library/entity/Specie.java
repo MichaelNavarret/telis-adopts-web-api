@@ -30,6 +30,7 @@ public class Specie {
     private String guideSheetUrl;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "specie")
     private List<Faq> faqs;
+    private String characterUrl;
 
     public Specie() {
         this.id = UUID.randomUUID().toString();
@@ -128,5 +129,13 @@ public class Specie {
 
     public void setFaqs(List<Faq> faqs) {
         this.faqs = faqs;
+    }
+
+    public String getCharacterUrl() {
+        return characterUrl;
+    }
+
+    public void setCharacterUrl(String characterUrl) {
+        this.characterUrl = characterUrl;
     }
 }
